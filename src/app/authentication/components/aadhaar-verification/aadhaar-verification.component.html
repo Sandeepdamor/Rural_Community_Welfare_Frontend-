@@ -1,0 +1,33 @@
+<div class="d-flex flex-column align-items-center justify-content-center gap-4 h-100 p-4 mx-auto"
+     style="max-width: 420px;">
+     
+    <img src="assets/images/svg/logo.svg" alt="logo" style="height: 18%;" />
+
+    <div class="d-flex flex-column gap-2 align-items-center text-center mt-4">
+        <h2 class="mb-0 font-22 semibold textColor">Aadhaar Verification</h2>
+        <h3 class="mb-0 font-16 medium subTextColor">Enter Your Aadhaar Number</h3>
+    </div>
+
+    <!-- Aadhaar Input Field -->
+    <form [formGroup]="aadhaarForm">
+        <div class="aadhaar-field">
+            <input type="text" class="input-field" maxlength="12" formControlName="aadhaarNumber"
+                   placeholder="Enter Aadhaar Number" (input)="validateAadhaar()" />
+        </div>
+
+        <p class="text-danger" *ngIf="aadhaarForm.invalid && aadhaarForm.touched">
+            Please enter a valid 12-digit Aadhaar Number.
+        </p>
+
+        <button (click)="verifyAadhaar()" [disabled]="aadhaarForm.invalid" class="primary-button w-100">
+            Verify Aadhaar
+        </button>
+    </form>
+
+    <p class="text-success" *ngIf="isVerified">Aadhaar Verified Successfully!</p>
+    <p class="text-danger" *ngIf="isError">{{ errorMessage }}</p>
+
+</div>
+
+<!-- Load child routes like dashboard after verification -->
+<router-outlet></router-outlet>

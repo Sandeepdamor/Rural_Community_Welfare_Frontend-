@@ -1,0 +1,69 @@
+<!-- SIDEBAR -->
+<div class="sidebar h-100" id="sidebar">
+    <div class="logo d-flex justify-content-center">
+        <div class="logo-collapsed">
+            <img src="assets/images/svg/logo-collapsed.svg" class="p-3">
+        </div>
+        <div class="logo-sidebar">
+            <img src="assets/images/svg/Logo-sidebar.svg" class="p-3">
+        </div>
+    </div>
+
+    <div class="menu">
+        <ul class="d-flex flex-column p-0  gap-3 mb-0">
+
+            <li class="cursor-pointer" [routerLink]="''" [ngClass]="{ 'active': isActiveRoute('/') }" id="dashboard">
+                <img src="assets/images/svg/Dashboard.svg"><span class="menu-text singleLine">Dashboard</span>
+            </li>
+            <!-- <li class="cursor-pointer" [routerLink]="'/user'" [ngClass]="{ 'active': isActiveRoute('/user') }"
+                id="user"> <img src="assets/images/svg/user.svg"><span class="menu-text singleLine">User</span></li> -->
+
+            <!-- User Dropdown -->
+            <!-- Parent item -->
+            <li class="cursor-pointer dropdown-toggle" (click)="toggleUserMenu()" [class.active]="isUserMenuOpen">
+                <img src="assets/images/svg/user.svg">
+                <span class="menu-text singleLine">User</span>
+            </li>
+
+            <!-- Submenu -->
+            <ul *ngIf="isUserMenuOpen" class="sub-menu">
+                <li [routerLink]="'/user/list'" routerLinkActive="active"><img
+                        src="assets/images/svg/user-list-icon.svg" alt="user-list-icon" class="white-icon" />User List
+                </li>
+                <li [routerLink]="'/user/delete-user-list'" routerLinkActive="active">
+                    <img src="assets/images/svg/delete-user-icon.svg" alt="delete-user-icon"
+                        class="white-icon" />Deleted Users List
+                </li>
+                <li [routerLink]="'/user/aadhar-pending-list'" routerLinkActive="active"><img
+                        src="assets/images/svg/pending-user-icon.svg" alt="pending-user-icon"
+                        class="white-icon" />Pending Users List</li>
+            </ul>
+
+
+
+
+
+            <li class="cursor-pointer" [routerLink]="'/customer'" [ngClass]="{ 'active': isActiveRoute('/customer') }"
+                id="customer"><img src="assets/images/svg/Service.svg"><span
+                    class="menu-text singleLine">Announcementss</span>
+            </li>
+            <li class="cursor-pointer" [routerLink]="'/vendor'" [ngClass]="{ 'active': isActiveRoute('/vendor') }"
+                id="vendor"><img src="assets/images/svg/Service.svg"><span class="menu-text singleLine">Govt
+                    Schemes</span>
+            </li>
+
+            <!-- <li class="cursor-pointer" [routerLink]="'/managerole'"
+                [ngClass]="{ 'active': isActiveRoute('/managerole') }" id="managerole"><img
+                    src="assets/images/svg/Manage Role.svg"><span class="menu-text singleLine">My
+                        Grievances</span></li> -->
+            <li class="cursor-pointer" [routerLink]="'/serviceCategory'"
+                [ngClass]="{ 'active': isActiveRoute('/serviceCategory') }" id="serviceCategory"><img
+                    src="assets/images/svg/Service.svg"><span class="menu-text singleLine">Community Projects</span>
+            </li>
+            <li class="cursor-pointer" [routerLink]="'/booking'" [ngClass]="{ 'active': isActiveRoute('/booking') }"
+                id="booking"><img src="assets/images/svg/Booking.svg"><span class="menu-text singleLine">My
+                    Grievances</span>
+            </li>
+        </ul>
+    </div>
+</div>

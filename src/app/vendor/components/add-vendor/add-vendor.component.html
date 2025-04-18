@@ -1,0 +1,116 @@
+<div class="scalable-gap-24-16 scalable-p-16-8 cardBackground d-flex flex-column">
+    <!-- PROFILE CHOOSE -->
+    <div class="position-relative d-flex align-items-end hover-container" style="width: 82px;">
+        <img src="assets/images/svg/profile.svg" height="82" width="82" alt="Logo" class="profile-image">
+        <div class="hover-overlay">
+            <input type="file" accept="image/*" name="fileupload" class="input_feilds bg_light file_select">
+            <div class="file_select_box ">
+                <img src="assets/images/svg/edit-img.svg" height="16" width="16" alt="Edit Icon"
+                    class="file_select_icon">
+            </div>
+        </div>
+    </div>
+    <!-- Upload documents -->
+    <div id="documentGrid" class="documents">
+        <div class="choose_documents" onclick="document.getElementById('fileInput').click()">
+            <input type="file" id="fileInput" multiple accept="image/*" style="display: none;" class="choose_file"
+                onchange="previewDocuments(this)" />
+            <div class="choose_documents_file">
+                <img src="assets/images/svg/document-icon.svg" alt="Upload" />
+            </div>
+            <h4 class="themeColor mb-0 font-14 regular">Upload Documents</h4>
+        </div>      
+    </div>
+    <!-- Form Inputs -->
+    <div class="row g-4">
+        <!-- Name -->
+        <div class="col-md-6">
+            <div class="d-flex flex-column gap-1 w-100">
+                <h4 class="mb-0 font-14 regular subTextColor">Name</h4>
+                <input type="text" class="input-field" placeholder="Enter Name" />
+            </div>
+        </div>
+        <!-- Email -->
+        <div class="col-md-6">
+            <div class="d-flex flex-column gap-1 w-100">
+                <h4 class="mb-0 font-14 regular subTextColor">Email</h4>
+                <input type="text" class="input-field" placeholder="Enter Email" />
+            </div>
+        </div>
+        <!-- Phone Number -->
+        <div class="col-md-6">
+            <div class="d-flex flex-column gap-1 w-100">
+                <h4 class="mb-0 font-14 regular subTextColor">Phone no.</h4>
+                <input type="text" class="input-field" placeholder="Enter phone no." />
+            </div>
+
+        </div>
+        <!-- Address -->
+        <div class="col-md-6">
+            <div class="d-flex flex-column gap-1 w-100">
+                <h4 class="mb-0 font-14 regular subTextColor">Address</h4>
+                <input type="text" class="input-field" placeholder="Enter address" />
+            </div>
+
+        </div>
+        <!-- Reg. Amount -->
+        <div class="col-md-6">
+            <div class="d-flex flex-column gap-1 w-100">
+                <h4 class="mb-0 font-14 regular subTextColor">Reg. Amount</h4>
+                <input type="text" class="input-field" placeholder="Enter reg. amount" />
+            </div>
+
+        </div>
+        <!-- select Type of service -->
+        <div class="col-md-6">
+            <div class="d-flex flex-column gap-1 w-100">
+                <h4 class="mb-0 font-14 regular subTextColor">Service</h4>
+                <div class="position-relative">
+                    <!-- Input field with chips -->
+                    <div class="input-field d-flex gap-2" onclick="toggleDropdown()" id="dropdown-input">
+                        <span id="chips-container" class="chips">
+                            <!-- Chips will be appended dynamically -->
+                        </span>
+                        <input type="text" placeholder="Type of service"
+                            style="border: none; outline: none; flex-grow: 1;cursor: pointer;" readonly />
+                        <img src="assets/images/svg/Arrow.svg" height="21">
+                    </div>
+
+                    <!-- Dropdown content -->
+                    <div id="dropdown-content" class="dropdown-content">
+                        <div class="d-flex flex-column gap-2">
+                            <label>
+                                AC Repair
+                                <input type="checkbox" value="AC Repair" onchange="updateChips(this)"
+                                    class="custom-checkbox" />
+                            </label>
+                            <label>
+                                Barber services
+                                <input type="checkbox" value="Barber services" onchange="updateChips(this)"
+                                    class="custom-checkbox" />
+                            </label>
+                            <label>
+                                Plumbing
+                                <input type="checkbox" value="Plumbing" onchange="updateChips(this)"
+                                    class="custom-checkbox" />
+                            </label>
+                            <label>
+                                Cleaning
+                                <input type="checkbox" value="Cleaning" onchange="updateChips(this)"
+                                    class="custom-checkbox" />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Button -->
+    <div class="d-flex justify-content-end gap-4">
+        <button type="button" class="secondary-button py-2 scalable-p-48-24">Cancel</button>
+        <button type="button" class="primary-button py-2 scalable-p-48-24">Save</button>
+    </div>
+
+</div>

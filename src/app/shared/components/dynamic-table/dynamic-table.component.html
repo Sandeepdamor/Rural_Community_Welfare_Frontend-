@@ -1,0 +1,210 @@
+<div class="mat-elevation-z8" tabindex="0">
+  <div class="table-responsive table_data">
+    <table mat-table [dataSource]="dataSource" matSort class="table-responsive cursor_pointer">
+
+      <!-- Dynamic Columns -->
+      @for (column of config.columns; track column) {
+      <ng-container [matColumnDef]="column.name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header
+          [class]="column.type === 'checkbox' ? 'Primarylight_background' : ''">
+          {{ column.displayName }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <!-- Render based on column type -->
+          @switch (column.type) {
+
+          @case ("image") {
+          <!-- Image column -->
+          <img [src]="element[column.name]" alt="Logo" style="width:40px; height: auto;">
+          }
+
+          @case ("status") {
+          <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status"
+            [style.backgroundColor]="element[column.name] ? '#edecf8' : 'rgba(255, 53, 53, 0.05)'"
+            [style.color]="element[column.name] ? '#4F46BB' : '#FF3535'">
+            {{ element[column.name] ? 'Active' : 'Deactive' }}
+            <img src="assets/images/svg/arrow-dropdown.svg" height="14" width="14"
+              [ngClass]="{ 'filter-active': element[column.name], 'filter-deactive': !element[column.name] }" />
+          </button>
+
+
+          <mat-menu #statusMenu="matMenu">
+            <button mat-menu-item (click)="changeStatus(element, true)">Active</button>
+            <button mat-menu-item (click)="changeStatus(element, false)">Deactive</button>
+          </mat-menu>
+          }
+
+          <!-- @case ("delete-status") {
+          <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status"
+            [style.backgroundColor]="element[column.name] ? '#edecf8' : 'rgba(255, 53, 53, 0.05)'"
+            [style.color]="element[column.name] ? '#4F46BB' : '#FF3535'">
+            {{ element[column.name] ? 'Blocked' : 'Unblock' }}
+            <img src="assets/images/svg/arrow-dropdown.svg" height="14" width="14"
+              [ngClass]="{ 'filter-active': element[column.name], 'filter-deactive': !element[column.name] }" />
+          </button>
+
+
+          <mat-menu #statusMenu="matMenu">
+            <button mat-menu-item (click)="changeIsDeletedStatus(element, true)">Blocked</button>
+            <button mat-menu-item (click)="changeIsDeletedStatus(element, false)">UnBlock</button>
+          </mat-menu>
+          } -->
+
+
+          @case ("aadharstatus") {
+          <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status" [style.backgroundColor]="
+                element[column.name] === 'VERIFIED' ? '#edecf8' :
+                element[column.name] === 'REJECTED' ? 'rgba(255, 53, 53, 0.05)' : '#F5F6FA'" [style.color]="
+                element[column.name] === 'VERIFIED' ? '#4F46BB' :
+                element[column.name] === 'REJECTED' ? '#FF3535' : '#515563'">
+            {{ element[column.name] }}
+            <img src="assets/images/svg/arrow-dropdown.svg" height="14" width="14" [ngClass]="{
+                  'filter-active': element[column.name] === 'VERIFIED',
+                  'filter-deactive': element[column.name] === 'REJECTED',
+                  'filter-temporary': element[column.name] === 'PENDING'
+                }" />
+          </button>
+
+          <mat-menu #statusMenu="matMenu">
+            <ng-container *ngIf="element[column.name] !== 'REJECTED'">
+              <button mat-menu-item (click)="changeAadharStatus(element, 'PENDING')">Pending</button>
+            </ng-container>
+            <button mat-menu-item (click)="changeAadharStatus(element, 'VERIFIED')">Verified</button>
+            <button mat-menu-item (click)="changeAadharStatus(element, 'REJECTED')">Rejected</button>
+          </mat-menu>
+          }
+
+          <!-- @case ("serial") {
+            <span>{{ getSerialNumber(element) }}</span>
+          } -->
+          @case ("text") {
+          <!-- Text column -->
+          <span>{{ element[column.name] }}</span>
+          }
+
+          @case ("documents") {
+          <!-- Text column -->
+          <span class="borderBottom cursor-pointer" data-bs-target="#createVendor" data-bs-toggle="modal">{{
+            element[column.name] }}</span>
+          }
+          @case ("toggle") {
+          <!-- Checkbox column -->
+          <div>
+            <label class="switch">
+              <input type="checkbox">
+              <span class="slider round"></span>
+            </label>
+          </div>
+          }
+
+
+          @case ("action") {
+          <div class="d-flex gap-3 align-items-center">
+
+            @if (config.actions?.includes('edit')) {
+            <button type="button" class="table_action_icon bgPrimaryLight" (click)="onAction('edit', element)">
+              <img src="assets/images/svg/edit.svg" />
+            </button>
+            }
+
+            @if (config.actions?.includes('delete')) {
+            <button type="button" class="table_action_icon bgRedLight" (click)="onAction('delete', element)">
+              <img src="assets/images/svg/delete.svg" />
+            </button>
+            }
+
+            @if (config.actions?.includes('view profile')) {
+            <button type="button" class="table_action_icon bgPrimaryLight" (click)="onAction('view profile', element)">
+              <img src="assets/images/svg/eye.svg" alt="View" />
+            </button>
+            }
+
+            <!-- @if(config.actions?.includes('manage-permission')) {
+            <h4 class="font-14 medium themeColor mb-0 cursor-pointer" [routerLink]="componentRoutes.MANAGEROLEADD">
+              Manage Permission
+            </h4>
+            } -->
+
+          </div>
+          }
+
+
+
+          @default {
+          <span>Unknown Type</span>
+          }
+          }
+        </td>
+      </ng-container>
+      }
+
+      <!-- Sticky Header -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <!-- Paginator -->
+  <!-- <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="pageChanged.emit($event)">
+  </mat-paginator> -->
+  <!-- <mat-paginator [length]="config.totalRecords ?? 0" [pageSize]="defaultPageSize" [pageSizeOptions]="pageSizeOptions"
+    showFirstLastButtons (page)="pageChanged.emit($event)">
+  </mat-paginator> -->
+  <mat-paginator [length]="config.totalRecords ?? 0" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
+    (page)="pageChanged.emit($event)">
+  </mat-paginator>
+
+
+</div>
+
+
+
+<!-- document modal -->
+<div class="modal fade" id="createVendor" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered large_modal">
+    <div class="modal-content">
+      <div class="modal-header border-0 justify-content-end">
+        <button type="button" style="background-color: transparent;border: 0;" data-bs-dismiss="modal"
+          aria-label="Close"><img src="assets/images/svg/modal-close.svg" height="40" width="40"
+            class="close-button"></button>
+      </div>
+      <div class="modal-body mb-5 border-0 modal-body-details">
+        <div id="carouselExampleControlsNoTouching" class="carousel slide" data-bs-touch="false">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <div class="d-flex justify-content-center">
+                <img src="assets/images/png/documents-modal-img.png" class="img-fluid" alt="...">
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div class="d-flex justify-content-center">
+                <img src="assets/images/png/documents-modal-img.png" class="img-fluid" alt="...">
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div class="d-flex justify-content-center">
+                <img src="assets/images/png/documents-modal-img.png" class="img-fluid" alt="...">
+              </div>
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControlsNoTouching"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"><img
+                src="assets/images/svg/rightArrow.svg"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <!-- <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControlsNoTouching"
+            data-bs-slide="next" (click)="nextPage()" [disabled]="isLastPage"> -->
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControlsNoTouching"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"><img
+                src="assets/images/svg/leftArrow.svg"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

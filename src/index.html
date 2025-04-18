@@ -1,13 +1,157 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
-  <title>RuralCommunityWelfare</title>
+  <title>Rural Community Welfare</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- CUSTOME CSS  -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <!-- BOOTSTRAP CSS  -->
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <!-- FONT CSS  -->
+  <link rel="stylesheet" href="assets/css/stylesheet.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
+<style>
+  /* / vendor document image remove icon / */
+  .document-item {
+    position: relative;
+    display: inline-block;
+    transition: background-color 0.3s;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .document-item:hover {
+    background-color: rgba(79, 70, 187, 0.1);
+  }
+
+  .remove-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+    display: none;
+    background-color: white;
+    border-radius: 50%;
+    padding: 2px;
+  }
+
+  .document-item:hover .remove-icon {
+    display: block;
+  }
+</style>
+
 <body>
   <app-root></app-root>
+  <!-- SCRIPTS LINKS -->
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/jquery.js"></script>
+
+  <!-- SIDEBAR collapsed -->
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('collapsed');
+    }
+  </script>
+
+  <!-- SERVICE DROPDOWN  -->
+  <script>
+    function toggleDropdown() {
+      const dropdown = document.getElementById("dropdown-content");
+      dropdown.style.display =
+        dropdown.style.display === "none" || dropdown.style.display === ""
+          ? "block"
+          : "none";
+    }
+
+    function updateChips(checkbox) {
+      const chipsContainer = document.getElementById("chips-container");
+      const chipValue = checkbox.value;
+
+      if (checkbox.checked) {
+        // Add chip
+        const chip = document.createElement("div");
+        chip.textContent = chipValue;
+        chip.style.cssText =
+          "background-color: #4F46BB1a; border-radius:4px; padding:4px 8px; display: flex; align-items: center; gap: 5px;white-space: nowrap; font-size: clamp(0.625rem, 0.6rem + 0.125vw, 0.75rem)";
+        chip.setAttribute("data-value", chipValue);
+        // Add remove button
+        const removeBtn = document.createElement("span");
+        removeBtn.textContent = "×";
+        removeBtn.className = "remove-icon";
+        removeBtn.style.cssText =
+          "cursor: pointer;background-color:#d9d9d9;border-radius:2px;height:12px;width:12px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#515563;margin-top:-24px;margin-right:-10px;";
+        removeBtn.onclick = () => {
+          checkbox.checked = false; // Uncheck the corresponding checkbox
+          chipsContainer.removeChild(chip); // Remove chip
+          grid.removeChild(div);
+        };
+
+        chip.appendChild(removeBtn);
+        chipsContainer.appendChild(chip);
+      } else {
+        // Remove chip
+        const chip = document.querySelector(`div[data-value="${chipValue}"]`);
+        if (chip) {
+          chipsContainer.removeChild(chip);
+        }
+      }
+    }
+
+  </script>
+
+  <!-- CHOOSE IMAGE -->
+  <script>
+    function previewDocuments(input) {
+      const grid = document.getElementById("documentGrid");
+
+      Array.from(input.files).forEach((file) => {
+        const reader = new FileReader();
+
+        reader.onload = (event) => {
+          const div = document.createElement("div");
+          div.className = "document-item";
+
+          const img = document.createElement("img");
+          img.src = event.target.result;
+          img.alt = file.name;
+          img.style.cssText =
+            "width: 100%; height: clamp(12.25rem, 5.5875rem + 6.3125vw, 9.5625rem); object-fit: cover; border-radius: 12px;";
+
+          const removeBtn = document.createElement("span");
+          removeBtn.textContent = "×";
+          removeBtn.className = "remove-icon";
+          removeBtn.style.cssText =
+            "background-color: #d9d9d9;cursor:pointer; border-radius: 50%; height: 20px; width: 20px;font-size: 17px;text-align: center; color: #515563;";
+
+          removeBtn.onclick = () => {
+            grid.removeChild(div); // Remove the entire document item
+          };
+
+          div.appendChild(img);
+          div.appendChild(removeBtn);
+          grid.appendChild(div);
+        };
+
+        reader.readAsDataURL(file);
+      });
+    }
+
+  </script>
+
+  <script>
+    function toggleSubmenu(button) {
+      const submenu = button.nextElementSibling;
+      submenu.classList.toggle('show');
+    }
+  </script>
+
 </body>
+
 </html>

@@ -1,0 +1,193 @@
+<!-- NAVBAR -->
+ 
+<div class="d-flex justify-content-between align-items-center mt-2">
+    <div class="d-flex gap-3 align-items-center">
+        <!-- TOGGLE BUTTON -->
+        <div class="iconBackground" onclick="toggleSidebar()">
+            <svg class="toggle-btn" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
+                fill="none">
+                <path class="fill-icon"
+                    d="M14.4936 1.56269H2.34333C1.04409 1.51308 1.04409 3.48792 2.34333 3.43831H14.4451C15.7208 3.48792 15.7704 1.56269 14.4947 1.56269H14.4936ZM2.34333 9.06283C1.09369 9.06283 1.09369 10.9373 2.34333 10.9373H9.19385C10.4695 10.9373 10.4695 9.06283 9.19385 9.06283H2.34333ZM2.34333 16.563C1.09369 16.563 1.09369 18.4374 2.34333 18.4374H17.6944C18.944 18.4374 18.944 16.563 17.6944 16.563H2.34333Z"
+                    fill="#4F46BB" />
+            </svg>
+        </div>
+        <h2 class="mb-0 font-24 semibold black">User Dashboard</h2>
+    </div>
+    <div class="d-flex gap-3 align-items-center">
+        <div>
+            <!-- NOTIFICATION -->
+            <div class="iconBackground" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                aria-controls="offcanvasRight">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <path class="stroke-icon"
+                        d="M8.5747 19.2499C9.22107 19.8204 10.0701 20.1666 11 20.1666C11.9299 20.1666 12.779 19.8204 13.4254 19.2499M16.5 7.33325C16.5 5.87456 15.9206 4.47561 14.8891 3.44416C13.8577 2.41271 12.4587 1.83325 11 1.83325C9.54135 1.83325 8.1424 2.41271 7.11095 3.44416C6.0795 4.47561 5.50004 5.87456 5.50004 7.33325C5.50004 10.1659 4.78547 12.1054 3.98723 13.3882C3.3139 14.4703 2.97724 15.0113 2.98959 15.1623C3.00325 15.3294 3.03866 15.3931 3.17333 15.493C3.29496 15.5833 3.84325 15.5833 4.93982 15.5833H17.0603C18.1568 15.5833 18.7051 15.5833 18.8267 15.493C18.9614 15.3931 18.9968 15.3294 19.0105 15.1623C19.0228 15.0113 18.6862 14.4703 18.0128 13.3882C17.2146 12.1054 16.5 10.1659 16.5 7.33325Z"
+                        stroke="#4F46BB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+
+        </div>
+        <!-- PROFILE DROPDOWN -->
+        <div>
+            <img src="assets/images/svg/profile.svg" width="42px" height="42px"
+                class="profileDropdown-img dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+            <div class="dropdown-menu profile-dropdown p-3 border-0 mt-2">
+
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-center gap-2 border-bottom pb-2">
+                        <img src="assets/images/svg/profile.svg" width="42px" height="42px">
+                        <div class="d-flex flex-column gap-1">
+                            <h2 class="font-14  medium mb-0">Rudra Rathod</h2>
+                            <h3 class="font-12 regular subTextColor mb-0">Admin</h3>
+                        </div>
+                    </div>
+
+                    <div class="border-bottom pb-2">
+        
+            <a  [routerLink]="'/profile'" class="d-flex align-items-center gap-2 p-2 themeLight rounded-1 cursor-pointer">
+                            <img src="assets/images/svg/profile-User.svg">
+                            <h3 class="font-12 regular black mb-0"> Profile </h3>
+                        </a>
+                        <div class="d-flex align-items-center gap-2 p-2 rounded-1 cursor-pointer">
+                            <img src="assets/images/svg/profile-setting.svg">
+                            <h3 class="font-12 regular black mb-0"> Setting </h3>
+                        </div>
+
+                    </div>
+
+                    <h4 class=" text-center font-14 medium mb-0 cursor-pointer" data-bs-target="#logout"
+                        data-bs-toggle="modal" style="color: #FF3535;">
+                        Logout</h4>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- LOGOUT -->
+<div class="modal fade" id="logout" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+    tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered small-modal">
+        <div class="modal-content p-4 rounded-4 gap-3 flex-row" style="border-left: 8px solid #FF3535;">
+            <img src="assets/images/svg/Logout-icon.svg" width="40px" height="40px">
+            <div class="d-flex flex-column gap-4">
+                <div class="d-flex flex-column gap-2">
+                    <h3 class="font-24 semibold black mb-0">Logout</h3>
+                    <h4 class="font-14 regular subTextColor mb-0">Are you sure you want to delete your account?</h4>
+                </div>
+                <div class="d-flex gap-3">
+                    <button class="font-16 subTextColor bold border-0 bg-transparent"
+                        data-bs-target="#exampleModalToggle2" data-bs-toggle="modal">No</button>
+                    <button class="font-16 themeColor bold border-0 bg-transparent"
+                        data-bs-target="#exampleModalToggle2" data-bs-toggle="modal" (click)="logout()">Yes, Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- NOTIFICATION CONTENT -->
+<div class="offcanvas offcanvas-end scalable-gap-24-16" tabindex="-1" id="offcanvasRight"
+    aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header p-0">
+        <h5 class="mb-0 font-18 semibold black">Notifications</h5>
+        <h6 class="mb-0 cursor-pointer font-14 medium themeColor" data-bs-dismiss="offcanvas" aria-label="Close">
+            Clear All</h6>
+    </div>
+    <div class="offcanvas-body p-0 d-flex flex-column gap-3">
+        <div class="d-flex align-items-center gap-3 border-bottom pb-3 cursor-pointer">
+            <img src="assets/images/svg/profile.svg">
+            <div class="d-flex flex-column gap-1">
+                <h3 class="font-16 medium black mb-0">Heading</h3>
+                <h4 class="font-14 regular subTextColor mb-0">Sub heading</h4>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-3 border-bottom pb-3 cursor-pointer">
+            <img src="assets/images/svg/profile.svg">
+            <div class="d-flex flex-column gap-1">
+                <h3 class="font-16 medium black mb-0">Heading</h3>
+                <h4 class="font-14 regular subTextColor mb-0">Sub heading</h4>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-3 border-bottom pb-3 cursor-pointer">
+            <img src="assets/images/svg/profile.svg">
+            <div class="d-flex flex-column gap-1">
+                <h3 class="font-16 medium black mb-0">Heading</h3>
+                <h4 class="font-14 regular subTextColor mb-0">Sub heading</h4>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-3 border-bottom pb-3 cursor-pointer">
+            <img src="assets/images/svg/profile.svg">
+            <div class="d-flex flex-column gap-1">
+                <h3 class="font-16 medium black mb-0">Heading</h3>
+                <h4 class="font-14 regular subTextColor mb-0">Sub heading</h4>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-3 border-bottom pb-3 cursor-pointer">
+            <img src="assets/images/svg/profile.svg">
+            <div class="d-flex flex-column gap-1">
+                <h3 class="font-16 medium black mb-0">Heading</h3>
+                <h4 class="font-14 regular subTextColor mb-0">Sub heading</h4>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-3 border-bottom pb-3 cursor-pointer">
+            <img src="assets/images/svg/profile.svg">
+            <div class="d-flex flex-column gap-1">
+                <h3 class="font-16 medium black mb-0">Heading</h3>
+                <h4 class="font-14 regular subTextColor mb-0">Sub heading</h4>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-3 border-bottom pb-3 cursor-pointer">
+            <img src="assets/images/svg/profile.svg">
+            <div class="d-flex flex-column gap-1">
+                <h3 class="font-16 medium black mb-0">Heading</h3>
+                <h4 class="font-14 regular subTextColor mb-0">Sub heading</h4>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-3 border-bottom pb-3 cursor-pointer">
+            <img src="assets/images/svg/profile.svg">
+            <div class="d-flex flex-column gap-1">
+                <h3 class="font-16 medium black mb-0">Heading</h3>
+                <h4 class="font-14 regular subTextColor mb-0">Sub heading</h4>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-3 border-bottom pb-3 cursor-pointer">
+            <img src="assets/images/svg/profile.svg">
+            <div class="d-flex flex-column gap-1">
+                <h3 class="font-16 medium black mb-0">Heading</h3>
+                <h4 class="font-14 regular subTextColor mb-0">Sub heading</h4>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-3 border-bottom pb-3 cursor-pointer">
+            <img src="assets/images/svg/profile.svg">
+            <div class="d-flex flex-column gap-1">
+                <h3 class="font-16 medium black mb-0">Heading</h3>
+                <h4 class="font-14 regular subTextColor mb-0">Sub heading</h4>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-3 border-bottom pb-3 cursor-pointer">
+            <img src="assets/images/svg/profile.svg">
+            <div class="d-flex flex-column gap-1">
+                <h3 class="font-16 medium black mb-0">Heading</h3>
+                <h4 class="font-14 regular subTextColor mb-0">Sub heading</h4>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-3 border-bottom pb-3 cursor-pointer">
+            <img src="assets/images/svg/profile.svg">
+            <div class="d-flex flex-column gap-1">
+                <h3 class="font-16 medium black mb-0">Heading</h3>
+                <h4 class="font-14 regular subTextColor mb-0">Sub heading</h4>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-3 border-bottom pb-3 cursor-pointer">
+            <img src="assets/images/svg/profile.svg">
+            <div class="d-flex flex-column gap-1">
+                <h3 class="font-16 medium black mb-0">Heading</h3>
+                <h4 class="font-14 regular subTextColor mb-0">Sub heading</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
