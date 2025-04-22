@@ -90,14 +90,15 @@ export class ResidentService {
 
     return this.http.get(`${this.apiUrl}/resident-filter-request`, { params });
   }
-
-
-
-
-
   getResidentById(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/getById`, {
       params: { id }
+    });
+  }
+
+  getResidentByMobile(mobile: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/get-by-mobile`, {
+      params: { mobile }
     });
   }
 

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { TokenService } from './token.service';
 import { Role } from '../../enums/role.enum';
+import { ComponentRoutes } from '../utils/component-routes';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +42,7 @@ export class AuthService {
   // Logout method
   logout(): void {
     this.tokenService.clearTokens();  // Use TokenService to remove token
-    this.router.navigate(['/login']);
+    this.router.navigate([ComponentRoutes.USERAUTH]);
   }
 
   // Verify OTP

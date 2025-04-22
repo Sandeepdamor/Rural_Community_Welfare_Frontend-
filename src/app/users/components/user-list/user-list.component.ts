@@ -4,7 +4,6 @@ import {
     Component,
     OnInit,
 } from '@angular/core';
-import { AddUserComponent } from '../add-user/add-user.component';
 import { Router, RouterLink } from '@angular/router';
 import { TableConfig } from '../../../shared/components/model/table-config';
 import { DynamicTableComponent } from '../../../shared/components/dynamic-table/dynamic-table.component';
@@ -12,7 +11,6 @@ import { ResidentService } from '../../../shared/services/resident.service';
 import { PaginationRequest } from '../../../shared/interfaces/pagination-request';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ComponentRoutes } from '../../../shared/utils/component-routes';
 import { ResidentFilter } from '../../../shared/interfaces/resident/resident-filter';
 import { ResidentSearch } from '../../../shared/interfaces/resident/resident-search';
 
@@ -77,7 +75,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
             { name: 'action', displayName: 'Action', type: 'action' },
         ],
         data: [],
-        actions: ['delete', 'view profile']
+        actions: ['edit','delete', 'view profile']
     };
 
     handlePageChange(event: { pageIndex: number, pageSize: number }) {
@@ -218,7 +216,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
                 break;
 
             case 'view profile':
-                this.router.navigate(['/user/profile', element.id]);
+                this.router.navigate(['/user/profile/resident', element.id]);
                 break;
 
             default:

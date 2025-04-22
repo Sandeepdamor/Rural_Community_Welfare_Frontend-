@@ -12,27 +12,29 @@ export const authGuard: CanActivateFn = (route, state) => {
   const isExpired = tokenService.isTokenExpired();
   const role = tokenService.getRoleFromToken();
   console.log('AUTH GUARD => Token:', token, 'Role:', role);
+  const cleanUrl = state.url.split('?')[0];
 
   // ✅ Allow unauthenticated users to access Login & Auth-related pages
   const publicRoutes = [
-    ComponentRoutes.USERAUTH, // '/login'
+    ComponentRoutes.USERAUTH, // '/auth'
+    ComponentRoutes.LOGIN, // '/login'
     ComponentRoutes.FORGOTPASSWORD, // '/forgot-password'
     ComponentRoutes.VERIFYOTP, // '/verify-otp'
     ComponentRoutes.NEWPASSWORD, // '/new-password'
   ];
+  const isPublic = cleanUrl.startsWith('/auth') && publicRoutes.some(route => cleanUrl === `/auth/${route}`);
 
   if (!token || isExpired) {
-    const isPublic = publicRoutes.includes(state.url.replace('/', ''));
-    if (isPublic || state.url === '/' || state.url === '') {
+    if (isPublic || state.url === '/' || state.url === '/auth' || state.url === '') {
       return true; // allow unauthenticated access to public/login
     }
-    router.navigate([ComponentRoutes.USERAUTH]);
+    setTimeout(() => router.navigate([ComponentRoutes.USERAUTH]));
     return false;
   }
 
 
   // ✅ If user is authenticated and visiting login path, redirect to dashboard
-  if (token && state.url.startsWith('/login')) {
+  if (token && cleanUrl.startsWith('/auth')) {
     console.log('User already logged in. Redirecting to dashboard...');
     router.navigate([`/${ComponentRoutes.DASHBOARD}`], { replaceUrl: true });
     return false;

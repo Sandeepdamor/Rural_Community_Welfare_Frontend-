@@ -6,7 +6,7 @@ import { GenderPipe } from './shared/pipes/gender.pipe';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,GenderPipe],
+  imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

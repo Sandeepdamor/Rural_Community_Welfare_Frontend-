@@ -18,25 +18,46 @@
             <!-- <li class="cursor-pointer" [routerLink]="'/user'" [ngClass]="{ 'active': isActiveRoute('/user') }"
                 id="user"> <img src="assets/images/svg/user.svg"><span class="menu-text singleLine">User</span></li> -->
 
-            <!-- User Dropdown -->
+            <!-- Resident Dropdown -->
             <!-- Parent item -->
             <li class="cursor-pointer dropdown-toggle" (click)="toggleUserMenu()" [class.active]="isUserMenuOpen">
                 <img src="assets/images/svg/user.svg">
-                <span class="menu-text singleLine">User</span>
+                <span class="menu-text singleLine">Resident</span>
             </li>
 
             <!-- Submenu -->
             <ul *ngIf="isUserMenuOpen" class="sub-menu">
                 <li [routerLink]="'/user/list'" routerLinkActive="active"><img
-                        src="assets/images/svg/user-list-icon.svg" alt="user-list-icon" class="white-icon" />User List
+                        src="assets/images/svg/user-list-icon.svg" alt="user-list-icon" class="white-icon" />Residents List
                 </li>
                 <li [routerLink]="'/user/delete-user-list'" routerLinkActive="active">
                     <img src="assets/images/svg/delete-user-icon.svg" alt="delete-user-icon"
-                        class="white-icon" />Deleted Users List
+                        class="white-icon" />Deleted Residents List
                 </li>
                 <li [routerLink]="'/user/aadhar-pending-list'" routerLinkActive="active"><img
                         src="assets/images/svg/pending-user-icon.svg" alt="pending-user-icon"
-                        class="white-icon" />Pending Users List</li>
+                        class="white-icon" />Pending Residents List</li>
+            </ul>
+
+             <!-- Sarpanch Dropdown -->
+            <!-- Parent item -->
+            <li class="cursor-pointer dropdown-toggle" (click)="toggleSarpanchMenu()" [class.active]="isSarpanchMenuOpen">
+                <img src="assets/images/svg/user.svg">
+                <span class="menu-text singleLine">Sarpanch</span>
+            </li>
+
+            <!-- Submenu -->
+            <ul *ngIf="isSarpanchMenuOpen" class="sub-menu">
+                <li [routerLink]="'/sarpanch/list'" routerLinkActive="active"><img
+                        src="assets/images/svg/user-list-icon.svg" alt="user-list-icon" class="white-icon" />Sarpanch List
+                </li>
+                <li [routerLink]="'/sarpanch/delete-list'" routerLinkActive="active">
+                    <img src="assets/images/svg/delete-user-icon.svg" alt="delete-user-icon"
+                        class="white-icon" />Deleted Sarpanch List
+                </li>
+                <!-- <li [routerLink]="'/user/aadhar-pending-list'" routerLinkActive="active"><img
+                        src="assets/images/svg/pending-user-icon.svg" alt="pending-user-icon"
+                        class="white-icon" />Pending Users List</li> -->
             </ul>
 
 

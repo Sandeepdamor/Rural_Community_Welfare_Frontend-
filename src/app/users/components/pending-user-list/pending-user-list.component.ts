@@ -13,7 +13,7 @@ import { GenderPipe } from '../../../shared/pipes/gender.pipe';
 
 @Component({
     selector: 'app-pending-user-list',
-    imports: [DynamicTableComponent, CommonModule, FormsModule, GenderPipe],
+    imports: [DynamicTableComponent, CommonModule, FormsModule],
     templateUrl: './pending-user-list.component.html',
     styleUrl: './pending-user-list.component.scss'
 })
@@ -209,7 +209,7 @@ export class PendingUserListComponent {
 
         switch (action) {
             case 'view profile':
-                this.router.navigate(['/user/profile', element.id]);
+                this.router.navigate(['/user/profile/resident', element.id]);
                 break;
 
             default:

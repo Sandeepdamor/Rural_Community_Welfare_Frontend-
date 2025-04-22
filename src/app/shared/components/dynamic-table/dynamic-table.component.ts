@@ -10,12 +10,9 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { SortDirection } from '@angular/material/sort';
-import { merge, Observable, of as observableOf } from 'rxjs';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+
 import { MatTableModule } from '@angular/material/table';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 import { CommonModule, DatePipe, NgClass } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableDataSource, } from '@angular/material/table';
@@ -29,12 +26,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
 import { RoleListComponent } from '../../../manage-roles/components/role-list/role-list.component';
-import { Router, RouterLink } from '@angular/router';
 import { ComponentRoutes } from '../../utils/component-routes';
 import {
   MatSlideToggleModule,
 } from '@angular/material/slide-toggle';
-import { GenderPipe } from '../../pipes/gender.pipe';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-dynamic-table',
@@ -59,7 +56,7 @@ import { GenderPipe } from '../../pipes/gender.pipe';
   styleUrls: ['./dynamic-table.component.scss'],
 })
 export class DynamicTableComponent implements AfterViewInit, OnChanges {
-  constructor(private router: Router){ }
+  constructor(private router: Router) { }
   componentRoutes = ComponentRoutes;
   isLastPage: boolean = false;
   toggleDropdown() {
@@ -69,10 +66,10 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
   @Input() isRoleTable!: RoleListComponent;
   dataSource!: MatTableDataSource<any>;
   selection = new SelectionModel<any>(true, []);
-  
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  
+
   displayedColumns: string[] = [];
   pageSizeOptions = [5, 10, 20]; // Define page size options here
   defaultPageSize = 5; // Default items per page
@@ -94,7 +91,7 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
   ngOnInit(): void {
     this.dataSource = new MatTableDataSource(this.config.data);
     this.displayedColumns = this.config.columns.map((col) => col.name);
-    
+
     // Debug logs
     console.log('Initial Data:', this.config.data);
     console.log('Total Records:', this.config.totalRecords);
@@ -111,7 +108,7 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
   changeAadharStatus(element: any, newStatus: string) {
     this.aadharStatusChanged.emit({ id: element.id, aadharVerificationStatus: newStatus });
   }
-  
+
 
   // getSerialNumber(row: any): number {
   //   const index = this.dataSource?.data.indexOf(row);
@@ -145,8 +142,8 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
     this.actionClicked.emit({ action, element });
   }
 
-  
-  
+
+
 
   checkboxLabel(row?: any): string {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row`;

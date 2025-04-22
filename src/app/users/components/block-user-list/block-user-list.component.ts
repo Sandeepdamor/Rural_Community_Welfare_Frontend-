@@ -177,7 +177,7 @@ export class BlockUserListComponent {
 
     switch (action) {
         case 'view profile':
-            this.router.navigate(['/user/profile', element.id]);
+            this.router.navigate(['/user/profile/resident', element.id]);
             break;
 
         default:

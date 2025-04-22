@@ -1,0 +1,131 @@
+<!-- profile Image -->
+<div class="position-relative">
+    <img src="assets/images/png/profile-background.png" alt="profile-background"
+        class="img-fluid w-100 profileEdit-img">
+    <label for="file-input">
+        <img src="assets/images/svg/profile.svg" class="choose-File object-fit-cover rounded-circle img-fluid">
+    </label>
+    <input type="file" id="file-input" style="display: none;" accept="image/*" [disabled]="isViewOnly" />
+</div>
+
+<div class="profile-container d-flex flex-column">
+    <!-- profile Details -->
+    <div class="d-flex flex-column gap-2">
+        <h3>
+            {{ data.name | gender: data.gender }}
+            <span class="role-label">SARPANCH</span>
+        </h3>
+        <!-- <h4 class="font-14 regular black mb-0">{{ resident.phone }}</h4> -->
+    </div>
+
+    <!-- Tabs Content -->
+    <div class="tab-content" id="pills-tabContent">
+        <!-- Edit Profile Content -->
+        <div class="tab-pane fade show active" id="pills-EditProfile" role="tabpanel"
+            aria-labelledby="pills-EditProfile-tab" tabindex="0">
+            <div class="d-flex flex-column scalable-gap-24-16">
+                <div class="d-flex flex-column gap-1 w-100">
+                    <!-- <h4 class="mb-0 font-14 regular subTextColor" >Id</h4> -->
+                    <input type="text" class="input-field" [(ngModel)]="data.id" [disabled]="isViewOnly" hidden />
+                </div>
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">Name</h4>
+                    <input type="text" class="input-field" placeholder="Enter Resident Name" [(ngModel)]="data.name"
+                        [disabled]="isViewOnly" />
+                </div>
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">Father/Husband Name</h4>
+                    <input type="text" class="input-field" placeholder="Enter Resident Father/Husband Name"
+                        [(ngModel)]="data.fatherOrHusbandName" [disabled]="isViewOnly" />
+                </div>
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">Mobile no.</h4>
+                    <input type="text" class="input-field" placeholder="Enter phone no." [(ngModel)]="data.phone"
+                        [disabled]="isViewOnly" readonly />
+                </div>
+                <div class="d-flex flex-column gap-1 w-100" *ngIf=" !isViewOnly || data.email">
+                    <h4 class="mb-0 font-14 regular subTextColor">Email</h4>
+                    <input type="text" class="input-field" placeholder="Enter Email" [(ngModel)]="data.email"
+                        [disabled]="isViewOnly" />
+                </div>
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">Aadhar Number</h4>
+                    <input type="text" class="input-field" placeholder="Enter Aadhar Number"
+                        [(ngModel)]="data.aadharNumber" [disabled]="isViewOnly" />
+                </div>
+                <div class="d-flex flex-column gap-1 w-100" *ngIf="!isViewOnly || data.age">
+                    <h4 class="mb-0 font-14 regular subTextColor">Age</h4>
+                    <input type="number" class="input-field" placeholder="Enter Age" [(ngModel)]="data.age"
+                        [disabled]="isViewOnly" />
+                </div>
+                <div class="d-flex flex-column gap-1 w-100" *ngIf="!isViewOnly || data.dateOfBirth">
+                    <h4 class="mb-0 font-14 regular subTextColor">Date of Birth</h4>
+                    <input type="date" class="input-field" placeholder="Enter Date of Birth"
+                        [(ngModel)]="data.dateOfBirth" [disabled]="isViewOnly" />
+                </div>
+
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">Gender</h4>
+                    <input type="text" class="input-field" placeholder="Enter Age" [(ngModel)]="data.gender"
+                        [disabled]="isViewOnly" />
+                </div>
+
+                <div class="d-flex flex-column gap-1 w-100" *ngIf="!isViewOnly || data.houseNumber">
+                    <h4 class="mb-0 font-14 regular subTextColor">House Number</h4>
+                    <input type="text" class="input-field" placeholder="Enter House Number"
+                        [(ngModel)]="data.houseNumber" [disabled]="isViewOnly" />
+                </div>
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">Personal Address</h4>
+                    <input type="text" class="input-field" placeholder="Enter Address" [value]="formattedAddress"
+                        [disabled]="isViewOnly" />
+                </div>
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">Gram Panchayat Namer</h4>
+                    <input type="text" class="input-field" placeholder="Enter Gram Panchayat Name"
+                        [(ngModel)]="data.gramPanchayatName" [disabled]="isViewOnly" readonly />
+                </div>
+                <!-- <div class="d-flex flex-column gap-1 w-100" *ngIf="formattedAssignedVillages.length > 0">
+                    <h4 class="mb-0 font-14 regular subTextColor">Assigned Villages</h4>
+                    <input type="text" class="input-field"  [value]="formattedAssignedVillages.join(', ')"
+                        [disabled]="isViewOnly" readonly />
+                </div> -->
+
+                <div class="d-flex flex-column gap-1 w-100" *ngIf="formattedAssignedVillages.length > 0">
+                    <h4 class="mb-0 font-14 regular subTextColor">Assigned Villages</h4>
+                    <div class="scrollable-box" *ngIf="formattedAssignedVillages.length">
+                        <div *ngFor="let village of formattedAssignedVillages" class="village-item">
+                            <input type="text" class="input-field" [value]="village" [disabled]="isViewOnly" readonly />
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">Election Year</h4>
+                    <input type="text" class="input-field" placeholder="Enter Election Year"
+                        [(ngModel)]="data.electionYear" [disabled]="isViewOnly" readonly />
+                </div>
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">Term Start Date</h4>
+                    <input type="text" class="input-field" placeholder="Enter Term Start Date"
+                        [(ngModel)]="data.termStartDate" [disabled]="isViewOnly" readonly />
+                </div>
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">Term End Date</h4>
+                    <input type="text" class="input-field" placeholder="Enter Term End Date"
+                        [(ngModel)]="data.termEndDate" [disabled]="isViewOnly" readonly />
+                </div>
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">Create Date</h4>
+                    <input type="text" class="input-field" [value]="data.createdAt | date: 'dd MMM yyyy, h:mm a'"
+                        [disabled]="isViewOnly" readonly />
+                </div>
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">Last Updated Date</h4>
+                    <input type="text" class="input-field" [value]="data.updatedAt | date: 'dd MMM yyyy, h:mm a'"
+                        [disabled]="isViewOnly" readonly />
+                </div>
+            </div>
+        </div>
+    </div>

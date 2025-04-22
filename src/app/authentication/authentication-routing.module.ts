@@ -8,16 +8,20 @@ import { NewPasswordComponent } from './components/new-password/new-password.com
 import { OtpVerificationComponent } from './components/otp-verification/otp-verification.component';
 import { authGuard } from '../guards/auth.guard';
 import { AadhaarVerificationComponent } from './components/aadhaar-verification/aadhaar-verification.component';
-import { DashboardComponent } from '../dashboard/components/dashboard/dashboard.component';
 const routes: Routes = [
   {
     path: '',
     component: AuthenticationComponent,
+    canActivate: [authGuard],
     children: [
       {
-        path: '',  // ✅ Set LoginComponent as the default child route
+        path: '',
         component: LoginComponent,
-        canActivate: [authGuard]
+        pathMatch: 'full',
+      },
+      {
+        path: ComponentRoutes.LOGIN,  // ✅ Set LoginComponent as the default child route
+        component: LoginComponent,
       },
       {
         path: ComponentRoutes.FORGOTPASSWORD,

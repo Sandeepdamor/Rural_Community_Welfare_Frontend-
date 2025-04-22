@@ -165,6 +165,7 @@ export class OtpVerificationComponent {
 
     this.authService.resendOtp().subscribe(
       (response) => {
+        this.tokenService.saveAuthToken(response.response.token);
         alert('A new OTP has been sent to your mobile number.');
         this.sendotp = response.response.otp;
         this.isOtpExpired = false;

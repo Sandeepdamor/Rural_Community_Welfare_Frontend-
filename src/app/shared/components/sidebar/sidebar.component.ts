@@ -18,12 +18,18 @@ import {
 export class SidebarComponent implements OnInit {
   currentRoute: string | undefined;
   isUserMenuOpen = false;
+  isSarpanchMenuOpen = false;
 
   constructor(private router: Router, private route: ActivatedRoute) {}
 
   toggleUserMenu() {
     this.isUserMenuOpen = !this.isUserMenuOpen;
   }
+  toggleSarpanchMenu() {
+    this.isSarpanchMenuOpen = !this.isSarpanchMenuOpen;
+  }
+
+
 
   ngOnInit(): void {
     // Set current route on component initialization

@@ -77,8 +77,10 @@ export class NewPasswordComponent {
   }
   redirectToDashboard(userRole: string | null) {
     console.log('Role => ', userRole);
-    if (userRole)
+    if (userRole) {
+      this.tokenService.clearAuthTokens();
       this.router.navigate([ComponentRoutes.DASHBOARD]);
+    }
     else
       this.router.navigate([ComponentRoutes.LOGIN]); // Redirect to login if role is unknown
   }

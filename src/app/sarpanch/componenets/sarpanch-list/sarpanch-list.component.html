@@ -1,0 +1,26 @@
+<div class="d-flex flex-column gap-3 h-100" (click)="closeFilterIfClickedOutside($event)">
+
+  <!-- Button -->
+  <div class="d-flex justify-content-end">
+    <button class="primary-button p-8-12  d-flex align-items-center gap-2" [routerLink]="'/sarpanch/add'">
+      <div class="plus_icon">
+        <img src="assets/images/svg/plus-icon.svg" height="12" width="12">
+      </div>
+      Add Sarpanch
+    </button>
+  </div>
+  <!-- ⏳ Loader (Bonus Tip) -->
+  <div *ngIf="isLoading" class="text-center">
+    <p>Loading...</p>
+  </div>
+
+  <!-- 📋 Table -->
+  <app-dynamic-table *ngIf="!isLoading && agencyTableConfig.data.length > 0" [config]="agencyTableConfig"
+    (actionClicked)="onAction($event.action, $event.element)">
+  </app-dynamic-table>
+
+  <!-- ❌ No Data Message -->
+  <p *ngIf="!isLoading && agencyTableConfig.data.length === 0" class="text-center mt-3 text-danger">
+    No Data Found
+  </p>
+</div>

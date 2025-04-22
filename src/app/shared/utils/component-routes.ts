@@ -1,34 +1,52 @@
-export const ComponentRoutes = {
-  LANDING_PAGE:'landing-page',
-  NOTFOUND:'not-found',
-  DASHBOARD: 'dashboard',
-  USERAUTH: 'login',
-  LOGIN: '',
-  ADMIN_LOGIN: 'admin-login',
-  FORGOTPASSWORD: 'forgot-password',
-  VERIFYOTP: 'verify-otp',
-  VERIFY_AADHAR : 'verify-aadhar',
-  NEWPASSWORD: 'new-password',
-  HOME: '',
-  USER: 'user',
-  USERLIST: 'list',
-  USERADD: 'add',
-  AADHAR_PENDING_USER: 'aadhar-pending-list',
-  DELETEUSERLIST: 'delete-user-list',
-  CUSTOMER: 'customer',
-  CUSTOMERLIST: 'list',
-  CUSTOMERADD: 'add',
-  VENDOR: 'vendor',
-  VENDORLIST: 'list',
-  VENDORADD: 'add',
-  MANAGEROLE: 'managerole',
-  MANAGEROLELIST: 'list',
-  MANAGEROLEADD: 'add',
-  SERVICECETEGORY: 'serviceCategory',
-  SERVICECETEGORYLIST: 'list',
-  SERVICECETEGORYADD: 'add',
-  BOOKING: 'booking',
-  BOOKINGLIST: 'list',
-  BOOKINGADD: 'add',
-  PROFILE: 'profile',
-};
+export class ComponentRoutes {
+  // General
+  static LANDING_PAGE = 'landing-page';
+  static NOTFOUND = 'not-found';
+  static DASHBOARD = 'dashboard';
+  static USERAUTH = 'auth';
+  static LOGIN = 'login';
+  static ADMIN_LOGIN = 'admin-login';
+  static FORGOTPASSWORD = 'forgot-password';
+  static VERIFYOTP = 'verify-otp';
+  static VERIFY_AADHAR = 'verify-aadhar';
+  static NEWPASSWORD = 'new-password';
+  static HOME = '';
+  static PROFILE = 'profile';
+
+  // Resident
+  static USER = 'user';
+  static USERLIST = 'list';
+  static USERADD = 'add';
+  static AADHAR_PENDING_USER = 'aadhar-pending-list';
+  static DELETEUSERLIST = 'delete-user-list';
+
+  // Sarpanch
+  static SARPANCH = 'sarpanch';
+  static SARPANCHLIST = 'list';
+  static SARPANCHADD = 'add';
+
+  // Customer
+  static CUSTOMER = 'customer';
+  static CUSTOMERLIST = 'list';
+  static CUSTOMERADD = 'add';
+
+  // Vendor
+  static VENDOR = 'vendor';
+  static VENDORLIST = 'list';
+  static VENDORADD = 'add';
+
+  // Manage Role
+  static MANAGEROLE = 'managerole';
+  static MANAGEROLELIST = 'list';
+  static MANAGEROLEADD = 'add';
+
+  // Service Category
+  static SERVICECETEGORY = 'serviceCategory';
+  static SERVICECETEGORYLIST = 'list';
+  static SERVICECETEGORYADD = 'add';
+
+  // Booking
+  static BOOKING = 'booking';
+  static BOOKINGLIST = 'list';
+  static BOOKINGADD = 'add';
+}

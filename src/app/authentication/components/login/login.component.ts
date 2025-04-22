@@ -48,6 +48,7 @@ export class LoginComponent {
       console.log('Mobile Number:', this.mobileNumber);
       console.log('OTP:', this.otp);
     });
+    this.tokenService.clearAuthTokens();
   }
 
 
@@ -262,6 +263,6 @@ export class LoginComponent {
 
   onForgotPassword() {
     // Redirect to Forgot Password page
-    this.router.navigate([ComponentRoutes.FORGOTPASSWORD], { relativeTo: this.route });
+    this.router.navigate(['../',ComponentRoutes.FORGOTPASSWORD], { relativeTo: this.route });
   }
 }

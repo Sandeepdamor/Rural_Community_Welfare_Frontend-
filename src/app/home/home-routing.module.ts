@@ -24,6 +24,17 @@ const routes: Routes = [
           import('../users/users.module').then((m) => m.UsersModule),
       },
       {
+        path: ComponentRoutes.PROFILE,
+        loadChildren: () =>
+          import('../profile/profile.module').then((m) => m.ProfileModule),
+      },
+      {
+        path: ComponentRoutes.SARPANCH,
+        loadChildren: () =>
+          import('../sarpanch/sarpanch.module').then((m) => m.SarpanchModule),
+      },
+
+      {
         path: ComponentRoutes.CUSTOMER,
         loadChildren: () =>
           import('../customer/customer.module').then((m) => m.CustomerModule),
@@ -48,11 +59,7 @@ const routes: Routes = [
         loadChildren: () =>
           import('../booking/booking.module').then((m) => m.BookingModule),
       },
-      {
-        path: ComponentRoutes.PROFILE,
-        loadChildren: () =>
-          import('../profile/profile.module').then((m) => m.ProfileModule),
-      },
+      
     ]
   }
  

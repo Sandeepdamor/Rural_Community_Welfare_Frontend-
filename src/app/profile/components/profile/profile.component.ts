@@ -2,95 +2,83 @@ import { Component, OnInit } from '@angular/core';
 import { ResidentResponse } from '../../../shared/interfaces/resident/resident-response';
 import { ResidentService } from '../../../shared/services/resident.service';
 import { ActivatedRoute } from '@angular/router';
-import { Role } from '../../../enums/role.enum';
 import { AuthService } from '../../../shared/services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule, Location } from '@angular/common';
-import { GenderPipe } from '../../../shared/pipes/gender.pipe';
+import { SarpanchService } from '../../../shared/services/sarpanch.service';
+import { SarpanchResponse } from '../../../shared/interfaces/sarpanch/sarpanch-response';
+import { TokenService } from '../../../shared/services/token.service';
+import { ResidentProfileComponent } from '../resident-profile/resident-profile.component';
+import { SarpanchProfileComponent } from '../sarpanch-profile/sarpanch-profile.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [FormsModule,CommonModule,GenderPipe],
+  imports: [FormsModule, CommonModule,ResidentProfileComponent, SarpanchProfileComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
 export class ProfileComponent implements OnInit {
   isDataLoaded = false;
-  resident: ResidentResponse = {
-    id: '',
-    name: '',
-    email: '',
-    phone: '',
-    age: null,
-    gender: '',
-    aadharNumber: '',
-    aadharVerificationStatus: '',
-    address: {
-      country: '',
-      state: '',
-      district: '',
-      block: '',
-      city: '',
-      villageName: '',
-      postOffice: '',
-    },
-    houseNumber: '',
-    // appliedSchemes: Scheme[]; // Assuming Scheme is a defined interface/model
-    isDeleted: null,
-    isActive: null,
-    createdAt: '', // Use string if it's serialized as ISO date from backend
-    updatedAt: '',
-  };
+  userType: string = '';
   isViewOnly: boolean = true;
+
+  // Hold separately the two models
+  resident!: ResidentResponse;
+  sarpanch!: SarpanchResponse;
+
   constructor(
     private residentService: ResidentService,
+    private sarpanchService: SarpanchService,
     private route: ActivatedRoute,
     private authService: AuthService,
-    private location: Location
+    private location: Location,
+    private tokenService: TokenService
   ) { }
 
   ngOnInit(): void {
-    const residentId = this.route.snapshot.paramMap.get('id'); // Get the ID from the URL
-    if (residentId) {
-      this.residentService.getResidentById(residentId).subscribe(
-        (response) => {
-          console.log('RESPONSE => ', response);
-          this.resident = response.response; // Assign the fetched data to the resident variable
+    const userId = this.route.snapshot.paramMap.get('id'); // Profile ID
+    const type = this.route.snapshot.paramMap.get('type');   // "resident" or "sarpanch"
+    this.userType = type ?? '';
+    if (userId && this.userType) {
+      if (this.userType === 'resident') {
+        this.residentService.getResidentById(userId).subscribe(response => {
+          this.resident = response.response;
+          console.log('RESIDENT PROFILE => ',this.resident);
+
           this.isDataLoaded = true;
-          console.log('RESIDENT IN PROFILE => ', this.resident)
+
+          const mobile = this.tokenService.getMobileNumberFromAccessToken();
           const role = this.authService.getLoggedInUserRole();
-          this.isViewOnly = role !== Role.RESIDENT;
-        },
-        (error) => {
-          console.error('Error fetching user details:', error);
-        }
-      );
+
+          if (mobile) {
+            this.residentService.getResidentByMobile(mobile).subscribe({
+              next: (res) => {
+                const loggedInUserId = res?.response?.id;
+                this.isViewOnly = (role !== 'RESIDENT') || (userId !== loggedInUserId);
+              },
+              error: (err) => {
+                console.error('Error fetching resident by mobile:', err);
+                this.isViewOnly = true;
+              }
+            });
+          } else {
+            this.isViewOnly = true;
+          }
+        });
+      } else if (this.userType === 'sarpanch') {
+        this.sarpanchService.getSarpanchById(userId).subscribe(response => {
+          this.sarpanch = response.response;
+          console.log('SARPANCH PROFILE => ',this.sarpanch);
+          this.isDataLoaded = true;
+          // For sarpanch profiles, set view-only mode.
+          this.isViewOnly = true;
+        });
+      }
     }
   }
 
-  goBack() {
+  goBack(): void {
     this.location.back();
   }
-  
-
-  get formattedAddress(): string {
-    const addr = this.resident.address;
-    return `${addr.villageName || ''}, ${addr.postOffice || ''}, ${addr.block || ''}, ${addr.district || ''}, ${addr.state || ''}, ${addr.country || ''} - ${addr.city || ''}`;
-  }
-
-  // Method to update the profile
-  updateProfile(): void {
-    if (!this.isViewOnly) {
-      // this.residentService.updateResident(this.resident).subscribe(
-      //   (response) => {
-      //     console.log('Profile updated successfully', response);
-      //   },
-      //   (error) => {
-      //     console.error('Error updating profile:', error);
-      //   }
-      // );
-    }
-  }
-
 }

@@ -16,8 +16,6 @@ import { GenderPipe } from '../shared/pipes/gender.pipe';
     UsersRoutingModule,
     MatPaginatorModule,
     GenderPipe
-    
-    
   ]
 })
 export class UsersModule { }
