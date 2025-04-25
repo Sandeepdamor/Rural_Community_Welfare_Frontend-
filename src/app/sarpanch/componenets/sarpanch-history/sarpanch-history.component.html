@@ -1,0 +1,16 @@
+<div class="d-flex flex-column gap-3 h-100" (click)="closeFilterIfClickedOutside($event)">
+    <!-- ⏳ Loader (Bonus Tip) -->
+    <div *ngIf="isLoading" class="text-center">
+      <p>Loading...</p>
+    </div>
+  
+    <!-- 📋 Table -->
+    <app-dynamic-table *ngIf="!isLoading && agencyTableConfig.data.length > 0" [config]="agencyTableConfig"
+      (actionClicked)="onAction($event.action, $event.element)">
+    </app-dynamic-table>
+  
+    <!-- ❌ No Data Message -->
+    <p *ngIf="!isLoading && agencyTableConfig.data.length === 0" class="text-center mt-3 text-danger">
+      No Data Found
+    </p>
+  </div>

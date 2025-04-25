@@ -15,6 +15,8 @@ import { Address } from '../../../shared/interfaces/address/address';
 export class SarpanchProfileComponent {
   @Input() data!: SarpanchResponse;
   @Input() isViewOnly: boolean = true;
+  @Input() isDeleted: boolean = true;
+
 
   get formattedAddress(): string {
     const addr = this.data.address;
@@ -28,6 +30,6 @@ export class SarpanchProfileComponent {
   get formattedAssignedVillages(): string[] {
     return this.data?.villages?.map(v => this.formatAddress(v)) || [];
   }
-  
-  
+
+
 }

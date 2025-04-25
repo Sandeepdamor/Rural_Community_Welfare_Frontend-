@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>{{ data.title || 'Message' }}</h2>
+<mat-dialog-content>
+    <div *ngIf="data.type === 'success'" class="message-container success-message">
+        <mat-icon class="success-icon">check_circle</mat-icon>
+        <p>{{ data.message }}</p>
+    </div>
+
+    <div *ngIf="data.type === 'error'" class="message-container error-message">
+        <mat-icon class="error-icon">error</mat-icon>
+        <p>{{ data.message }}</p>
+    </div>
+
+    <div *ngIf="data.type === 'info'" class="message-container info-message">
+        <mat-icon class="info-icon">info</mat-icon>
+        <p>{{ data.message }}</p>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+
+    <button mat-button (click)="onClose()">Close</button>
+</mat-dialog-actions>

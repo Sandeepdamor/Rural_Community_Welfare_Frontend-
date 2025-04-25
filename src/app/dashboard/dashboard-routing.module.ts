@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { ComponentRoutes } from '../shared/utils/component-routes';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 
-
 const routes: Routes = [
   {
     path:ComponentRoutes.HOME,
@@ -15,8 +14,6 @@ const routes: Routes = [
     component: DashboardComponent,
 
   }
-
-
 ];
 @NgModule({
   imports: [RouterModule.forChild(routes)],

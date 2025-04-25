@@ -7,10 +7,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SarpanchService } from '../../../shared/services/sarpanch.service';
 import { ComponentRoutes } from '../../../shared/utils/component-routes';
+import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-sarpanch-list',
-  imports: [DynamicTableComponent, CommonModule, FormsModule,RouterLink],
+  imports: [DynamicTableComponent, CommonModule, FormsModule, RouterLink],
   templateUrl: './sarpanch-list.component.html',
   styleUrl: './sarpanch-list.component.scss'
 })
@@ -18,7 +21,9 @@ export class SarpanchListComponent implements OnInit, AfterViewInit {
   constructor(
     private changeDetection: ChangeDetectorRef,
     private sarpanchService: SarpanchService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog,
+    private toastService: ToastService
   ) { }
   currentPaginationRequest: PaginationRequest = {
     pageNumber: 1,
@@ -40,6 +45,7 @@ export class SarpanchListComponent implements OnInit, AfterViewInit {
   agencyTableConfig: TableConfig = {
     columns: [
       { name: 'name', displayName: 'Full Name', type: 'text' },
+      { name: 'fatherOrHusbandName', displayName: 'Father/Husband Name', type: 'text' },
       { name: 'mobile', displayName: 'Phone Number', type: 'text' },
       { name: 'aadharNumber', displayName: 'Aadhar Number', type: 'text' },
       { name: 'address', displayName: 'Personal Address', type: 'text' },
@@ -97,9 +103,19 @@ export class SarpanchListComponent implements OnInit, AfterViewInit {
 
       case 'delete':
         // Confirm deletion and proceed if confirmed
-        if (confirm('Are you sure you want to delete this Sarpanch?')) {
-          this.delete(element.id);
-        }
+        // Open the confirmation dialog
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+          data: {
+            title: 'Confirm Deletion',
+            message: `Are you sure you want to delete this item?`
+          }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.delete(element.id);
+          }
+        });
         break;
 
       case 'view profile':
@@ -114,16 +130,18 @@ export class SarpanchListComponent implements OnInit, AfterViewInit {
   delete(sarpanchId: string): void {
     this.sarpanchService.deleteSarpanch(sarpanchId).subscribe({
       next: (response) => {
-        alert(response.message); // Show backend response message
+        // Show success message using ToastService
+        this.toastService.showSuccess(response.message);
         // Refresh the table data after successful deletion
         this.loadSarpanch(this.currentPaginationRequest);
       },
       error: (error) => {
         console.error('Error deleting Sarpanch:', error);
-        alert(error.message);
+        // Show error message using ToastService
+        this.toastService.showError(error.message || 'Something went wrong');
       }
     });
   }
 
-  
+
 }

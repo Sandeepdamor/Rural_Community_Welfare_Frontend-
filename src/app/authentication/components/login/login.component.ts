@@ -176,7 +176,7 @@ export class LoginComponent {
             alert(res.message);
           }
           if (res.message === 'You have not completed Aadhaar verification. Please verify your Aadhaar to proceed with login.') {
-            this.router.navigate([ComponentRoutes.VERIFY_AADHAR], {
+            this.router.navigate(['../',ComponentRoutes.VERIFY_AADHAR], {
               relativeTo: this.route
             });
             return;
@@ -190,7 +190,7 @@ export class LoginComponent {
 
 
           // Redirect to Verify OTP page
-          this.router.navigate([ComponentRoutes.VERIFYOTP], {
+          this.router.navigate(['../',ComponentRoutes.VERIFYOTP], {
             relativeTo: this.route,
             queryParams: {
               mobileNumber: this.tokenService.getMobileNumberFromAuthToken(),
@@ -233,7 +233,7 @@ export class LoginComponent {
 
           console.log('Mobile Number => ', this.tokenService.getMobileNumberFromAuthToken())
           // Redirect to Verify OTP page
-          this.router.navigate([ComponentRoutes.VERIFYOTP], {
+          this.router.navigate(['../',ComponentRoutes.VERIFYOTP], {
             relativeTo: this.route,
             queryParams: {
               mobileNumber: this.tokenService.getMobileNumberFromAuthToken(),

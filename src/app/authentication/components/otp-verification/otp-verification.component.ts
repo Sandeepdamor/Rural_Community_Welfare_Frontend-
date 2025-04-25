@@ -77,6 +77,17 @@ export class OtpVerificationComponent {
       (response) => {
         console.log('Token In Verify Otp => ', response);
         if (response.response) {
+          console.log("RESIDENT REGISTER OTP TOKEN=> ", response.response);
+          if (response.message === 'Resident successfully verify, Please Proceed to Aadhar Verification.: ' || response.message === 'Resident successfully verify, Please Proceed to Aadhar Verification.: No Sarpanch has been assigned to this village yet. A Sarpanch will be appointed soon.') {
+            this.tokenService.saveAuthToken(response.response)
+            // OTP verified for User Registeration → Redirect to Aadhar Verification page
+            this.router.navigate(['../', ComponentRoutes.VERIFY_AADHAR], {
+              relativeTo: this.route,
+              queryParams: { mobileNumber: this.mobileNumber }
+            });
+            return;
+          }
+
           // Save the token received from the response
           this.tokenService.saveAccessToken(response.response);
           console.log('Access Token Saved response.response:', response.response);
@@ -104,21 +115,13 @@ export class OtpVerificationComponent {
             relativeTo: this.route,
             queryParams: { mobileNumber: this.mobileNumber }
           });
-        } 
+        }
         else if (response.message === 'User successfully Login') {
           // OTP verified for User Registeration → Redirect to Dashboard
           console.log('ADMIN DAHBOARD ');
           this.tokenService.clearAuthTokens();
           this.router.navigate([`/${ComponentRoutes.DASHBOARD}`]);
           // return;
-        }
-        else if (response.message === 'Resident successfully verify, Please Proceed to Aadhar Verification.: ' || response.message === 'Resident successfully verify, Please Proceed to Aadhar Verification.: No Sarpanch has been assigned to this village yet. A Sarpanch will be appointed soon.') {
-          // OTP verified for User Registeration → Redirect to Aadhar Verification page
-          this.router.navigate(['../', ComponentRoutes.VERIFY_AADHAR], {
-            relativeTo: this.route,
-            queryParams: { mobileNumber: this.mobileNumber }
-          });
-
         }
         else {
           this.tokenService.clearAccessTokens();

@@ -13,6 +13,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ResidentFilter } from '../../../shared/interfaces/resident/resident-filter';
 import { ResidentSearch } from '../../../shared/interfaces/resident/resident-search';
+import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
     selector: 'app-user-list',
@@ -25,7 +28,9 @@ export class UserListComponent implements OnInit, AfterViewInit {
     constructor(
         private changeDetection: ChangeDetectorRef,
         private residentService: ResidentService,
-        private router: Router
+        private router: Router,
+        private dialog: MatDialog,
+        private toastService: ToastService
     ) { }
     currentPaginationRequest: PaginationRequest = {
         pageNumber: 1,
@@ -75,7 +80,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
             { name: 'action', displayName: 'Action', type: 'action' },
         ],
         data: [],
-        actions: ['edit','delete', 'view profile']
+        actions: ['edit', 'delete', 'view profile']
     };
 
     handlePageChange(event: { pageIndex: number, pageSize: number }) {
@@ -210,9 +215,19 @@ export class UserListComponent implements OnInit, AfterViewInit {
 
             case 'delete':
                 // Confirm deletion and proceed if confirmed
-                if (confirm('Are you sure you want to delete this user?')) {
-                    this.delete(element.id);
-                }
+                // Open the confirmation dialog
+                const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+                    data: {
+                        title: 'Confirm Deletion',
+                        message: `Are you sure you want to delete this item?`
+                    }
+                });
+
+                dialogRef.afterClosed().subscribe(result => {
+                    if (result) {
+                        this.delete(element.id);
+                    }
+                });
                 break;
 
             case 'view profile':
@@ -227,13 +242,15 @@ export class UserListComponent implements OnInit, AfterViewInit {
     delete(userId: string): void {
         this.residentService.deleteResident(userId).subscribe({
             next: (response) => {
-                alert(response.message); // Show backend response message
+                // Show success message using ToastService
+                this.toastService.showSuccess(response.message);
                 // Refresh the table data after successful deletion
                 this.loadResidents(this.currentPaginationRequest);
             },
             error: (error) => {
                 console.error('Error deleting user:', error);
-                alert(error.message);
+                // Show error message using ToastService
+                this.toastService.showError(error.message || 'Something went wrong');
             }
         });
     }

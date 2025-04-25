@@ -43,10 +43,10 @@
                     <input type="text" class="input-field" placeholder="Enter phone no." [(ngModel)]="data.phone"
                         [disabled]="isViewOnly" readonly />
                 </div>
-                <div class="d-flex flex-column gap-1 w-100" *ngIf=" !isViewOnly || data.email">
-                    <h4 class="mb-0 font-14 regular subTextColor">Email</h4>
-                    <input type="text" class="input-field" placeholder="Enter Email" [(ngModel)]="data.email"
-                        [disabled]="isViewOnly" />
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">Email.</h4>
+                    <input type="email" class="input-field" placeholder="Enter Email" [(ngModel)]="data.email"
+                        [disabled]="isViewOnly" readonly />
                 </div>
                 <div class="d-flex flex-column gap-1 w-100">
                     <h4 class="mb-0 font-14 regular subTextColor">Aadhar Number</h4>
@@ -77,7 +77,7 @@
                 </div>
                 <div class="d-flex flex-column gap-1 w-100">
                     <h4 class="mb-0 font-14 regular subTextColor">Personal Address</h4>
-                    <input type="text" class="input-field" placeholder="Enter Address" [value]="formattedAddress"
+                    <input type="text" class="input-field" placeholder="Enter Address" [value]="isDeleted ? data.address : formattedAddress"
                         [disabled]="isViewOnly" />
                 </div>
                 <div class="d-flex flex-column gap-1 w-100">

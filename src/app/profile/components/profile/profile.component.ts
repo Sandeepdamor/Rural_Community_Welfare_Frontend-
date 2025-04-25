@@ -10,6 +10,7 @@ import { SarpanchResponse } from '../../../shared/interfaces/sarpanch/sarpanch-r
 import { TokenService } from '../../../shared/services/token.service';
 import { ResidentProfileComponent } from '../resident-profile/resident-profile.component';
 import { SarpanchProfileComponent } from '../sarpanch-profile/sarpanch-profile.component';
+import { DeletedSarpanchService } from '../../../shared/services/deleted-sarpanch.service';
 
 @Component({
   selector: 'app-profile',
@@ -22,6 +23,8 @@ export class ProfileComponent implements OnInit {
   isDataLoaded = false;
   userType: string = '';
   isViewOnly: boolean = true;
+  isDeleted: boolean = false; // Track if the profile is deleted
+
 
   // Hold separately the two models
   resident!: ResidentResponse;
@@ -30,6 +33,7 @@ export class ProfileComponent implements OnInit {
   constructor(
     private residentService: ResidentService,
     private sarpanchService: SarpanchService,
+    private deletedSarpanchService: DeletedSarpanchService,
     private route: ActivatedRoute,
     private authService: AuthService,
     private location: Location,
@@ -73,6 +77,16 @@ export class ProfileComponent implements OnInit {
           this.isDataLoaded = true;
           // For sarpanch profiles, set view-only mode.
           this.isViewOnly = true;
+        });
+      }
+      else if (this.userType === 'deleted') {
+        this.deletedSarpanchService.getSarpanchById(userId).subscribe(response => {
+          this.sarpanch = response.response;
+          console.log('DELETED SARPANCH PROFILE => ',this.sarpanch);
+          this.isDataLoaded = true;
+          // For sarpanch profiles, set view-only mode.
+          this.isViewOnly = true;
+          this.isDeleted = true;
         });
       }
     }

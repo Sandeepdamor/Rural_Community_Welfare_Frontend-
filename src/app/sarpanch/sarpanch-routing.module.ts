@@ -7,6 +7,7 @@ import { AddUserComponent } from '../users/components/add-user/add-user.componen
 import { PendingUserListComponent } from '../users/components/pending-user-list/pending-user-list.component';
 import { BlockUserListComponent } from '../users/components/block-user-list/block-user-list.component';
 import { AddSarpanchComponent } from './componenets/add-sarpanch/add-sarpanch.component';
+import { SarpanchHistoryComponent } from './componenets/sarpanch-history/sarpanch-history.component';
 
 const routes: Routes = [
   {
@@ -22,12 +23,8 @@ const routes: Routes = [
     component: ProfileComponent 
   },
   {
-    path: ComponentRoutes.AADHAR_PENDING_USER,
-    component: PendingUserListComponent
-  },
-  {
-    path: ComponentRoutes.DELETEUSERLIST,
-    component: BlockUserListComponent
+    path: ComponentRoutes.SARPANCHHISTORY,
+    component: SarpanchHistoryComponent
   },
 ];
 

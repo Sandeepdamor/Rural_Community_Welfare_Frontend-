@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { ResidentFilter } from '../../../shared/interfaces/resident/resident-filter';
 import { ResidentSearch } from '../../../shared/interfaces/resident/resident-search';
 import { GenderPipe } from '../../../shared/pipes/gender.pipe';
+import { ToastService } from '../../../shared/services/toast.service';
 
 
 @Component({
@@ -22,7 +23,8 @@ export class PendingUserListComponent {
     constructor(
         private changeDetection: ChangeDetectorRef,
         private residentService: ResidentService,
-        private router: Router
+        private router: Router,
+        private toastService: ToastService
     ) { }
     currentPaginationRequest: PaginationRequest = {
         pageNumber: 1,
@@ -121,14 +123,17 @@ export class PendingUserListComponent {
     updateAadharStatus(event: { id: string, aadharVerificationStatus: string }) {
         this.residentService.updateAadharStatus(event.id, event.aadharVerificationStatus).subscribe({
             next: (response) => {
-                alert(response.message);
+                // Show success message using ToastService
+                this.toastService.showSuccess(response.message);
                 this.loadPendingResidents("PENDING", this.currentPaginationRequest);
                 // this.changeDetection.detectChanges();
                 // this.isLoading = false;
             },
             error: (err) => {
                 console.error('Status Updation Faild:', err.error.message);
-                alert(err.error.message);
+
+                // Show error message using ToastService
+                this.toastService.showError(err.error.message || 'Something went wrong');
                 this.isLoading = false;
             }
         });

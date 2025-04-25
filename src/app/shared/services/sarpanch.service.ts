@@ -8,30 +8,27 @@ import { SarpanchResponse } from '../interfaces/sarpanch/sarpanch-response';
 import { SarpanchRequest } from '../interfaces/sarpanch/sarpanch-request';
 import { ApiResponse } from '../interfaces/api-response';
 import { ErrorResponse } from '../interfaces/error/error-response';
+import { ErrorService } from './error.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SarpanchService {
   private apiUrl = 'http://localhost:9096/sarpanch';
-  
-  constructor(private http: HttpClient, private tokenService: TokenService) { }
+
+  constructor(private http: HttpClient, private tokenService: TokenService, private errorService: ErrorService) { }
 
 
+  // Add Sarpanch method
   addSarpanch(sarpanchRequest: SarpanchRequest): Observable<ApiResponse> {
-    return this.http.post<any>(`${this.apiUrl}/add`, sarpanchRequest).pipe(
-      catchError((error: any) => {
-        let errorResponse: ErrorResponse = {
-          status: error.status,
-          message: error.message,
-          date: new Date().toISOString(),
-          details: error.error?.details || 'An unexpected error occurred' // Catching the error details
-        };
-        return throwError(() => errorResponse);  // Return the error details
+    return this.http.post<ApiResponse>(`${this.apiUrl}/add`, sarpanchRequest).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
       })
+
     );
   }
-  
+
 
   getAllSarpanch(isDeleted: boolean, pagination: PaginationRequest): Observable<PageResponse<SarpanchResponse>> {
     return this.http.get<PageResponse<SarpanchResponse>>(
@@ -44,24 +41,45 @@ export class SarpanchService {
           sortBy: pagination.sortBy
         }
       }
+    ).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+
     );
   }
 
   getSarpanchById(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/get-sarpanch`, {
       params: { id }
-    });
+    }).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+
+    );
   }
 
   getSarpanchByMobile(mobile: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/get-by-mobile`, {
       params: { mobile }
-    });
+    }).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+
+    );
   }
 
   deleteSarpanch(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/delete`, {
       params: { id }
-    });
+    }).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+
+    );
   }
+
 }
