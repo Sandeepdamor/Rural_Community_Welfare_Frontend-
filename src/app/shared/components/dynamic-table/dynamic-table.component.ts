@@ -15,23 +15,26 @@ import { MatTableModule } from '@angular/material/table';
 
 import { CommonModule, DatePipe, NgClass } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
-import { MatTableDataSource, } from '@angular/material/table';
+import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TableConfig } from '../model/table-config';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
 import { RoleListComponent } from '../../../manage-roles/components/role-list/role-list.component';
 import { ComponentRoutes } from '../../utils/component-routes';
-import {
-  MatSlideToggleModule,
-} from '@angular/material/slide-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Router } from '@angular/router';
-
 
 @Component({
   selector: 'app-dynamic-table',
@@ -50,13 +53,13 @@ import { Router } from '@angular/router';
     NgClass,
     MatSlideToggleModule,
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
   ],
   templateUrl: './dynamic-table.component.html',
   styleUrls: ['./dynamic-table.component.scss'],
 })
 export class DynamicTableComponent implements AfterViewInit, OnChanges {
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
   componentRoutes = ComponentRoutes;
   isLastPage: boolean = false;
   toggleDropdown() {
@@ -74,11 +77,32 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
   pageSizeOptions = [5, 10, 20]; // Define page size options here
   defaultPageSize = 5; // Default items per page
 
-  @Output() pageChanged = new EventEmitter<{ pageIndex: number, pageSize: number }>();
-  @Output() statusChanged = new EventEmitter<{ id: string, isActive: boolean }>();
-  // @Output() statusIsDeletedChanged = new EventEmitter<{ id: string, isActive: boolean }>();
-  @Output() aadharStatusChanged = new EventEmitter<{ id: string, aadharVerificationStatus: string }>();
-  @Output() actionClicked = new EventEmitter<{ action: string, element: any }>();
+  @Output() pageChanged = new EventEmitter<{
+    pageIndex: number;
+    pageSize: number;
+  }>();
+  @Output() statusChanged = new EventEmitter<{
+    id: string;
+    isActive: boolean;
+  }>();
+  @Output() changeAnnouncementStatusEvent = new EventEmitter<{
+    id: number;
+    AnnouncementStatus: string;
+  }>();
+
+  @Output() aadharStatusChanged = new EventEmitter<{
+    id: string;
+    aadharVerificationStatus: string;
+  }>();
+  @Output() actionClicked = new EventEmitter<{
+    action: string;
+    element: any;
+  }>();
+
+  @Output() deleteAnnouncement: EventEmitter<string> =
+    new EventEmitter<string>();
+
+  @Output() getdeleteAnnouncement = new EventEmitter<string>();
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['config'] && changes['config'].currentValue) {
@@ -102,37 +126,43 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
     this.statusChanged.emit({ id: element.id, isActive: newStatus });
   }
 
-  // changeIsDeletedStatus(element: any, newStatus: boolean) {
-  //   this.statusIsDeletedChanged.emit({ id: element.id, isActive: newStatus });
-  // }
-  changeAadharStatus(element: any, newStatus: string) {
-    this.aadharStatusChanged.emit({ id: element.id, aadharVerificationStatus: newStatus });
+  changeAnnouncementsStatus(element: any, newStatus: string) {
+    this.changeAnnouncementStatusEvent.emit({
+      id: element.id,
+      AnnouncementStatus: newStatus,
+    });
   }
 
+  changeAadharStatus(element: any, newStatus: string) {
+    this.aadharStatusChanged.emit({
+      id: element.id,
+      aadharVerificationStatus: newStatus,
+    });
+  }
 
   // getSerialNumber(row: any): number {
   //   const index = this.dataSource?.data.indexOf(row);
   //   const pageIndex = this.paginator?.pageIndex ?? 0;
   //   const pageSize = this.paginator?.pageSize ?? 5;
   //   return (pageIndex * pageSize) + index + 1;
-  // } 
+  // }
 
   ngAfterViewInit() {
     // Initialize paginator and sort
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    console.log('NGAFTER VIEW INIT()')
+    console.log('NGAFTER VIEW INIT()');
     // Set pagination properties
     if (this.paginator) {
       this.paginator.length = this.config.totalRecords ?? 0;
       this.paginator.pageSize = this.defaultPageSize;
       this.paginator.pageSizeOptions = this.pageSizeOptions;
 
-      this.paginator.page.subscribe(event => {
+      this.paginator.page.subscribe((event) => {
         console.log('Page changed:', event);
         this.pageChanged.emit({
           pageIndex: event.pageIndex,
-          pageSize: event.pageSize
+          pageSize: event.pageSize,
         });
       });
     }
@@ -141,9 +171,6 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
   onAction(action: string, element: any): void {
     this.actionClicked.emit({ action, element });
   }
-
-
-
 
   checkboxLabel(row?: any): string {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row`;
@@ -167,7 +194,6 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
     { value: 'mercedes', viewValue: 'Mercedes' },
   ];
 
-
   private _formBuilder = inject(FormBuilder);
 
   isChecked = true;
@@ -178,5 +204,13 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
 
   alertFormValues(formGroup: FormGroup) {
     alert(JSON.stringify(formGroup.value, null, 2));
+  }
+
+  deleteAnnouncementById(announcementId: string): void {
+    this.deleteAnnouncement.emit(announcementId);
+  }
+
+  onDelete(announcement: any) {
+    this.getdeleteAnnouncement.emit(announcement);
   }
 }

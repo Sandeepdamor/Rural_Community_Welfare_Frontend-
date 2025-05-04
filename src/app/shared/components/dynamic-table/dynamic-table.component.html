@@ -51,6 +51,7 @@
           } -->
 
 
+
           @case ("aadharstatus") {
           <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status" [style.backgroundColor]="
                 element[column.name] === 'VERIFIED' ? '#edecf8' :
@@ -73,6 +74,28 @@
             <button mat-menu-item (click)="changeAadharStatus(element, 'REJECTED')">Rejected</button>
           </mat-menu>
           }
+
+          @case("announcementStatus") {
+          <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status" [style.backgroundColor]="
+                element[column.name] === 'PUBLISHED' ? '#edecf8' :
+                element[column.name] === 'DRAFT' ? 'rgba(255, 53, 53, 0.05)' : '#F5F6FA'" [style.color]="'#515563'">
+            {{ element[column.name] }}
+            <img src="assets/images/svg/arrow-dropdown.svg" height="14" width="14" [ngClass]="{
+                  'filter-active': element[column.name] === 'PUBLISHED',
+                  'filter-deactive': element[column.name] === 'DRAFT'
+                }" />
+          </button>
+
+          <mat-menu #statusMenu="matMenu">
+            <ng-container *ngIf="element[column.name] === 'DRAFT'">
+              <button mat-menu-item (click)="changeAnnouncementsStatus(element, 'PUBLISHED')">PUBLISHED</button>
+            </ng-container>
+            <ng-container *ngIf="element[column.name] === 'PUBLISHED'">
+              <button mat-menu-item (click)="changeAnnouncementsStatus(element, 'DRAFT')">DRAFT</button>
+            </ng-container>
+          </mat-menu>
+          }
+
 
           <!-- @case ("serial") {
             <span>{{ getSerialNumber(element) }}</span>
@@ -102,19 +125,23 @@
           <div class="d-flex gap-3 align-items-center">
 
             @if (config.actions?.includes('edit')) {
-            <button type="button" class="table_action_icon bgPrimaryLight" (click)="onAction('edit', element)">
+            <button *ngIf="config.actions?.includes('edit')" type="button" class="table_action_icon bgPrimaryLight"
+              (click)="onAction('edit', element)">
               <img src="assets/images/svg/edit.svg" />
             </button>
             }
 
             @if (config.actions?.includes('delete')) {
-            <button type="button" class="table_action_icon bgRedLight" (click)="onAction('delete', element)">
+            <button *ngIf="config.actions?.includes('delete')" type="button" class="table_action_icon bgRedLight"
+              (click)="onAction('delete', element)">
               <img src="assets/images/svg/delete.svg" />
             </button>
             }
 
             @if (config.actions?.includes('view profile')) {
-            <button type="button" class="table_action_icon bgPrimaryLight" (click)="onAction('view profile', element)">
+            <!-- View Profile Button -->
+            <button *ngIf="config.actions?.includes('view profile')" type="button"
+              class="table_action_icon bgPrimaryLight" (click)="onAction('view profile', element)">
               <img src="assets/images/svg/eye.svg" alt="View" />
             </button>
             }
@@ -127,6 +154,28 @@
 
           </div>
           }
+
+          @case ("view-action") {
+          <div class="d-flex gap-3 align-items-center">
+
+            @if (config.actions?.includes('view profile')) {
+            <!-- View Profile Button -->
+            <button *ngIf="config.actions?.includes('view profile')" type="button"
+              class="table_action_icon bgPrimaryLight" (click)="onAction('view profile', element)">
+              <img src="assets/images/svg/eye.svg" alt="View" />
+            </button>
+            }
+
+            <!-- @if(config.actions?.includes('manage-permission')) {
+              <h4 class="font-14 medium themeColor mb-0 cursor-pointer" [routerLink]="componentRoutes.MANAGEROLEADD">
+                Manage Permission
+              </h4>
+              } -->
+
+          </div>
+          }
+
+
 
 
 

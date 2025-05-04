@@ -19,6 +19,8 @@ export class SidebarComponent implements OnInit {
   currentRoute: string | undefined;
   isUserMenuOpen = false;
   isSarpanchMenuOpen = false;
+  isAnnouncementMenuOpen = false;
+  isGrievanceMenuOpen = false;
 
   constructor(private router: Router, private route: ActivatedRoute) {}
 
@@ -29,7 +31,12 @@ export class SidebarComponent implements OnInit {
     this.isSarpanchMenuOpen = !this.isSarpanchMenuOpen;
   }
 
-
+  toggleAnnouncementMenu() {
+    this.isAnnouncementMenuOpen = !this.isAnnouncementMenuOpen;
+  }
+  toggleGrievanceMenu() {
+    this.isGrievanceMenuOpen = !this.isGrievanceMenuOpen;
+  }
 
   ngOnInit(): void {
     // Set current route on component initialization
@@ -45,7 +52,6 @@ export class SidebarComponent implements OnInit {
   }
 
   isActiveRoute(route: string): boolean {
-   
     return this.currentRoute === route;
   }
 

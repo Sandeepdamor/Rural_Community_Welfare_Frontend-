@@ -25,6 +25,17 @@ export class ComponentRoutes {
   static SARPANCHLIST = 'list';
   static SARPANCHADD = 'add';
 
+  //Announcements
+  static ANNOUNCEMENTS = 'announcements';
+  static ANNOUNCEMENTLIST = 'list';
+  static ADDANNOUNCEMENTS = 'add';
+  static DELETEANNOUNCEMENTS = 'delete';
+
+  //Grievance
+  static GRIEVANCELIST = 'grievance-list';
+  static GRIEVANCES = 'grievance';
+  static GRIEVANCEUPDATE = 'grievance-update';
+
   // Customer
   static CUSTOMER = 'customer';
   static CUSTOMERLIST = 'list';

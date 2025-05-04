@@ -1,0 +1,89 @@
+<form [formGroup]="announcementForm" (ngSubmit)="onSubmit()"
+  class="scalable-gap-24-16 scalable-p-16-8 cardBackground d-flex flex-column">
+  <!-- Back Arrow -->
+  <div class="d-flex gap-2 align-items-center">
+    <img src="assets/images/svg/Back-Icon.svg" class="cursor-pointer" height="30" width="30" />
+    <h2 class="font-18 medium black mb-0">Add Announcement</h2>
+  </div>
+
+  <!-- Select Image -->
+  <!-- <div class="position-relative d-flex align-items-end">
+    <img height="82" width="82" alt="Logo" src="assets/images/svg/profile.svg">
+    <div class="file_select_box">
+      <input type="file" class="input_feilds bg_light file_select" (change)="onFileChange($event, 'image')" />
+      <img src="assets/images/svg/edit-img.svg" height="16" width="16" alt="Edit Icon" class="file_select_icon">
+    </div>
+  </div> -->
+
+  <!-- Form Inputs -->
+  <div class="row g-4">
+    <!-- Title -->
+    <div class="col-md-6">
+      <div class="d-flex flex-column gap-1 w-100">
+        <h4 class="mb-0 font-14 regular subTextColor">Title</h4>
+        <input type="text" formControlName="title" class="input-field" placeholder="Enter Title"
+          [readonly]="isReadOnly" />
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="col-md-6">
+      <div class="d-flex flex-column gap-1 w-100">
+        <h4 class="mb-0 font-14 regular subTextColor">Content</h4>
+        <input type="text" formControlName="content" class="input-field" placeholder="Enter Content" />
+      </div>
+    </div>
+
+    <!-- Date -->
+    <div class="col-md-6">
+      <div class="d-flex flex-column gap-1 w-100">
+        <label for="announcementDate" class="mb-0 font-14 regular subTextColor">Date</label>
+        <input type="datetime-local" formControlName="date" id="announcementDate" class="input-field" />
+      </div>
+    </div>
+
+
+    <!-- Status -->
+    <div class="col-md-6">
+      <div class="d-flex flex-column gap-1 w-100">
+        <label for="status" class="mb-0 font-14 regular subTextColor">Status</label>
+        <select id="status" formControlName="status" class="input-field">
+          <option value="">Select Status</option>
+          <option value="DRAFT">DRAFT</option>
+          <option value="PUBLISHED">PUBLISHED</option>
+        </select>
+      </div>
+    </div>
+
+
+    <!-- Attachments -->
+    <!-- Attachments -->
+    <!-- <div class="col-md-6">
+      <div class="d-flex flex-column gap-1 w-100">
+        <label for="attachment" class="mb-0 font-14 regular subTextColor">Add Attachments</label>
+        <input type="file" id="attachment" class="input-field" (change)="onFileChange($event, 'attachment')" multiple />
+      </div>
+    </div> -->
+
+    <!-- Attachments -->
+    <div class="col-md-6">
+      <div class="d-flex flex-column gap-1 w-100">
+        <h4 class="mb-0 font-14 regular subTextColor">Attachments</h4>
+        <input type="file" class="input-field" (change)="onFileSelected($event)" multiple />
+      </div>
+
+      <!-- Show Selected File Names -->
+      <ul class="mt-2">
+        <li *ngFor="let file of selectedFiles; let i = index">
+          {{ file.name }} <span class="text-danger cursor-pointer ms-2" (click)="removeAttachment(i)">×</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Buttons -->
+  <div class="d-flex justify-content-end gap-4">
+    <button type="button" class="secondary-button py-2 scalable-p-48-24">Cancel</button>
+    <button type="submit" class="primary-button py-2 scalable-p-48-24">Save</button>
+  </div>
+</form>

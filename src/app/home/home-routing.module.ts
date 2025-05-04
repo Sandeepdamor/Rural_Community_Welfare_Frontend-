@@ -1,3 +1,5 @@
+import { GrievanceRoutingModule } from './../Grievance/components/grievance-routing.module';
+
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ComponentRoutes } from '../shared/utils/component-routes';
@@ -6,17 +8,19 @@ import { NotFoundComponent } from '../shared/components/not-found/not-found.comp
 
 const routes: Routes = [
   {
-    path:ComponentRoutes.NOTFOUND,
-    component:NotFoundComponent
-},
+    path: ComponentRoutes.NOTFOUND,
+    component: NotFoundComponent,
+  },
   {
-    path:ComponentRoutes.HOME,
-    component:HomeComponent,
-    children:[
+    path: ComponentRoutes.HOME,
+    component: HomeComponent,
+    children: [
       {
         path: ComponentRoutes.HOME,
         loadChildren: () =>
-          import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
+          import('../dashboard/dashboard.module').then(
+            (m) => m.DashboardModule
+          ),
       },
       {
         path: ComponentRoutes.USER,
@@ -33,7 +37,20 @@ const routes: Routes = [
         loadChildren: () =>
           import('../sarpanch/sarpanch.module').then((m) => m.SarpanchModule),
       },
-
+      {
+        path: ComponentRoutes.ANNOUNCEMENTS,
+        loadChildren: () =>
+          import('../Announcements/components/announcements-module').then(
+            (m) => m.AnnouncementModule
+          ),
+      },
+      {
+        path: ComponentRoutes.GRIEVANCES,
+        loadChildren: () =>
+          import('../Grievance/components/grievance-module').then(
+            (m) => m.GrievanceModule
+          ),
+      },
       {
         path: ComponentRoutes.CUSTOMER,
         loadChildren: () =>
@@ -47,26 +64,28 @@ const routes: Routes = [
       {
         path: ComponentRoutes.MANAGEROLE,
         loadChildren: () =>
-          import('../manage-roles/manage-roles.module').then((m) => m.ManageRolesModule),
+          import('../manage-roles/manage-roles.module').then(
+            (m) => m.ManageRolesModule
+          ),
       },
       {
         path: ComponentRoutes.SERVICECETEGORY,
         loadChildren: () =>
-          import('../service-category/service-category.module').then((m) => m.ServiceCategoryModule),
+          import('../service-category/service-category.module').then(
+            (m) => m.ServiceCategoryModule
+          ),
       },
       {
         path: ComponentRoutes.BOOKING,
         loadChildren: () =>
           import('../booking/booking.module').then((m) => m.BookingModule),
       },
-      
-    ]
-  }
- 
+    ],
+  },
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes),],
-  exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
 })
-export class HomeRoutingModule { }
+export class HomeRoutingModule {}

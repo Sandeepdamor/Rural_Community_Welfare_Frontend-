@@ -190,7 +190,7 @@ export class LoginComponent {
 
 
           // Redirect to Verify OTP page
-          this.router.navigate([ComponentRoutes.VERIFYOTP], {
+          this.router.navigate(['../',ComponentRoutes.VERIFYOTP], {
             relativeTo: this.route,
             queryParams: {
               mobileNumber: this.tokenService.getMobileNumberFromAuthToken(),
