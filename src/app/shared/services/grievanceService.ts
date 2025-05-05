@@ -1,14 +1,12 @@
-import { GrievanceFilter } from './../interfaces/Announcement/grievance-filter';
+import { GrievanceFilter } from './../interfaces/Grievance/grievance-filter';
+import { GrievanceResponse } from './../interfaces/Grievance/grievance-response';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PaginationRequest } from '../interfaces/pagination-request';
 import { PageResponse } from '../interfaces/page-response';
-import { ResidentResponse } from '../interfaces/resident/resident-response';
 import { TokenService } from './token.service';
 import { ResidentSearch } from '../interfaces/resident/resident-search';
-import { ResidentFilter } from '../interfaces/resident/resident-filter';
-import { GrievanceResponse } from '../interfaces/Announcement/grievance-response';
 
 @Injectable({
   providedIn: 'root',
@@ -117,9 +115,9 @@ export class GrievanceService {
     });
   }
 
-  deleteResident(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/delete`, {
-      params: { id },
-    });
+  deleteGrievance(announcementId: string): Observable<any> {
+    const url = `${this.apiUrl}/delete-announcement`; // Keep URL as is, without the announcementId
+    const payload = { id: announcementId }; // Send the announcementId in the body
+    return this.http.delete<any>(url, { body: payload });
   }
 }

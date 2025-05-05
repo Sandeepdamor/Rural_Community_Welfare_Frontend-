@@ -1,4 +1,5 @@
-import { GrievanceSearch } from './../../../shared/interfaces/Announcement/grievance-search';
+import { GrievanceFilter } from './../../../shared/interfaces/Grievance/grievance-filter';
+import { GrievanceSearch } from '../../../shared/interfaces/Grievance/grievance-search';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { DynamicTableComponent } from '../../../shared/components/dynamic-table/dynamic-table.component';
@@ -8,7 +9,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { GrievanceService } from '../../../shared/services/grievanceService';
 import { PaginationRequest } from '../../../shared/interfaces/pagination-request';
 import { TableConfig } from '../../../shared/components/model/table-config';
-import { GrievanceFilter } from '../../../shared/interfaces/Announcement/grievance-filter';
 
 @Component({
   selector: 'app-grievance-list',
