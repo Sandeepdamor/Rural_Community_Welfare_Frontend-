@@ -33,6 +33,17 @@ export class ComponentRoutes {
   static readonly PROJECTADD = 'add';
   static readonly PENDING_REJECT_PROJECT_LIST = 'pending-rejected-list';
 
+  //Announcements
+  static ANNOUNCEMENTS = 'announcements';
+  static ANNOUNCEMENTLIST = 'list';
+  static ADDANNOUNCEMENTS = 'add';
+  static DELETEANNOUNCEMENTS = 'delete';
+
+  //Grievance
+  static GRIEVANCELIST = 'grievance-list';
+  static GRIEVANCES = 'grievance';
+  static GRIEVANCEUPDATE = 'grievance-update';
+
   // Customer
   static readonly CUSTOMER = 'customer';
   static readonly CUSTOMERLIST = 'list';

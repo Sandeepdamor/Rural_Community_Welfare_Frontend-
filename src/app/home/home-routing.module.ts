@@ -1,3 +1,5 @@
+import { GrievanceRoutingModule } from './../Grievance/components/grievance-routing.module';
+
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ComponentRoutes } from '../shared/utils/component-routes';
@@ -16,7 +18,9 @@ const routes: Routes = [
       {
         path: ComponentRoutes.HOME,
         loadChildren: () =>
-          import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
+          import('../dashboard/dashboard.module').then(
+            (m) => m.DashboardModule
+          ),
       },
       {
         path: ComponentRoutes.USER,
@@ -38,7 +42,20 @@ const routes: Routes = [
         loadChildren: () =>
           import('../project/project.module').then((m) => m.ProjectModule),
       },
-
+      {
+        path: ComponentRoutes.ANNOUNCEMENTS,
+        loadChildren: () =>
+          import('../Announcements/components/announcements-module').then(
+            (m) => m.AnnouncementModule
+          ),
+      },
+      {
+        path: ComponentRoutes.GRIEVANCES,
+        loadChildren: () =>
+          import('../Grievance/components/grievance-module').then(
+            (m) => m.GrievanceModule
+          ),
+      },
       {
         path: ComponentRoutes.CUSTOMER,
         loadChildren: () =>
@@ -52,12 +69,16 @@ const routes: Routes = [
       {
         path: ComponentRoutes.MANAGEROLE,
         loadChildren: () =>
-          import('../manage-roles/manage-roles.module').then((m) => m.ManageRolesModule),
+          import('../manage-roles/manage-roles.module').then(
+            (m) => m.ManageRolesModule
+          ),
       },
       {
         path: ComponentRoutes.SERVICECETEGORY,
         loadChildren: () =>
-          import('../service-category/service-category.module').then((m) => m.ServiceCategoryModule),
+          import('../service-category/service-category.module').then(
+            (m) => m.ServiceCategoryModule
+          ),
       },
       {
         path: ComponentRoutes.BOOKING,
@@ -67,11 +88,10 @@ const routes: Routes = [
 
     ]
   }
-
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes),],
-  exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
 })
-export class HomeRoutingModule { }
+export class HomeRoutingModule {}

@@ -1,0 +1,77 @@
+<div class="d-flex flex-column gap-3 h-100" (click)="closeFilterIfClickedOutside($event)">
+  <!-- Search & Filter -->
+  <div class="d-flex justify-content-between align-items-start flex-wrap mb-3 gap-3 position-relative">
+    <!-- Left: Search + Filter -->
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+      <!-- Search -->
+      <div class="input-group" style="width: 280px;">
+        <input type="text" class="form-control" placeholder="Search by name, phone, or address"
+          [(ngModel)]="searchTerm">
+        <button class="btn btn-outline-secondary" type="button" (click)="onSearchAnnouncements()">
+          <img src="assets/images/svg/search.svg" height="12" width="12">
+        </button>
+      </div>
+
+      <!-- Filter Button -->
+      <div class="dropdown" [class.show]="showFilters">
+        <button class="btn btn-outline-dark d-flex align-items-center gap-1 dropdown-toggle" (click)="toggleFilter()"
+          type="button">
+          <strong>Filter</strong>
+        </button>
+
+        <!-- Dropdown-style Filter Panel -->
+        <div class="dropdown-menu p-3 shadow" style="min-width: 300px;" [class.show]="showFilters">
+          <!-- Status -->
+          <div class="mb-2">
+            <label>Status</label>
+            <select class="form-select" [(ngModel)]="filters.status" (change)="onFilter()">
+              <option value="">All Status</option>
+              <option value="PUBLISHED">PUBLISHED</option>
+              <option value="DRAFT">DRAFT</option>
+            </select>
+          </div>
+
+
+          <!-- isActive -->
+          <div>
+            <label>isActive</label>
+            <select class="form-select" [(ngModel)]="filters.isActive" (change)="onFilter()">
+              <option [value]="true">TRUE</option>
+              <option [value]="false">FALSE</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Add User -->
+    <div>
+      <button class="primary-button p-8-12 d-flex align-items-center gap-2" [routerLink]="'/announcements/add'">
+        <div class="plus_icon">
+          <img src="assets/images/svg/plus-icon.svg" height="12" width="12">
+        </div>
+        Add Announcement
+      </button>
+    </div>
+  </div>
+
+
+  <!-- ⏳ Loader (Bonus Tip) -->
+  <div *ngIf="isLoading" class="text-center">
+    <p>Loading...</p>
+  </div>
+
+
+
+  <app-dynamic-table *ngIf="!isLoading && agencyTableConfig.data.length > 0" [config]="agencyTableConfig"
+    (changeAnnouncementStatusEvent)="onChangeAnnouncementStatus($event)" (actionClicked)="onActionClicked($event)">
+  </app-dynamic-table>
+
+
+  <!-- (actionClicked)="onAction($event.action, $event.element)" -->
+
+  <!-- ❌ No Data Message -->
+  <p *ngIf="!isLoading && agencyTableConfig.data.length === 0" class="text-center mt-3 text-danger">
+    No Data Found
+  </p>
+</div>

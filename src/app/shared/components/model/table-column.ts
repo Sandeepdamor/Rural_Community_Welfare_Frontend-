@@ -1,9 +1,23 @@
 export interface TableColumn {
-    name: string;
+  name: string;
   displayName: string;
-  type: 'text' | 'image' | 'status' | 'action' | 'checkbox' | 'documents'|'toggle' | 'serial' | 'aadharstatus' | 'delete-status' | 'projectProgress' | 'customText';
+
+  type:
+  | 'text'
+  | 'image'
+  | 'status'
+  | 'action'
+  | 'view-action'
+  | 'checkbox'
+  | 'documents'
+  | 'toggle'
+  | 'serial'
+  | 'aadharstatus'
+  | 'delete-status'
+  | 'delete-announcement'
+  | 'announcementStatus'
+  | 'projectProgress' | 'customText';
   sortable?: boolean;
   width?: string;
-  customTextFn?: (row: any) => string; 
+  customTextFn?: (row: any) => string;
 }
-

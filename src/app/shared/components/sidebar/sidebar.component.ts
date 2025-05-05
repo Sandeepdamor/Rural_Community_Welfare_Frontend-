@@ -22,12 +22,15 @@ export class SidebarComponent implements OnInit {
   isUserMenuOpen = false;
   isSarpanchMenuOpen = false;
   isProjectMenuOpen = false;
+  isAnnouncementMenuOpen = false;
+  isGrievanceMenuOpen = false;
   Role = Role;
-  role: Role; 
-  constructor(private router: Router, private route: ActivatedRoute,private tokenService: TokenService) {
+  role: Role;
+  constructor(private router: Router, private route: ActivatedRoute, private tokenService: TokenService) {
     const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
     this.role = roleString as Role; // ✅ safely assign enum
   }
+
 
   toggleUserMenu() {
     this.isUserMenuOpen = !this.isUserMenuOpen;
@@ -35,12 +38,15 @@ export class SidebarComponent implements OnInit {
   toggleSarpanchMenu() {
     this.isSarpanchMenuOpen = !this.isSarpanchMenuOpen;
   }
-
   toggleProjectMenu() {
     this.isProjectMenuOpen = !this.isProjectMenuOpen;
   }
-
-
+  toggleAnnouncementMenu() {
+    this.isAnnouncementMenuOpen = !this.isAnnouncementMenuOpen;
+  }
+  toggleGrievanceMenu() {
+    this.isGrievanceMenuOpen = !this.isGrievanceMenuOpen;
+  }
 
   ngOnInit(): void {
     // Set current route on component initialization
@@ -53,11 +59,10 @@ export class SidebarComponent implements OnInit {
         this.currentRoute = event.url;
       }
     });
-    console.log('ROLE SIDEBAR => ',this.role);
+    console.log('ROLE SIDEBAR => ', this.role);
   }
 
   isActiveRoute(route: string): boolean {
-   
     return this.currentRoute === route;
   }
 

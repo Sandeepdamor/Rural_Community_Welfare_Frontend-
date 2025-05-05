@@ -1,0 +1,8 @@
+export enum GrievanceStatus {
+  PENDING = 'PENDING',
+  FORWARDED = 'FORWARDED',
+  REJECTED = 'REJECTED',
+  ACCEPTED = 'ACCEPTED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  RESOLVED = 'RESOLVED',
+}
