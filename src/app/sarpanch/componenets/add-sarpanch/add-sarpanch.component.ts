@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -26,7 +26,6 @@ import { MatDialog } from '@angular/material/dialog';
 export class AddSarpanchComponent implements OnInit {
   sarpanchForm!: FormGroup;
   addresses: any[] = [];
-  // selectedVillages: Village[] = []; // Now, TypeScript knows the type of this array
   selectedVillages: Village[] = [];
   isSubmitting: boolean = false;
 
@@ -43,6 +42,7 @@ export class AddSarpanchComponent implements OnInit {
     private router: Router,
     private deletedSarpanchService: DeletedSarpanchService,
     private toastService: ToastService,
+    private location: Location,
     private dialog: MatDialog
   ) { }
 
@@ -178,7 +178,6 @@ export class AddSarpanchComponent implements OnInit {
     return !!control && control.invalid && control.touched;
   }
 
-
   addVillage(event: any): void {
     const selectElement = event.target as HTMLSelectElement;
 
@@ -211,13 +210,6 @@ export class AddSarpanchComponent implements OnInit {
 
     // After adding a village, validate the field (this is just a precautionary step)
     this.sarpanchForm.get('villageIds')?.setValue(this.selectedVillages.map(v => v.id));
-
-    // Check if at least one village is selected, otherwise set error
-    if (this.selectedVillages.length === 0) {
-      this.sarpanchForm.get('villageIds')?.setErrors({ required: true });
-    } else {
-      this.sarpanchForm.get('villageIds')?.setErrors(null);
-    }
   }
 
   removeVillage(villageId: string): void {
@@ -263,7 +255,6 @@ export class AddSarpanchComponent implements OnInit {
           this.toastService.showError(err.details || 'Something went wrong');
         }
       });
-      // Handle your submission logic here
     } else {
       this.sarpanchForm.markAllAsTouched();
     }
@@ -289,5 +280,9 @@ export class AddSarpanchComponent implements OnInit {
     } else {
       this.router.navigate([ComponentRoutes.SARPANCH, ComponentRoutes.SARPANCHLIST]);
     }
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

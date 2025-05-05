@@ -45,9 +45,17 @@
                     <div>
                         <label>Status</label>
                         <select class="form-select" [(ngModel)]="filters.isActive" (change)="onFilter()">
-                            <option value="">All Status</option>
+                            <option value="null">All Status</option>
                             <option [value]="true">Active</option>
                             <option [value]="false">Inactive</option>
+                        </select>
+                    </div>
+                    <!-- Gram Panchayat -->
+                    <div class="mb-2" *ngIf="role === Role.ADMIN">
+                        <label>Gram Panchayat</label>
+                        <select class="form-select" [(ngModel)]="filters.gramPanchayat" (change)="onFilter()">
+                            <option [ngValue]="''">All Gram Panchayat</option>
+                            <option *ngFor="let gp of gramPanchayatList" [ngValue]="gp">{{ gp }}</option>
                         </select>
                     </div>
                 </div>
@@ -55,14 +63,14 @@
         </div>
 
         <!-- Right: Add User -->
-        <div>
+        <!-- <div>
             <button class="primary-button p-8-12 d-flex align-items-center gap-2" [routerLink]="'/user/add'">
                 <div class="plus_icon">
                     <img src="assets/images/svg/plus-icon.svg" height="12" width="12">
                 </div>
                 Add User
             </button>
-        </div>
+        </div> -->
     </div>
 
     <!-- ⏳ Loader (Bonus Tip) -->
@@ -70,17 +78,14 @@
         <p>Loading...</p>
     </div>
 
-   <!-- 📋 Table -->
-  <app-dynamic-table
-    *ngIf="!isLoading && agencyTableConfig.data.length > 0"
-    [config]="agencyTableConfig"
-    (pageChanged)="handlePageChange($event)"
-    (statusChanged)="updateUserStatus($event)"
-    (actionClicked)="onAction($event.action, $event.element)">
-  </app-dynamic-table>
+    <!-- 📋 Table -->
+    <app-dynamic-table *ngIf="!isLoading && agencyTableConfig.data.length > 0" [config]="agencyTableConfig"
+        (pageChanged)="handlePageChange($event)" (statusChanged)="updateUserStatus($event)"
+        (actionClicked)="onAction($event.action, $event.element)">
+    </app-dynamic-table>
 
-  <!-- ❌ No Data Message -->
-  <p *ngIf="!isLoading && agencyTableConfig.data.length === 0" class="text-center mt-3 text-danger">
-    No Data Found
-  </p>
+    <!-- ❌ No Data Message -->
+    <p *ngIf="!isLoading && agencyTableConfig.data.length === 0" class="text-center mt-3 text-danger">
+        No Data Found
+    </p>
 </div>

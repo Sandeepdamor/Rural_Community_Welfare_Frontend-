@@ -81,8 +81,7 @@ export class OtpVerificationComponent {
           if (response.message === 'Resident successfully verify, Please Proceed to Aadhar Verification.: ' || response.message === 'Resident successfully verify, Please Proceed to Aadhar Verification.: No Sarpanch has been assigned to this village yet. A Sarpanch will be appointed soon.') {
             this.tokenService.saveAuthToken(response.response)
             // OTP verified for User Registeration → Redirect to Aadhar Verification page
-            this.router.navigate(['../', ComponentRoutes.VERIFY_AADHAR], {
-              relativeTo: this.route,
+            this.router.navigate([ComponentRoutes.USERAUTH,ComponentRoutes.VERIFY_AADHAR], {
               queryParams: { mobileNumber: this.mobileNumber }
             });
             return;
@@ -111,8 +110,7 @@ export class OtpVerificationComponent {
         // } else 
         if (response.message === 'OTP verified successfully. Please set your new password.') {
           // OTP verified for Forgot Password → Redirect to New Password page
-          this.router.navigate(['../', ComponentRoutes.NEWPASSWORD], {
-            relativeTo: this.route,
+          this.router.navigate([ComponentRoutes.USERAUTH,ComponentRoutes.NEWPASSWORD], {
             queryParams: { mobileNumber: this.mobileNumber }
           });
         }

@@ -90,76 +90,11 @@ export class LoginComponent {
     return password === confirmPassword ? null : { passwordMismatch: true };
   }
 
-
-
   // Handle user selection of address
   onAddressSelect(event: any) {
     this.selectedAddressId = parseInt(event.target.value, 10);
     this.formRegister.patchValue({ addressId: this.selectedAddressId });
   }
-
-
-
-  // onSubmit() {
-  //   this.submitted = true;
-  //   this.errorMessage = ''; // Clear previous errors
-  //   if (this.formRegister.invalid) {
-  //     return;
-  //   }
-  //   const formData = this.formRegister.value;
-  //   console.log("Submitting:", formData);
-
-  //   if (this.isRegisterMode) {
-  //     // Register User
-  //     this.authService.register(formData).subscribe({
-  //       next: (res) => {
-  //         console.log('Registration Success:', res);
-  //         // Handle registration success (if needed)
-  //       },
-  //       error: (err) => {
-  //         console.error('Registration Failed:', err);
-  //         this.errorMessage = err.error?.message || 'Registration failed. Please try again.';
-  //       }
-  //     });
-
-  //   } else {
-  //     // Login User
-  //     this.authService.login(formData).subscribe({
-  //       next: (res) => {
-  //         console.log('Login Success:', res);
-
-  //         if (res.response && res.response.token) {
-  //           console.log('Auth Token:', res.response.token);
-  //           this.tokenService.saveAuthToken(res.response.token);
-
-  //           // Redirect to Verify OTP page
-  //           this.router.navigate([ComponentRoutes.VERIFYOTP], {
-  //             relativeTo: this.route,
-  //             queryParams: {
-  //               mobileNumber: this.tokenService.getMobileNumberFromAuthToken(),
-  //               otp: res.response.otp
-  //             }
-  //           });
-
-  //         } else {
-  //           this.errorMessage = 'Authentication failed. Please try again.';
-  //         }
-  //       },
-  //       error: (err: HttpErrorResponse) => {
-  //         if (err.status === 0) {
-  //           // **Server Down or Connection Issue**
-  //           alert('Server is not responding! Please try again later.');
-  //         } else if (err.status === 400) {
-  //           //**Invalid Credentials**
-  //           this.errorMessage = err.error.message;
-  //         } else {
-  //           //**Other Errors**
-  //           alert(err.message);
-  //         }
-  //       }
-  //     });
-  //   }
-  // }
 
   onLogin() {
     if (this.formLogin.invalid) return;
@@ -176,9 +111,7 @@ export class LoginComponent {
             alert(res.message);
           }
           if (res.message === 'You have not completed Aadhaar verification. Please verify your Aadhaar to proceed with login.') {
-            this.router.navigate(['../',ComponentRoutes.VERIFY_AADHAR], {
-              relativeTo: this.route
-            });
+            this.router.navigate([ComponentRoutes.USERAUTH,ComponentRoutes.VERIFY_AADHAR]);
             return;
           }
           if (res.message === 'Aadhaar verification is pending. You cannot log-in until your Aadhaar is verified by the admin.') {
@@ -190,8 +123,7 @@ export class LoginComponent {
 
 
           // Redirect to Verify OTP page
-          this.router.navigate(['../',ComponentRoutes.VERIFYOTP], {
-            relativeTo: this.route,
+          this.router.navigate([ComponentRoutes.USERAUTH,ComponentRoutes.VERIFYOTP], {
             queryParams: {
               mobileNumber: this.tokenService.getMobileNumberFromAuthToken(),
               otp: res.response.otp
@@ -233,8 +165,7 @@ export class LoginComponent {
 
           console.log('Mobile Number => ', this.tokenService.getMobileNumberFromAuthToken())
           // Redirect to Verify OTP page
-          this.router.navigate(['../',ComponentRoutes.VERIFYOTP], {
-            relativeTo: this.route,
+          this.router.navigate([ComponentRoutes.USERAUTH,ComponentRoutes.VERIFYOTP], {
             queryParams: {
               mobileNumber: this.tokenService.getMobileNumberFromAuthToken(),
               otp: res.response.otp
@@ -263,6 +194,6 @@ export class LoginComponent {
 
   onForgotPassword() {
     // Redirect to Forgot Password page
-    this.router.navigate(['../',ComponentRoutes.FORGOTPASSWORD], { relativeTo: this.route });
+    this.router.navigate([ComponentRoutes.USERAUTH,ComponentRoutes.FORGOTPASSWORD]);
   }
 }

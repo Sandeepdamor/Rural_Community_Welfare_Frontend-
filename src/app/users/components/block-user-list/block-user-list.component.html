@@ -51,6 +51,15 @@
                         </select>
                     </div>
 
+                    <!-- Gram Panchayat -->
+                    <div class="mb-2" *ngIf="role === Role.ADMIN">
+                        <label>Gram Panchayat</label>
+                        <select class="form-select" [(ngModel)]="filters.gramPanchayat" (change)="onFilter()">
+                            <option [ngValue]="''">All Gram Panchayat</option>
+                            <option *ngFor="let gp of gramPanchayatList" [ngValue]="gp">{{ gp }}</option>
+                        </select>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -62,8 +71,9 @@
     </div>
 
     <!-- 📋 Table -->
-    <app-dynamic-table *ngIf="!isLoading && agencyTableConfig.data.length > 0" [config]="agencyTableConfig" (actionClicked)="onAction($event.action, $event.element)"></app-dynamic-table>
-        <!-- (statusChanged)="updateUserStatus($event)" (statusIsDeletedChanged)="changeIsDeletedStatus($event)" -->
+    <app-dynamic-table *ngIf="!isLoading && agencyTableConfig.data.length > 0" [config]="agencyTableConfig"
+        (actionClicked)="onAction($event.action, $event.element)"></app-dynamic-table>
+    <!-- (statusChanged)="updateUserStatus($event)" (statusIsDeletedChanged)="changeIsDeletedStatus($event)" -->
 
     <!-- ❌ No Data Message -->
     <p *ngIf="!isLoading && agencyTableConfig.data.length === 0" class="text-center mt-3 text-danger">

@@ -6,13 +6,13 @@ import { NotFoundComponent } from '../shared/components/not-found/not-found.comp
 
 const routes: Routes = [
   {
-    path:ComponentRoutes.NOTFOUND,
-    component:NotFoundComponent
-},
+    path: ComponentRoutes.NOTFOUND,
+    component: NotFoundComponent
+  },
   {
-    path:ComponentRoutes.HOME,
-    component:HomeComponent,
-    children:[
+    path: ComponentRoutes.HOME,
+    component: HomeComponent,
+    children: [
       {
         path: ComponentRoutes.HOME,
         loadChildren: () =>
@@ -32,6 +32,11 @@ const routes: Routes = [
         path: ComponentRoutes.SARPANCH,
         loadChildren: () =>
           import('../sarpanch/sarpanch.module').then((m) => m.SarpanchModule),
+      },
+      {
+        path: ComponentRoutes.PROJECT,
+        loadChildren: () =>
+          import('../project/project.module').then((m) => m.ProjectModule),
       },
 
       {
@@ -59,10 +64,10 @@ const routes: Routes = [
         loadChildren: () =>
           import('../booking/booking.module').then((m) => m.BookingModule),
       },
-      
+
     ]
   }
- 
+
 ];
 
 @NgModule({

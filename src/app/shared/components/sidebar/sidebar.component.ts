@@ -7,6 +7,8 @@ import {
   Router,
   RouterLink,
 } from '@angular/router';
+import { TokenService } from '../../services/token.service';
+import { Role } from '../../../enums/role.enum';
 
 @Component({
   selector: 'app-sidebar',
@@ -19,14 +21,23 @@ export class SidebarComponent implements OnInit {
   currentRoute: string | undefined;
   isUserMenuOpen = false;
   isSarpanchMenuOpen = false;
-
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  isProjectMenuOpen = false;
+  Role = Role;
+  role: Role; 
+  constructor(private router: Router, private route: ActivatedRoute,private tokenService: TokenService) {
+    const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
+    this.role = roleString as Role; // ✅ safely assign enum
+  }
 
   toggleUserMenu() {
     this.isUserMenuOpen = !this.isUserMenuOpen;
   }
   toggleSarpanchMenu() {
     this.isSarpanchMenuOpen = !this.isSarpanchMenuOpen;
+  }
+
+  toggleProjectMenu() {
+    this.isProjectMenuOpen = !this.isProjectMenuOpen;
   }
 
 
@@ -42,6 +53,7 @@ export class SidebarComponent implements OnInit {
         this.currentRoute = event.url;
       }
     });
+    console.log('ROLE SIDEBAR => ',this.role);
   }
 
   isActiveRoute(route: string): boolean {
@@ -52,8 +64,6 @@ export class SidebarComponent implements OnInit {
   @HostListener('window:load', ['$event'])
   onWindowLoad(event: Event): void {
     // this.applyActiveClass(this.router.url);
-    console.log('====================================11111111111111111111');
-
     let element = document.getElementById('this.router.url') as HTMLElement;
     element ? element.classList.add('active') : '';
   }

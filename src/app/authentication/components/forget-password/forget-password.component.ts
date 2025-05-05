@@ -56,9 +56,7 @@ export class ForgetPasswordComponent {
             alert(res.message);
           }
           if (res.message === 'You have not completed Aadhaar verification. Please verify your Aadhaar to proceed with login.') {
-            this.router.navigate(['../',ComponentRoutes.VERIFY_AADHAR], {
-              relativeTo: this.route
-            });
+            this.router.navigate([ComponentRoutes.USERAUTH,ComponentRoutes.VERIFY_AADHAR]);
             return;
           }
           if (res.message === 'Aadhaar verification is pending. You cannot log-in until your Aadhaar is verified by the admin.') {
@@ -77,8 +75,7 @@ export class ForgetPasswordComponent {
           }
   
           if (res.response.otp) {
-            this.router.navigate(['../',ComponentRoutes.VERIFYOTP], {
-              relativeTo: this.route,
+            this.router.navigate([ComponentRoutes.USERAUTH,ComponentRoutes.VERIFYOTP], {
               queryParams: {
                 mobileNumber: mobile,
                 otp: res.response.otp,

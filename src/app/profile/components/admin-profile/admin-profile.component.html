@@ -1,1 +1,115 @@
-<p>admin-profile works!</p>
+<!-- Profile Image -->
+<div class="position-relative">
+    <img src="assets/images/png/profile-background.png" alt="profile-background"
+        class="img-fluid w-100 profileEdit-img" />
+    <label for="file-input">
+        <img src="assets/images/svg/profile.svg" class="choose-File object-fit-cover rounded-circle img-fluid" />
+    </label>
+    <input type="file" id="file-input" style="display: none;" accept="image/*" [disabled]="isViewOnly" />
+</div>
+
+<!-- Profile Container -->
+<div class="profile-container d-flex flex-column">
+    <!-- Profile Header -->
+    <div class="d-flex flex-column gap-2">
+        <h3>
+            Mr. {{ data.name }}
+            <span class="role-label">ADMIN</span>
+        </h3>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-pills scalable-gap-24-16" id="pills-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="active profile-tabs font-14 medium" id="pills-EditProfile-tab" data-bs-toggle="pill"
+                data-bs-target="#pills-EditProfile" type="button" role="tab" aria-controls="pills-EditProfile"
+                aria-selected="true">Edit Profile</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="profile-tabs font-14 medium" id="pills-ChangePassword-tab" data-bs-toggle="pill"
+                data-bs-target="#pills-ChangePassword" type="button" role="tab" aria-controls="pills-ChangePassword"
+                aria-selected="false">Change Password</button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="pills-tabContent">
+
+        <!-- Edit Profile -->
+        <div class="tab-pane fade show active" id="pills-EditProfile" role="tabpanel" tabindex="0">
+            <form [formGroup]="profileForm" class="d-flex flex-column scalable-gap-24-16 mt-3">
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">Name</h4>
+                    <input type="text" class="input-field" placeholder="Enter Name" formControlName="name"
+                        [disabled]="isViewOnly" />
+                    <p class="text-danger font-12 mt-1"
+                        *ngIf="profileForm.get('name')?.touched && profileForm.get('name')?.invalid">
+                        Name is required and must be at least 3 characters.
+                    </p>
+                </div>
+
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">Mobile no.</h4>
+                    <input type="text" class="input-field" [value]="data.phone" disabled />
+                </div>
+
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">Email</h4>
+                    <input type="email" class="input-field" [value]="data.email" disabled />
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-end align-items-center mt-4" *ngIf="!isViewOnly">
+                    <button type="button" class="secondary-button py-2 scalable-p-48-24"
+                        (click)="cancelEdit('name')">Cancel</button>
+                    <button type="button" class="primary-button py-2 scalable-p-48-24 ms-3"
+                        [disabled]="profileForm.invalid" (click)="updateName()">Update</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Change Password -->
+        <div class="tab-pane fade" id="pills-ChangePassword" role="tabpanel" tabindex="0">
+            <form [formGroup]="passwordForm" class="d-flex flex-column scalable-gap-24-16 mt-3">
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">Old Password</h4>
+                    <input type="password" class="input-field" formControlName="oldPassword"
+                        placeholder="Enter Old Password" />
+                    <p class="text-danger font-12 mt-1"
+                        *ngIf="passwordForm.get('oldPassword')?.touched && passwordForm.get('oldPassword')?.invalid">
+                        Old password is required.
+                    </p>
+                </div>
+
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">New Password</h4>
+                    <input type="password" class="input-field" formControlName="newPassword"
+                        placeholder="Enter New Password" />
+                    <p class="text-danger font-12 mt-1"
+                        *ngIf="passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.hasError('pattern')">
+                        Password must be 8+ characters, include uppercase, lowercase, number, and special character.
+                    </p>
+                </div>
+
+                <div class="d-flex flex-column gap-1 w-100">
+                    <h4 class="mb-0 font-14 regular subTextColor">Confirm Password</h4>
+                    <input type="password" class="input-field" formControlName="confirmPassword"
+                        placeholder="Confirm Password" />
+                    <p class="text-danger font-12 mt-1"
+                        *ngIf="passwordForm.get('confirmPassword')?.touched && passwordForm.get('confirmPassword')?.hasError('mismatch')">
+                        Passwords do not match.
+                    </p>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-end align-items-center mt-4" *ngIf="!isViewOnly">
+                    <button type="button" class="secondary-button py-2 scalable-p-48-24"
+                        (click)="cancelEdit('password')">Cancel</button>
+                    <button type="button" class="primary-button py-2 scalable-p-48-24 ms-3"
+                        [disabled]="passwordForm.invalid" (click)="updatePassword()">Update</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

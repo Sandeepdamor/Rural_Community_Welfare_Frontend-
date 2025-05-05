@@ -11,7 +11,7 @@
                     fill="#4F46BB" />
             </svg>
         </div>
-        <h2 class="mb-0 font-24 semibold black">User Dashboard</h2>
+        <h2 class="mb-0 font-24 semibold black">Dashboard</h2>
     </div>
     <div class="d-flex gap-3 align-items-center">
         <div>
@@ -37,8 +37,8 @@
                     <div class="d-flex align-items-center gap-2 border-bottom pb-2">
                         <img src="assets/images/svg/profile.svg" width="42px" height="42px">
                         <div class="d-flex flex-column gap-1">
-                            <h2 class="font-14  medium mb-0">Rudra Rathod</h2>
-                            <h3 class="font-12 regular subTextColor mb-0">Admin</h3>
+                            <h2 class="font-14  medium mb-0">{{ loggedInUser.name }}</h2>
+                            <h3 class="font-12 regular subTextColor mb-0">{{ loggedInUser.role }}</h3>
                         </div>
                     </div>
 

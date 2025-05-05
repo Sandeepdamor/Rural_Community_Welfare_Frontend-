@@ -91,6 +91,8 @@
                         [disabled]="isViewOnly" readonly />
                 </div> -->
 
+
+                <!-- <div>{{data.Villages}}</div> -->
                 <div class="d-flex flex-column gap-1 w-100" *ngIf="formattedAssignedVillages.length > 0">
                     <h4 class="mb-0 font-14 regular subTextColor">Assigned Villages</h4>
                     <div class="scrollable-box" *ngIf="formattedAssignedVillages.length">
@@ -99,7 +101,6 @@
                         </div>
                     </div>
                 </div>
-
 
                 <div class="d-flex flex-column gap-1 w-100">
                     <h4 class="mb-0 font-14 regular subTextColor">Election Year</h4>
@@ -116,14 +117,19 @@
                     <input type="text" class="input-field" placeholder="Enter Term End Date"
                         [(ngModel)]="data.termEndDate" [disabled]="isViewOnly" readonly />
                 </div>
-                <div class="d-flex flex-column gap-1 w-100">
+                <div class="d-flex flex-column gap-1 w-100" *ngIf="data.createdAt">
                     <h4 class="mb-0 font-14 regular subTextColor">Create Date</h4>
                     <input type="text" class="input-field" [value]="data.createdAt | date: 'dd MMM yyyy, h:mm a'"
                         [disabled]="isViewOnly" readonly />
                 </div>
-                <div class="d-flex flex-column gap-1 w-100">
+                <div class="d-flex flex-column gap-1 w-100" *ngIf="data.updatedAt">
                     <h4 class="mb-0 font-14 regular subTextColor">Last Updated Date</h4>
                     <input type="text" class="input-field" [value]="data.updatedAt | date: 'dd MMM yyyy, h:mm a'"
+                        [disabled]="isViewOnly" readonly />
+                </div>
+                <div class="d-flex flex-column gap-1 w-100" *ngIf="data.deletedAt">
+                    <h4 class="mb-0 font-14 regular subTextColor">Delete Date</h4>
+                    <input type="text" class="input-field" [value]="data.deletedAt | date: 'dd MMM yyyy, h:mm a'"
                         [disabled]="isViewOnly" readonly />
                 </div>
             </div>

@@ -10,6 +10,9 @@ import { ResidentFilter } from '../../../shared/interfaces/resident/resident-fil
 import { ResidentSearch } from '../../../shared/interfaces/resident/resident-search';
 import { GenderPipe } from '../../../shared/pipes/gender.pipe';
 import { ToastService } from '../../../shared/services/toast.service';
+import { Role } from '../../../enums/role.enum';
+import { TokenService } from '../../../shared/services/token.service';
+import { AddressService } from '../../../shared/services/address.service';
 
 
 @Component({
@@ -19,13 +22,20 @@ import { ToastService } from '../../../shared/services/toast.service';
     styleUrl: './pending-user-list.component.scss'
 })
 export class PendingUserListComponent {
-
+    Role = Role;
+    role: Role;
+    gramPanchayatList: string[] = [];
     constructor(
         private changeDetection: ChangeDetectorRef,
         private residentService: ResidentService,
         private router: Router,
-        private toastService: ToastService
-    ) { }
+        private toastService: ToastService,
+        private tokenService: TokenService,
+        private addressService: AddressService
+    ) {
+        const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
+        this.role = roleString as Role; // ✅ safely assign enum
+    }
     currentPaginationRequest: PaginationRequest = {
         pageNumber: 1,
         pageSize: 5,
@@ -36,6 +46,7 @@ export class PendingUserListComponent {
     isLoading: boolean = false;
 
     filters: ResidentFilter = {
+        gramPanchayat: '',
         gender: '',
         minAge: null,
         maxAge: null,
@@ -73,6 +84,7 @@ export class PendingUserListComponent {
 
     ngOnInit(): void {
         this.loadPendingResidents("PENDING", this.currentPaginationRequest);
+        this.loadGramPanchayats();
     }
 
     ngAfterViewInit(): void {
@@ -95,6 +107,18 @@ export class PendingUserListComponent {
     //   }
 
 
+    loadGramPanchayats() {
+        this.addressService.getGramPanchayats().subscribe({
+            next: (data) => this.gramPanchayatList = data,
+            error: (err) => {
+                console.error('Error loading Gram Panchayats', err)
+                // Show error message using ToastService
+                this.toastService.showError(err.message || 'Something went wrong');
+
+            }
+
+        });
+    }
 
     loadPendingResidents(status: string, paginationRequest: PaginationRequest) {
         this.isLoading = true;
@@ -182,6 +206,7 @@ export class PendingUserListComponent {
     onFilter() {
         this.isLoading = true;
         const params: any = {
+            gramPanchayat: this.filters.gramPanchayat,
             gender: this.filters.gender,
             minAge: this.filters.minAge,
             maxAge: this.filters.maxAge,

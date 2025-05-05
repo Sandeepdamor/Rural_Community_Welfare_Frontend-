@@ -25,12 +25,14 @@ export const authGuard: CanActivateFn = (route, state) => {
   const isPublic = cleanUrl.startsWith('/auth') && publicRoutes.some(route => cleanUrl === `/auth/${route}`);
 
   if (!token || isExpired) {
+    tokenService.clearTokens(); // ✅ Clear expired or invalid token
     if (isPublic || state.url === '/' || state.url === '/auth' || state.url === '') {
       return true; // allow unauthenticated access to public/login
     }
     setTimeout(() => router.navigate([ComponentRoutes.USERAUTH]));
     return false;
   }
+  
 
 
   // ✅ If user is authenticated and visiting login path, redirect to dashboard

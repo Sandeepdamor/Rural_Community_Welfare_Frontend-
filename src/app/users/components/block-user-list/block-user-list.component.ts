@@ -8,6 +8,10 @@ import { FormsModule } from '@angular/forms';
 import { ResidentFilter } from '../../../shared/interfaces/resident/resident-filter';
 import { ResidentSearch } from '../../../shared/interfaces/resident/resident-search';
 import { Router } from '@angular/router';
+import { Role } from '../../../enums/role.enum';
+import { TokenService } from '../../../shared/services/token.service';
+import { AddressService } from '../../../shared/services/address.service';
+import { ToastService } from '../../../shared/services/toast.service';
 
 
 @Component({
@@ -17,11 +21,21 @@ import { Router } from '@angular/router';
   styleUrl: './block-user-list.component.scss'
 })
 export class BlockUserListComponent {
+
+  Role = Role;
+  role: Role;
+  gramPanchayatList: string[] = [];
   constructor(
     private changeDetection: ChangeDetectorRef,
     private residentService: ResidentService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private tokenService: TokenService,
+    private addressService: AddressService,
+    private toastService:ToastService
+  ) {
+    const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
+    this.role = roleString as Role; // ✅ safely assign enum
+  }
   currentPaginationRequest: PaginationRequest = {
     pageNumber: 1,
     pageSize: 5,
@@ -32,11 +46,12 @@ export class BlockUserListComponent {
   isLoading: boolean = false;
 
   filters: ResidentFilter = {
+    gramPanchayat: '',
     gender: '',
     minAge: null,
     maxAge: null,
     isActive: null,
-    aadharStatus: 'VERIFIED',
+    aadharStatus: '',
     pageNumber: 1,
     pageSize: 5,
     sortBy: 'createdAt'
@@ -69,6 +84,7 @@ export class BlockUserListComponent {
 
   ngOnInit(): void {
     this.loadDeletedResidents("VERIFIED", this.currentPaginationRequest);
+    this.loadGramPanchayats();
   }
 
   ngAfterViewInit(): void {
@@ -77,6 +93,19 @@ export class BlockUserListComponent {
     }, 200);
   }
 
+
+  loadGramPanchayats() {
+    this.addressService.getGramPanchayats().subscribe({
+        next: (data) => this.gramPanchayatList = data,
+        error: (err) => {
+            console.error('Error loading Gram Panchayats', err)
+            // Show error message using ToastService
+            this.toastService.showError(err.message || 'Something went wrong');
+
+        }
+
+    });
+}
 
   loadDeletedResidents(status: string, paginationRequest: PaginationRequest) {
     this.isLoading = true;
@@ -145,6 +174,7 @@ export class BlockUserListComponent {
   onFilter() {
     this.isLoading = true;
     const params: any = {
+      gramPanchayat: this.filters.gramPanchayat,
       gender: this.filters.gender,
       minAge: this.filters.minAge,
       maxAge: this.filters.maxAge,
@@ -154,6 +184,8 @@ export class BlockUserListComponent {
       pageSize: this.filters.pageSize,
       sortBy: this.filters.sortBy
     };
+
+    console.log('BLOCK USER FILTER REQUEST ===> ',params);
     this.residentService.filterResidents(params).subscribe({
       next: (response) => {
         console.log('Search RESULT => ', response);
@@ -176,14 +208,14 @@ export class BlockUserListComponent {
     console.log(`${action} clicked for`, element);
 
     switch (action) {
-        case 'view profile':
-            this.router.navigate(['/user/profile/resident', element.id]);
-            break;
+      case 'view profile':
+        this.router.navigate(['/user/profile/resident', element.id]);
+        break;
 
-        default:
-            console.warn('Unknown action:', action);
+      default:
+        console.warn('Unknown action:', action);
     }
-}
+  }
 
   // updateUserStatus(event: { id: string, isActive: boolean }) {
   //   this.residentService.updateStatus(event.id, event.isActive).subscribe({

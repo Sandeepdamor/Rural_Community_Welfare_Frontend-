@@ -1,12 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { PaginationRequest } from '../interfaces/pagination-request';
 import { PageResponse } from '../interfaces/page-response';
 import { ResidentResponse } from '../interfaces/resident/resident-response';
 import { TokenService } from './token.service';
 import { ResidentSearch } from '../interfaces/resident/resident-search';
 import { ResidentFilter } from '../interfaces/resident/resident-filter';
+import { Role } from '../../enums/role.enum';
+import { ErrorService } from './error.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,21 +16,35 @@ import { ResidentFilter } from '../interfaces/resident/resident-filter';
 export class ResidentService {
   private apiUrl = 'http://localhost:9096/resident';
 
-  constructor(private http: HttpClient, private tokenService: TokenService) { }
+  constructor(private http: HttpClient, private tokenService: TokenService, private errorService: ErrorService) { }
 
   getAllResidents(status: string, isDeleted: boolean, pagination: PaginationRequest): Observable<PageResponse<ResidentResponse>> {
-    console.log('In Resident Service Access Token ', this.tokenService.getAccessToken());
-    return this.http.post<PageResponse<ResidentResponse>>(
-      `${this.apiUrl}/getAllResident`,
-      pagination,
-      {
-        params: {
-          status,
-          isDeleted: isDeleted.toString()
-        }
-      }
+    const role = this.tokenService.getRoleFromToken();
+
+    let params = new HttpParams()
+      .set('status', status)
+      .set('isDeleted', isDeleted.toString())
+      .set('pageNumber', pagination.pageNumber.toString())
+      .set('pageSize', pagination.pageSize.toString())
+      .set('sortBy', pagination.sortBy);
+
+    let url = '';
+
+    if (role === 'ADMIN') {
+      url = `${this.apiUrl}/getAllResident`;
+    } else if (role === 'SARPANCH') {
+      url = `${this.apiUrl}/get-residents`;
+    } else {
+      console.warn('Unauthorized role for fetching residents:', role);
+      return throwError(() => new Error('Unauthorized role'));
+    }
+
+    return this.http.get<PageResponse<ResidentResponse>>(url, { params }).pipe(
+      catchError((error) => this.errorService.handleError(error))
     );
   }
+
+
 
   updateStatus(id: string, isActive: boolean): Observable<any> {
     return this.http.patch(`${this.apiUrl}/change-resident-status/${id}`, null, {
@@ -69,6 +85,7 @@ export class ResidentService {
     return this.http.get(`${this.apiUrl}/resident-search-request`, { params });
   }
 
+
   filterResidents(filters: ResidentFilter): Observable<any> {
     const params: any = {
       pageNumber: filters.pageNumber,
@@ -76,6 +93,7 @@ export class ResidentService {
       sortBy: filters.sortBy || 'createdAt',
     };
 
+    if (filters.gramPanchayat) params.gramPanchayat = filters.gramPanchayat;
     if (filters.gender) params.gender = filters.gender;
     if (filters.minAge !== undefined && filters.minAge !== null) {
       params.minAge = filters.minAge;
@@ -88,8 +106,11 @@ export class ResidentService {
     }
     if (filters.aadharStatus) params.aadharStatus = filters.aadharStatus;
 
+    console.log('FILTER REQUEST IN SERVICE ==>>> 3333 ',params)
     return this.http.get(`${this.apiUrl}/resident-filter-request`, { params });
   }
+
+
   getResidentById(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/getById`, {
       params: { id }

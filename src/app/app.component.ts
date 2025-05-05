@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
-import { GenderPipe } from './shared/pipes/gender.pipe';
+import { NgChartsModule } from 'ng2-charts';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet,NgChartsModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

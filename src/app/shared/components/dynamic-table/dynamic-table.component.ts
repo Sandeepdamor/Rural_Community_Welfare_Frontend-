@@ -31,6 +31,10 @@ import {
   MatSlideToggleModule,
 } from '@angular/material/slide-toggle';
 import { Router } from '@angular/router';
+import { ProjectProgress } from '../../../enums/project-progress.enum';
+import { Project } from '../../interfaces/project/project';
+import { Role } from '../../../enums/role.enum';
+import { TokenService } from '../../services/token.service';
 
 
 @Component({
@@ -56,7 +60,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./dynamic-table.component.scss'],
 })
 export class DynamicTableComponent implements AfterViewInit, OnChanges {
-  constructor(private router: Router) { }
   componentRoutes = ComponentRoutes;
   isLastPage: boolean = false;
   toggleDropdown() {
@@ -73,12 +76,19 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
   displayedColumns: string[] = [];
   pageSizeOptions = [5, 10, 20]; // Define page size options here
   defaultPageSize = 5; // Default items per page
-
+  
   @Output() pageChanged = new EventEmitter<{ pageIndex: number, pageSize: number }>();
   @Output() statusChanged = new EventEmitter<{ id: string, isActive: boolean }>();
   // @Output() statusIsDeletedChanged = new EventEmitter<{ id: string, isActive: boolean }>();
   @Output() aadharStatusChanged = new EventEmitter<{ id: string, aadharVerificationStatus: string }>();
   @Output() actionClicked = new EventEmitter<{ action: string, element: any }>();
+
+  Role = Role;
+  userRole: Role; 
+  constructor(private router: Router,private tokenService: TokenService) {
+    const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
+    this.userRole = roleString as Role;
+   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['config'] && changes['config'].currentValue) {
@@ -140,6 +150,35 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
 
   onAction(action: string, element: any): void {
     this.actionClicked.emit({ action, element });
+  }
+
+
+  getBackgroundColor(status: string): string {
+    switch (status) {
+      case ProjectProgress.NOT_STARTED:
+        return '#edecf8';
+      case ProjectProgress.ONGOING:
+        return 'rgba(255, 53, 53, 0.05)';
+      case ProjectProgress.ON_HOLD:
+        return '#F5F6FA';
+      case ProjectProgress.COMPLETED:
+        return '#F5F6FA';
+      default:
+        return '#fff';
+    }
+  }
+
+  getStatusColor(status: string): string {
+    if (status === ProjectProgress.ON_HOLD || status === ProjectProgress.COMPLETED) {
+      return '#4F46BB';
+    }
+    return '#000';
+  }
+
+  changeProjectProgressStatus(element: any, progressStatus: any): void {
+    console.log(`Changing status of project to: ${progressStatus}`, element);
+    element.progressStatus = progressStatus;  // Update the status of the project
+    // You can call a service to update the status in the backend here.
   }
 
 

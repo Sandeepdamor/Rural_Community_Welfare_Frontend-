@@ -34,22 +34,6 @@
           </mat-menu>
           }
 
-          <!-- @case ("delete-status") {
-          <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status"
-            [style.backgroundColor]="element[column.name] ? '#edecf8' : 'rgba(255, 53, 53, 0.05)'"
-            [style.color]="element[column.name] ? '#4F46BB' : '#FF3535'">
-            {{ element[column.name] ? 'Blocked' : 'Unblock' }}
-            <img src="assets/images/svg/arrow-dropdown.svg" height="14" width="14"
-              [ngClass]="{ 'filter-active': element[column.name], 'filter-deactive': !element[column.name] }" />
-          </button>
-
-
-          <mat-menu #statusMenu="matMenu">
-            <button mat-menu-item (click)="changeIsDeletedStatus(element, true)">Blocked</button>
-            <button mat-menu-item (click)="changeIsDeletedStatus(element, false)">UnBlock</button>
-          </mat-menu>
-          } -->
-
 
           @case ("aadharstatus") {
           <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status" [style.backgroundColor]="
@@ -74,13 +58,73 @@
           </mat-menu>
           }
 
+
+          @case ("projectProgress") {
+
+          <!-- 👇 Show dropdown only if role is SARPANCH -->
+          <ng-container *ngIf="userRole === 'SARPANCH'">
+            <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status"
+              [style.backgroundColor]="getBackgroundColor(element[column.name])"
+              [style.color]="getStatusColor(element[column.name])">
+              {{ element[column.name] }}
+              <img src="assets/images/svg/arrow-dropdown.svg" height="14" width="14" [ngClass]="{
+                    'filter-active': element[column.name] === 'NOT_STARTED',
+                    'filter-deactive': element[column.name] === 'ONGOING',
+                    'filter-temporary': element[column.name] === 'ON_HOLD' || element[column.name] === 'COMPLETED'
+                  }" />
+            </button>
+
+            <mat-menu #statusMenu="matMenu">
+              <ng-container *ngIf="element[column.name] !== 'COMPLETED'">
+                <button mat-menu-item (click)="changeProjectProgressStatus(element, 'NOT_STARTED')">NOT_STARTED</button>
+                <button mat-menu-item (click)="changeProjectProgressStatus(element, 'ONGOING')">ONGOING</button>
+                <button mat-menu-item (click)="changeProjectProgressStatus(element, 'ON_HOLD')">ON_HOLD</button>
+                <button mat-menu-item (click)="changeProjectProgressStatus(element, 'COMPLETED')">COMPLETED</button>
+              </ng-container>
+            </mat-menu>
+          </ng-container>
+
+          <!-- 👇 For NON-SARPANCH users, just show status (view-only, no dropdown) -->
+          <ng-container *ngIf="userRole !== 'SARPANCH'">
+            <span class="table_status view-only" [style.backgroundColor]="getBackgroundColor(element[column.name])"
+              [style.color]="getStatusColor(element[column.name])">
+              {{ element[column.name] }}
+            </span>
+          </ng-container>
+
+          }
+
+
           <!-- @case ("serial") {
             <span>{{ getSerialNumber(element) }}</span>
           } -->
-          @case ("text") {
+
           <!-- Text column -->
+          <!-- @case ("text") {
           <span>{{ element[column.name] }}</span>
+          } -->
+
+
+          @case ("text") {
+          <!-- Check if it's a date field -->
+          <ng-container *ngIf="['startDate', 'endDate', 'approvedDate'].includes(column.name); else normalText">
+            <span>{{ element[column.name] | date: 'dd MMM yyyy, h:mm a'}}</span>
+          </ng-container>
+          <ng-template #normalText>
+            <span>{{ element[column.name] }}</span>
+          </ng-template>
           }
+
+          @case ('customText') {
+          <span>
+            {{
+            column.customTextFn
+            ? column.customTextFn(element)
+            : element[column.name]
+            }}
+          </span>
+          }
+
 
           @case ("documents") {
           <!-- Text column -->

@@ -10,6 +10,9 @@ import { ComponentRoutes } from '../../../shared/utils/component-routes';
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastService } from '../../../shared/services/toast.service';
+import { SarpanchFilter } from '../../../shared/interfaces/sarpanch/sarpanch-filter';
+import { AddressService } from '../../../shared/services/address.service';
+import { SearchRequest } from '../../../shared/interfaces/sarpanch/search-request';
 
 @Component({
   selector: 'app-sarpanch-list',
@@ -23,7 +26,8 @@ export class SarpanchListComponent implements OnInit, AfterViewInit {
     private sarpanchService: SarpanchService,
     private router: Router,
     private dialog: MatDialog,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private addressService: AddressService
   ) { }
   currentPaginationRequest: PaginationRequest = {
     pageNumber: 1,
@@ -31,9 +35,32 @@ export class SarpanchListComponent implements OnInit, AfterViewInit {
     sortBy: 'createdAt'
   };
   isLoading: boolean = false;
+  searchTerm: string = '';
+  showFilters: boolean = false;
+  gramPanchayatList: string[] = [];
+
+  filters: SarpanchFilter = {
+    gramPanchayat: '',
+    gender: '',
+    minAge: null,
+    maxAge: null,
+    isActive: null,
+    minElectionYear: null,
+    maxElectionYear: null,
+    pageNumber: 1,
+    pageSize: 5,
+    sortBy: 'createdAt'
+  };
+  search: SearchRequest = {
+    keyword: '',
+    pageNumber: 1,
+    pageSize: 5,
+    sortBy: ''
+  };
 
   ngOnInit(): void {
     this.loadSarpanch(this.currentPaginationRequest);
+    this.loadGramPanchayats();
   }
 
   ngAfterViewInit(): void {
@@ -61,11 +88,28 @@ export class SarpanchListComponent implements OnInit, AfterViewInit {
   };
 
 
+  toggleFilter() {
+    this.showFilters = !this.showFilters;
+  }
   closeFilterIfClickedOutside(event: MouseEvent) {
     const target = event.target as HTMLElement;
     if (!target.closest('.dropdown')) {
-      // this.showFilters = false;
+      this.showFilters = false;
     }
+  }
+
+
+  loadGramPanchayats() {
+    this.addressService.getGramPanchayats().subscribe({
+      next: (data) => this.gramPanchayatList = data,
+      error: (err) => {
+        console.error('Error loading Gram Panchayats', err)
+        // Show error message using ToastService
+        this.toastService.showError(err.message || 'Something went wrong');
+
+      }
+
+    });
   }
 
   loadSarpanch(paginationRequest: PaginationRequest) {
@@ -141,6 +185,84 @@ export class SarpanchListComponent implements OnInit, AfterViewInit {
         this.toastService.showError(error.message || 'Something went wrong');
       }
     });
+  }
+
+  updateIsActiveStatus(event: { id: string, isActive: boolean }) {
+    this.sarpanchService.updateStatus(event.id, event.isActive).subscribe({
+      next: (response) => {
+        // Show success message using ToastService
+        this.toastService.showSuccess(response.message);
+        this.loadSarpanch(this.currentPaginationRequest);
+      },
+      error: (err) => {
+        console.error('Status Updation Faild:', err.details);
+        // Show error message using ToastService
+        this.toastService.showError(err.details || 'Something went wrong');
+        this.isLoading = false;
+      }
+    });
+  }
+
+
+  onFilter() {
+    this.isLoading = true;
+    const filterRequest = {
+      gramPanchayat: this.filters.gramPanchayat,
+      gender: this.filters.gender,
+      minAge: this.filters.minAge,
+      maxAge: this.filters.maxAge,
+      minElectionYear: this.filters.minElectionYear,
+      maxElectionYear: this.filters.maxElectionYear,
+      isActive: this.filters.isActive,
+      pageNumber: this.currentPaginationRequest.pageNumber,
+      pageSize: this.currentPaginationRequest.pageSize,
+      sortBy: this.currentPaginationRequest.sortBy
+    };
+    this.sarpanchService.filterSarpanch(filterRequest).subscribe({
+      next: (response) => {
+        console.log('Search RESULT => ', response);
+        this.agencyTableConfig = {
+          ...this.agencyTableConfig,
+          data: response.content,
+          totalRecords: response.totalElements
+        };
+        this.changeDetection.detectChanges();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Filter failed:', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+
+  onSearch() {
+    this.isLoading = true;
+    const searchRequest = {
+      keyword: this.searchTerm,
+      pageNumber: this.currentPaginationRequest.pageNumber,
+      pageSize: this.currentPaginationRequest.pageSize,
+      sortBy: this.currentPaginationRequest.sortBy,
+
+    };
+    this.sarpanchService.searchSarpanch(searchRequest)
+      .subscribe({
+        next: (response) => {
+          console.log('Search RESULT => ', response);
+          this.agencyTableConfig = {
+            ...this.agencyTableConfig,
+            data: response.content,
+            totalRecords: response.totalElements
+          };
+          this.changeDetection.detectChanges();
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Search failed:', err);
+          this.isLoading = false;
+        }
+      });
   }
 
 

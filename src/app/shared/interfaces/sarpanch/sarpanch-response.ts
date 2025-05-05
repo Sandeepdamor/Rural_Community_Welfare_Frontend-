@@ -21,4 +21,5 @@ export interface SarpanchResponse {
   electionYear: number | null;
   gramPanchayatName: string;
   villages: Address[];
+  deletedAt: string;
 }

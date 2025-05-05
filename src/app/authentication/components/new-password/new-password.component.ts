@@ -82,6 +82,6 @@ export class NewPasswordComponent {
       this.router.navigate([ComponentRoutes.DASHBOARD]);
     }
     else
-      this.router.navigate([ComponentRoutes.LOGIN]); // Redirect to login if role is unknown
+      this.router.navigate([ComponentRoutes.USERAUTH]); // Redirect to login if role is unknown
   }
 }

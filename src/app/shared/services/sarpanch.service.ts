@@ -9,6 +9,8 @@ import { SarpanchRequest } from '../interfaces/sarpanch/sarpanch-request';
 import { ApiResponse } from '../interfaces/api-response';
 import { ErrorResponse } from '../interfaces/error/error-response';
 import { ErrorService } from './error.service';
+import { SarpanchFilter } from '../interfaces/sarpanch/sarpanch-filter';
+import { SearchRequest } from '../interfaces/sarpanch/search-request';
 
 @Injectable({
   providedIn: 'root'
@@ -56,7 +58,6 @@ export class SarpanchService {
       catchError((error) => {
         return this.errorService.handleError(error); // Use ErrorService to handle errors
       })
-
     );
   }
 
@@ -81,5 +82,67 @@ export class SarpanchService {
 
     );
   }
+
+  updateStatus(id: string, isActive: boolean): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/change-status/${id}`, null, {
+      params: {
+        isActive: isActive.toString()
+      }
+    }).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+    );
+  }
+
+
+  filterSarpanch(filters: SarpanchFilter): Observable<any> {
+    const params: any = {
+      pageNumber: filters.pageNumber,
+      pageSize: filters.pageSize,
+      sortBy: filters.sortBy || 'createdAt',
+    };
+
+    if (filters.gender) params.gender = filters.gender;
+    if (filters.gramPanchayat) params.gramPanchayat = filters.gramPanchayat;
+    if (filters.minAge !== undefined && filters.minAge !== null) {
+      params.minAge = filters.minAge;
+    }
+    if (filters.maxAge !== undefined && filters.maxAge !== null) {
+      params.maxAge = filters.maxAge;
+    }
+    if (filters.minElectionYear !== undefined && filters.minElectionYear !== null) {
+      params.minElectionYear = filters.minElectionYear;
+    }
+    if (filters.maxElectionYear !== undefined && filters.maxElectionYear !== null) {
+      params.maxElectionYear = filters.maxElectionYear;
+    }
+    if (filters.isActive !== undefined && filters.isActive !== null) {
+      params.isActive = filters.isActive;
+    }
+    return this.http.get(`${this.apiUrl}/filter-request`, { params }).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+    );
+  }
+
+
+  //Search Sarpanch By Name, FatherHusbandName, Email, Aadhar Number, Address (VillageName,City,District,State) or Mobile Number
+  searchSarpanch(search: SearchRequest): Observable<any> {
+    const params: any = {
+      keyword: search.keyword,
+      pageNumber: search.pageNumber,
+      pageSize: search.pageSize,
+      sortBy: search.sortBy,
+    };
+
+    return this.http.get(`${this.apiUrl}/search-request`, { params }).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+    );
+  }
+
 
 }

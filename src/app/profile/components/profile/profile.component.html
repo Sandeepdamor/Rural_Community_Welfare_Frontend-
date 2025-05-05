@@ -1,16 +1,42 @@
 <div *ngIf="isDataLoaded">
-    <div class="scalable-gap-24-16 scalable-p-16-8 cardBackground d-flex flex-column">
-      <div class="d-flex gap-2 align-items-center">
-        <img src="assets/images/svg/Back-Icon.svg" class="cursor-pointer" height="30" width="30" (click)="goBack()" />
-        <h2 class="font-18 medium black mb-0">Profile</h2>
-      </div>
-      <!-- Profile Section Rendered Based on User Type -->
-      <ng-container *ngIf="userType === 'resident'; else sarpanchBlock">
-        <app-resident-profile [data]="resident" [isViewOnly]="isViewOnly"></app-resident-profile>
-      </ng-container>
-      <ng-template #sarpanchBlock>
-        <app-sarpanch-profile [data]="sarpanch" [isViewOnly]="isViewOnly"  [isDeleted]="isDeleted"></app-sarpanch-profile>
-      </ng-template>
+  <div class="scalable-gap-24-16 scalable-p-16-8 cardBackground d-flex flex-column">
+    <div class="d-flex gap-2 align-items-center">
+      <img src="assets/images/svg/Back-Icon.svg" class="cursor-pointer" height="30" width="30" (click)="goBack()" />
+      <h2 class="font-18 medium black mb-0">Profile</h2>
     </div>
+    <!-- Profile Section Rendered Based on User Type -->
+    <ng-container [ngSwitch]="userType">
+
+      <!-- Resident Profile -->
+      <ng-container *ngSwitchCase="'resident'">
+        <app-resident-profile [data]="resident" [isViewOnly]="isViewOnly">
+        </app-resident-profile>
+      </ng-container>
+
+      <!-- Sarpanch Profile -->
+      <ng-container *ngSwitchCase="'sarpanch'">
+        <app-sarpanch-profile [data]="sarpanch" [isViewOnly]="isViewOnly" [isDeleted]="isDeleted">
+        </app-sarpanch-profile>
+      </ng-container>
+
+      <!-- Deleted Sarpanch Profile -->
+      <ng-container *ngSwitchCase="'deleted'">
+        <app-sarpanch-profile [data]="sarpanch" [isViewOnly]="isViewOnly" [isDeleted]="isDeleted">
+        </app-sarpanch-profile>
+      </ng-container>
+
+      <!-- Admin Profile -->
+      <ng-container *ngSwitchCase="'admin'">
+        <app-admin-profile [data]="admin" [isViewOnly]="isViewOnly" >
+        </app-admin-profile>
+      </ng-container>
+
+      <!-- Default Case (Optional) -->
+      <ng-container *ngSwitchDefault>
+        <p>User type not recognized.</p>
+      </ng-container>
+
+    </ng-container>
+
   </div>
-  
+</div>

@@ -8,6 +8,10 @@ const routes: Routes = [
     path: '',
     component: ProfileComponent,
   },
+  {
+    path: ComponentRoutes.PROFILE,
+    component: ProfileComponent,
+  },
 ];
 
 @NgModule({

@@ -26,6 +26,13 @@ export class ComponentRoutes {
   static readonly SARPANCHADD = 'add';
   static readonly SARPANCHHISTORY = 'history'
 
+
+  //Project
+  static readonly PROJECT = 'project';
+  static readonly PROJECTLIST = 'list';
+  static readonly PROJECTADD = 'add';
+  static readonly PENDING_REJECT_PROJECT_LIST = 'pending-rejected-list';
+
   // Customer
   static readonly CUSTOMER = 'customer';
   static readonly CUSTOMERLIST = 'list';

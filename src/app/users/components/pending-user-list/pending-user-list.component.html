@@ -48,6 +48,14 @@
                             <option value="REJECTED">Rejected</option>
                         </select>
                     </div>
+                    <!-- Gram Panchayat -->
+                    <div class="mb-2" *ngIf="role === Role.ADMIN">
+                        <label>Gram Panchayat</label>
+                        <select class="form-select" [(ngModel)]="filters.gramPanchayat" (change)="onFilter()">
+                            <option [ngValue]="''">All Gram Panchayat</option>
+                            <option *ngFor="let gp of gramPanchayatList" [ngValue]="gp">{{ gp }}</option>
+                        </select>
+                    </div>
 
                 </div>
             </div>

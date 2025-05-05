@@ -16,31 +16,42 @@ import { ResidentSearch } from '../../../shared/interfaces/resident/resident-sea
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastService } from '../../../shared/services/toast.service';
+import { AddressService } from '../../../shared/services/address.service';
+import { Role } from '../../../enums/role.enum';
+import { TokenService } from '../../../shared/services/token.service';
 
 @Component({
     selector: 'app-user-list',
     standalone: true,
-    imports: [RouterLink, DynamicTableComponent, CommonModule, FormsModule],
+    imports: [DynamicTableComponent, CommonModule, FormsModule],
     templateUrl: './user-list.component.html',
     styleUrl: './user-list.component.scss',
 })
 export class UserListComponent implements OnInit, AfterViewInit {
+    Role = Role;
+    role: Role;
     constructor(
         private changeDetection: ChangeDetectorRef,
         private residentService: ResidentService,
         private router: Router,
         private dialog: MatDialog,
-        private toastService: ToastService
-    ) { }
+        private toastService: ToastService,
+        private addressService: AddressService,
+        private tokenService: TokenService
+    ) {
+        const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
+        this.role = roleString as Role; // ✅ safely assign enum
+    }
     currentPaginationRequest: PaginationRequest = {
         pageNumber: 1,
         pageSize: 5,
-        sortBy: 'createdAt'
+        sortBy: ''
     };
     searchTerm: string = '';
     showFilters: boolean = false;
     isLoading: boolean = false;
     filters: ResidentFilter = {
+        gramPanchayat: '',
         gender: '',
         minAge: null,
         maxAge: null,
@@ -48,7 +59,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
         aadharStatus: 'VERIFIED',
         pageNumber: 1,
         pageSize: 5,
-        sortBy: 'createdAt'
+        sortBy: ''
     };
     search: ResidentSearch = {
         keyword: '',
@@ -56,11 +67,15 @@ export class UserListComponent implements OnInit, AfterViewInit {
         isDeleted: false,
         pageNumber: 1,
         pageSize: 5,
-        sortBy: 'createdAt'
+        sortBy: ''
     };
+    gramPanchayatList: string[] = [];
+
+
 
     ngOnInit(): void {
         this.loadResidents(this.currentPaginationRequest);
+        this.loadGramPanchayats();
     }
 
     ngAfterViewInit(): void {
@@ -80,7 +95,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
             { name: 'action', displayName: 'Action', type: 'action' },
         ],
         data: [],
-        actions: ['edit', 'delete', 'view profile']
+        actions: ['delete', 'view profile']
     };
 
     handlePageChange(event: { pageIndex: number, pageSize: number }) {
@@ -89,10 +104,23 @@ export class UserListComponent implements OnInit, AfterViewInit {
         const paginationRequest: PaginationRequest = {
             pageNumber: event.pageIndex + 1, // Convert to 1-based index for backend
             pageSize: event.pageSize,
-            sortBy: 'createdAt'
+            sortBy: 'aadharNumber'
         };
 
         this.loadResidents(paginationRequest);
+    }
+
+    loadGramPanchayats() {
+        this.addressService.getGramPanchayats().subscribe({
+            next: (data) => this.gramPanchayatList = data,
+            error: (err) => {
+                console.error('Error loading Gram Panchayats', err)
+                // Show error message using ToastService
+                this.toastService.showError(err.message || 'Something went wrong');
+
+            }
+
+        });
     }
 
     loadResidents(paginationRequest: PaginationRequest) {
@@ -175,7 +203,9 @@ export class UserListComponent implements OnInit, AfterViewInit {
 
     onFilter() {
         this.isLoading = true;
+        console.log('FILTER REQUEST ======>>> 111 ', this.filters);
         const filterRequest = {
+            gramPanchayat: this.filters.gramPanchayat,
             gender: this.filters.gender,
             minAge: this.filters.minAge,
             maxAge: this.filters.maxAge,
@@ -185,6 +215,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
             sortBy: this.currentPaginationRequest.sortBy,
             aadharStatus: this.filters.aadharStatus
         };
+        console.log('FILTER REQUEST >>>> 222', filterRequest);
         this.residentService.filterResidents(filterRequest).subscribe({
             next: (response) => {
                 console.log('Search RESULT => ', response);

@@ -3,6 +3,7 @@ import { PaginationRequest } from "../pagination-request";
 
 
 export interface ResidentFilter extends PaginationRequest {
+  gramPanchayat?: string;
   gender?: string;
   minAge?: number | null;
   maxAge?: number | null;
