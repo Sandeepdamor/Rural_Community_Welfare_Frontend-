@@ -11,35 +11,37 @@ import { Role } from '../../../enums/role.enum';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.scss'
+  styleUrl: './navbar.component.scss',
 })
 export class NavbarComponent implements OnInit {
   loggedInUser!: UserResponse;
 
-
-  constructor(private authService: AuthService, private router: Router, private tokenService: TokenService, private userService: UserService) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private tokenService: TokenService,
+    private userService: UserService
+  ) {}
 
   ngOnInit() {
     const mobile = this.tokenService.getMobileNumberFromAccessToken();
+    console.log('mobile....' + mobile);
     if (mobile) {
       this.userService.getUserByMobile(mobile).subscribe({
         next: (res) => {
           console.log(res);
           this.loggedInUser = res.response;
-          console.log('LOGGED IN USER => ',this.loggedInUser);
+          console.log('LOGGED IN USER => ', this.loggedInUser);
         },
         error: (err) => {
           console.error('Failed to load user', err);
           alert(err.message);
-        }
+        },
       });
     }
   }
 
-
-
   logout() {
     this.authService.logout();
   }
-
 }

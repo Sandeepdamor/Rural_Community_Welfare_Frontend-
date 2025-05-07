@@ -9,10 +9,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { GrievanceService } from '../../../shared/services/grievanceService';
 import { PaginationRequest } from '../../../shared/interfaces/pagination-request';
 import { TableConfig } from '../../../shared/components/model/table-config';
+import { Role } from '../../../enums/role.enum';
+import { TokenService } from '../../../shared/services/token.service';
 
 @Component({
   selector: 'app-grievance-list',
-  imports: [DynamicTableComponent, CommonModule, FormsModule],
+  imports: [DynamicTableComponent, CommonModule, FormsModule, RouterLink],
   templateUrl: './grievance-list.component.html',
   styleUrl: './grievance-list.component.scss',
 })
@@ -20,13 +22,17 @@ export class GrievanceListComponent {
   searchTerm: string = '';
   showFilters: boolean = false;
   isLoading: boolean = false;
-
+  role: Role;
   constructor(
     private changeDetection: ChangeDetectorRef,
     private grievanceService: GrievanceService,
     private snackBar: MatSnackBar,
-    private router: Router
-  ) {}
+    private router: Router,
+    private tokenService: TokenService
+  ) {
+    const roleStr = tokenService.getRoleFromToken();
+    this.role = roleStr as Role;
+  }
 
   currentPaginationRequest: PaginationRequest = {
     pageNumber: 1,
@@ -62,8 +68,8 @@ export class GrievanceListComponent {
       { name: 'status', displayName: 'Status', type: 'text' },
       { name: 'resident', displayName: 'Author Name', type: 'text' },
       //    { name: 'isDeleted', displayName: 'Deleted', type: 'text' },
-      { name: 'isActive', displayName: 'Active', type: 'status' },
-      //{ name: 'createdAt', displayName: 'Created At', type: 'text' },
+      // { name: 'isActive', displayName: 'Active', type: 'status' },
+      { name: 'response', displayName: 'Response', type: 'text' },
       //  { name: 'updatedAt', displayName: 'Updated At', type: 'text' },
       //    { name: 'attachments', displayName: 'Attachments', type: 'text' },
       { name: 'action', displayName: 'Update', type: 'action' },
@@ -80,10 +86,10 @@ export class GrievanceListComponent {
   loadGrievance(paginationRequest: PaginationRequest) {
     this.isLoading = true;
     this.grievanceService
-      .getAllGrievance('PENDING', true, paginationRequest)
+      .getAllGrievance('RESOLVED', true, paginationRequest)
       .subscribe({
         next: (response) => {
-          console.log('API Response:', response);
+          console.log('API Response:', response.content);
           console.log('Content length:', response.content.length);
           console.log('Total elements:', response.totalElements);
 
@@ -96,7 +102,7 @@ export class GrievanceListComponent {
           this.isLoading = false;
         },
         error: (err) => {
-          console.error('Error fetching residents:', err.error);
+          console.error('Error fetching grievance:', err.error);
           this.isLoading = false;
         },
       });
@@ -112,10 +118,9 @@ export class GrievanceListComponent {
       pageSize: this.currentPaginationRequest.pageSize,
       sortBy: this.currentPaginationRequest.sortBy,
     };
-    console.log('SEARCH TERM => ', this.searchTerm);
-
-    console.log('SEARCH REQUEST => ', searchRequest);
-    console.log('SEARCH REQUEST FILTER => ', this.filters);
+    // console.log('SEARCH TERM => ', this.searchTerm);
+    // console.log('SEARCH REQUEST => ', searchRequest);
+    // console.log('SEARCH REQUEST FILTER => ', this.filters);
 
     this.grievanceService.searchGrievance(searchRequest).subscribe({
       next: (response) => {
@@ -169,7 +174,13 @@ export class GrievanceListComponent {
 
   onActionClicked(event: { action: string; element: any }) {
     const { action, element } = event;
-    if (action === 'edit') {
+    if (action === 'edit' && this.role === 'RESIDENT') {
+      console.log('update=====RESIDENT');
+      this.router.navigate(['grievance/grievance-update', element.id], {
+        queryParams: { mode: 'update' },
+      });
+    } else if (action === 'edit' && this.role === 'ADMIN') {
+      console.log('update=====ADMIN');
       this.router.navigate(['grievance/grievance-update', element.id], {
         queryParams: { mode: 'update' },
       });

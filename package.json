@@ -22,7 +22,7 @@
     "@angular/platform-server": "^19.2.5",
     "@angular/router": "^19.2.0",
     "bootstrap": "^5.3.4",
-    "chart.js": "^3.4.0",
+    "chart.js": "^3.9.1",
     "jquery": "^3.7.1",
     "ng2-charts": "^3.1.2",
     "ngx-toastr": "^19.0.0",

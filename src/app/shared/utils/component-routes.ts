@@ -24,8 +24,7 @@ export class ComponentRoutes {
   static readonly SARPANCH = 'sarpanch';
   static readonly SARPANCHLIST = 'list';
   static readonly SARPANCHADD = 'add';
-  static readonly SARPANCHHISTORY = 'history'
-
+  static readonly SARPANCHHISTORY = 'history';
 
   //Project
   static readonly PROJECT = 'project';
@@ -43,6 +42,7 @@ export class ComponentRoutes {
   static GRIEVANCELIST = 'grievance-list';
   static GRIEVANCES = 'grievance';
   static GRIEVANCEUPDATE = 'grievance-update';
+  static GRIEVANCEADD = 'grievance-add';
 
   // Customer
   static readonly CUSTOMER = 'customer';

@@ -9,7 +9,7 @@ import { NotFoundComponent } from '../shared/components/not-found/not-found.comp
 const routes: Routes = [
   {
     path: ComponentRoutes.NOTFOUND,
-    component: NotFoundComponent
+    component: NotFoundComponent,
   },
   {
     path: ComponentRoutes.HOME,
@@ -85,9 +85,8 @@ const routes: Routes = [
         loadChildren: () =>
           import('../booking/booking.module').then((m) => m.BookingModule),
       },
-
-    ]
-  }
+    ],
+  },
 ];
 
 @NgModule({

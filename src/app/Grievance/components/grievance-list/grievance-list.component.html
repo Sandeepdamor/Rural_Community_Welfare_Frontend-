@@ -59,14 +59,15 @@
     </div>
 
     <!-- Right: Add User -->
-    <!-- <div>
-      <button class="primary-button p-8-12 d-flex align-items-center gap-2" [routerLink]="'/announcements/add'">
+
+    <div *ngIf="role==='RESIDENT'">
+      <button class="primary-button p-8-12 d-flex align-items-center gap-2" [routerLink]="'/grievance/grievance-add'">
         <div class="plus_icon">
           <img src="assets/images/svg/plus-icon.svg" height="12" width="12">
         </div>
-        Add Announcement
+        Add Grievance
       </button>
-    </div> -->
+    </div>
   </div>
 
 
