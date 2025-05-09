@@ -33,7 +33,15 @@ export class ResidentGrievanceAddComponent {
   ngOnInit(): void {
     // Initialize form with validators
     this.grievanceForm = this.fb.group({
-      subject: ['', Validators.required],
+      subject: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(30),
+          Validators.pattern(/^[a-zA-Z ]+$/),
+        ],
+      ],
       description: ['', Validators.required],
       attachment: [],
     });

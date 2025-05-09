@@ -15,13 +15,24 @@
   <!-- Form Inputs -->
   <div class="row g-4">
     <!-- Response -->
-    <div class="col-md-6" *ngIf="role==='ADMIN'">
+    <div class="col-md-6" *ngIf="role === 'ADMIN'">
       <div class="d-flex flex-column gap-1 w-100">
-        <h4 class="mb-0 font-14 regular subTextColor">Response</h4>
+        <h4 class="mb-0 font-14 regular subTextColor">
+          Response <span class="text-danger">*</span>
+        </h4>
         <input type="text" class="input-field" placeholder="Enter Response" [(ngModel)]="grievance.response"
-          name="response" required />
+          name="response" required minlength="5" maxlength="1000" pattern="^[A-Za-z0-9\s]*$" #responseRef="ngModel" />
+
+        <!-- Validation Errors -->
+        <div *ngIf="responseRef.touched && responseRef.invalid" class="text-danger mt-1">
+          <div *ngIf="responseRef.errors?.['required']">Response is required.</div>
+          <div *ngIf="responseRef.errors?.['minlength']">Response must be at least 5 characters long.</div>
+          <div *ngIf="responseRef.errors?.['maxlength']">Response must not exceed 1000 characters.</div>
+          <div *ngIf="responseRef.errors?.['pattern']">Response can contain only letters, numbers, and spaces.</div>
+        </div>
       </div>
     </div>
+
 
     <div class="col-md-6" *ngIf="role==='RESIDENT'">
       <div class="d-flex flex-column gap-1 w-100">
@@ -42,13 +53,22 @@
     <!-- Status -->
     <div class="col-md-6">
       <div class="d-flex flex-column gap-1 w-100">
-        <h4 class="mb-0 font-14 regular subTextColor">Status</h4>
-        <select class="input-field form-select" [(ngModel)]="grievance.status" name="status" required>
+        <h4 class="mb-0 font-14 regular subTextColor">
+          Status <span class="text-danger">*</span>
+        </h4>
+        <select class="input-field form-select" [(ngModel)]="grievance.status" name="status" required
+          #statusRef="ngModel">
           <option value="" disabled selected>Select status</option>
           <option *ngFor="let status of statusList" [value]="status">{{ status }}</option>
         </select>
+
+        <!-- Validation Errors -->
+        <div *ngIf="statusRef.touched && statusRef.invalid" class="text-danger mt-1">
+          <div *ngIf="statusRef.errors?.['required']">Status is required.</div>
+        </div>
       </div>
     </div>
+
   </div>
   <!-- Button -->
   <div class="d-flex justify-content-end gap-4">

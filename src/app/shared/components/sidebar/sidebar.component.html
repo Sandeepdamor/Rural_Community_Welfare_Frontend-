@@ -12,10 +12,12 @@
   <div class="menu">
     <ul class="d-flex flex-column p-0  gap-3 mb-0">
 
-      <li class="cursor-pointer" [routerLink]="'/dashboard'" [ngClass]="{ 'active': isActiveRoute('/') }"
-        id="dashboard">
+      <li class="cursor-pointer" [routerLink]="''" [ngClass]="{ 'active': isActiveRoute('/') }" id="dashboard">
         <img src="assets/images/svg/Dashboard.svg"><span class="menu-text singleLine">Dashboard</span>
       </li>
+      <!-- <li class="cursor-pointer" [routerLink]="'/user'" [ngClass]="{ 'active': isActiveRoute('/user') }"
+                id="user"> <img src="assets/images/svg/user.svg"><span class="menu-text singleLine">User</span></li> -->
+
       <!-- Resident Dropdown -->
       <!-- Parent item -->
       <li class="cursor-pointer dropdown-toggle" (click)="toggleUserMenu()" [class.active]="isUserMenuOpen">
@@ -23,26 +25,23 @@
         <span class="menu-text singleLine">Resident</span>
       </li>
 
+      <!-- Submenu -->
       <ul *ngIf="isUserMenuOpen" class="sub-menu">
-        <li *ngIf="role === Role.ADMIN || role === Role.SARPANCH" [routerLink]="'/user/list'" routerLinkActive="active">
-          <img src="assets/images/svg/user-list-icon.svg" alt="user-list-icon" class="white-icon" />
+        <li [routerLink]="'/user/list'" routerLinkActive="active"><img src="assets/images/svg/user-list-icon.svg"
+            alt="user-list-icon" class="white-icon" />Residents List
+        </li>
+        <li [routerLink]="'/user/delete-user-list'" routerLinkActive="active">
+          <img src="assets/images/svg/delete-user-icon.svg" alt="delete-user-icon" class="white-icon" />Deleted
           Residents List
         </li>
-        <li *ngIf="role === Role.ADMIN || role === Role.SARPANCH" [routerLink]="'/user/delete-user-list'"
-          routerLinkActive="active">
-          <img src="assets/images/svg/delete-user-icon.svg" alt="delete-user-icon" class="white-icon" />
-          Deleted Residents List
-        </li>
-        <li *ngIf="role === Role.ADMIN" [routerLink]="'/user/aadhar-pending-list'" routerLinkActive="active">
-          <img src="assets/images/svg/pending-user-icon.svg" alt="pending-user-icon" class="white-icon" />
-          Pending Residents List
-        </li>
+        <li [routerLink]="'/user/aadhar-pending-list'" routerLinkActive="active"><img
+            src="assets/images/svg/pending-user-icon.svg" alt="pending-user-icon" class="white-icon" />Pending Residents
+          List</li>
       </ul>
 
       <!-- Sarpanch Dropdown -->
       <!-- Parent item -->
-      <li *ngIf="role === Role.ADMIN" class="cursor-pointer dropdown-toggle" (click)="toggleSarpanchMenu()"
-        [class.active]="isSarpanchMenuOpen">
+      <li class="cursor-pointer dropdown-toggle" (click)="toggleSarpanchMenu()" [class.active]="isSarpanchMenuOpen">
         <img src="assets/images/svg/user.svg">
         <span class="menu-text singleLine">Sarpanch</span>
       </li>
@@ -50,41 +49,21 @@
       <!-- Submenu -->
       <ul *ngIf="isSarpanchMenuOpen" class="sub-menu">
         <li [routerLink]="'/sarpanch/list'" routerLinkActive="active"><img src="assets/images/svg/user-list-icon.svg"
-            alt="user-list-icon" class="white-icon" />Sarpanch
+            alt="user-list-icon" class="white-icon" />Sarpanch List
+        </li>
+        <li [routerLink]="'/sarpanch/delete-list'" routerLinkActive="active">
+          <img src="assets/images/svg/delete-user-icon.svg" alt="delete-user-icon" class="white-icon" />Deleted Sarpanch
           List
-        </li>
-        <li [routerLink]="'/sarpanch/history'" routerLinkActive="active">
-          <img src="assets/images/svg/delete-user-icon.svg" alt="delete-user-icon" class="white-icon" />History
-        </li>
-
-      </ul>
-
-      <!-- Project Dropdown -->
-      <!-- Parent item -->
-      <li *ngIf="role === Role.ADMIN || role === Role.SARPANCH || role === Role.RESIDENT"
-        class="cursor-pointer dropdown-toggle" (click)="toggleProjectMenu()" [class.active]="isSarpanchMenuOpen">
-        <img src="assets/images/svg/project.svg" alt="project-icon" class="white-icon">
-        <!-- <i class="bi bi-folder2-open"></i> -->
-        <span class="menu-text singleLine">Project</span>
-      </li>
-
-      <!-- Submenu -->
-      <ul *ngIf="isProjectMenuOpen" class="sub-menu">
-        <li *ngIf="role === Role.ADMIN || role === Role.SARPANCH || role === Role.RESIDENT"
-          [routerLink]="'/project/list'" routerLinkActive="active">
-          <img src="assets/images/svg/project-list-icon.svg" alt="project-list-icon" class="white-icon" />
-          <!-- <i class="bi bi-card-list white-icon"></i> -->
-          Projects List
-        </li>
-        <li *ngIf="role === Role.ADMIN || role === Role.SARPANCH" [routerLink]="'/project/pending-rejected-list'"
-          routerLinkActive="active">
-          <img src="assets/images/svg/pending-project-icon.svg" alt="pending-project-icon"
-            class="white-icon" />Pending/Rejected Requests
         </li>
         <!-- <li [routerLink]="'/user/aadhar-pending-list'" routerLinkActive="active"><img
                         src="assets/images/svg/pending-user-icon.svg" alt="pending-user-icon"
                         class="white-icon" />Pending Users List</li> -->
       </ul>
+
+      <!-- <li class="cursor-pointer" [routerLink]="'/announcements/list'" [ngClass]="{ 'active': isActiveRoute('/announcements') }"
+                id="customer"><img src="assets/images/svg/Service.svg"><span
+                    class="menu-text singleLine">Announcements</span>
+            </li> -->
 
       <!-- Announcements Dropdown -->
       <!-- Parent item -->
@@ -113,6 +92,11 @@
                 [ngClass]="{ 'active': isActiveRoute('/managerole') }" id="managerole"><img
                     src="assets/images/svg/Manage Role.svg"><span class="menu-text singleLine">My
                         Grievances</span></li> -->
+      <li class="cursor-pointer" [routerLink]="'/serviceCategory'"
+        [ngClass]="{ 'active': isActiveRoute('/serviceCategory') }" id="serviceCategory"><img
+          src="assets/images/svg/Service.svg"><span class="menu-text singleLine">Community Projects</span>
+      </li>
+
 
       <!-- grievance Dropdown -->
       <!-- Parent item -->
@@ -123,10 +107,10 @@
 
       <!-- Submenu -->
       <ul *ngIf="isGrievanceMenuOpen" class="sub-menu">
-        <li [routerLink]="'/grievance/grievance-list'" routerLinkActive="active"><img
+        <li [routerLink]="'grievance/grievance-list'" routerLinkActive="active"><img
             src="assets/images/svg/user-list-icon.svg" alt="user-list-icon" class="white-icon" />Grievance List
         </li>
-        <li [routerLink]="'/grievance/delete'" routerLinkActive="active">
+        <li [routerLink]="'grievance/grievance-delete'" routerLinkActive="active">
           <img src="assets/images/svg/delete-user-icon.svg" alt="delete-user-icon" class="white-icon" />Deleted
           Grievance
         </li>

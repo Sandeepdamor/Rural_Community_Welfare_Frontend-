@@ -10,6 +10,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AnnouncementService } from '../../../shared/services/announcement.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-announcements-add',
@@ -26,19 +27,26 @@ export class AnnouncementsAddComponent {
   constructor(
     private fb: FormBuilder,
     private announcementService: AnnouncementService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
     this.announcementForm = this.fb.group({
-      title: ['', Validators.required],
-      content: ['', Validators.required],
+      title: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(200),
+          Validators.pattern(/^[A-Za-z][A-Za-z\s]*$/),
+        ],
+      ],
+      content: ['', [Validators.required, Validators.maxLength(500)]],
       date: ['', Validators.required],
       status: ['', Validators.required],
       attachment: [],
     });
-    // const mode = this.route.snapshot.queryParamMap.get('mode');
-    // const id = this.route.snapshot.paramMap.get('id');
 
     this.mode = this.route.snapshot.queryParamMap.get('mode');
     this.announcementId = this.route.snapshot.paramMap.get('id');
@@ -108,53 +116,90 @@ export class AnnouncementsAddComponent {
       this.announcementForm.patchValue({ [controlName]: files });
     }
   }
-
   onSubmit(): void {
-    if (this.announcementForm.valid) {
-      const formData = new FormData();
-      console.log('Form Values (for debug):', this.announcementForm.value);
-
-      const rawDate = this.announcementForm.value.date;
-      const formattedDate = this.formatDate(rawDate); // Format to yyyy-MM-dd HH:mm:ss
-
-      Object.entries(this.announcementForm.value).forEach(([key, value]) => {
-        if (key === 'attachment' && value) {
-          const files = value as FileList;
-          for (let i = 0; i < files.length; i++) {
-            formData.append('attachments', files[i]); // Append each file
-          }
-        } else if (key === 'date') {
-          formData.append('date', formattedDate); // Append formatted date
-        } else if (typeof value === 'string') {
-          formData.append(key, value);
+    if (this.announcementForm.invalid) {
+      this.announcementForm.markAllAsTouched();
+      this.snackBar.open(
+        'Please fill out all required fields correctly.',
+        'Close',
+        {
+          duration: 3000,
+          verticalPosition: 'top',
+          panelClass: ['snackbar-error'],
         }
-      });
-      //  Determine whether to add or update
-      if (this.mode === 'update' && this.announcementId) {
-        //  Call update API
-        this.announcementService
-          .updateAnnouncement(this.announcementId, formData)
-          .subscribe({
-            next: (res: any) => {
-              console.log('Successfully updated:', res);
-            },
-            error: (err: HttpErrorResponse) => {
-              console.error('Error updating announcement:', err.message);
-            },
-          });
-      } else {
-        //  Call add API
-        this.announcementService.addAnnouncement(formData).subscribe({
-          next: (res: any) => {
-            console.log('Successfully submitted:', res);
-          },
-          error: (err: HttpErrorResponse) => {
-            console.error('Error submitting announcement:', err.message);
-          },
+      );
+      return;
+    }
+
+    const formData = new FormData();
+    const rawDate = this.announcementForm.value.date;
+    const formattedDate = this.formatDate(rawDate);
+
+    Object.entries(this.announcementForm.value).forEach(([key, value]) => {
+      if (key === 'attachment' && value) {
+        const files = value as FileList;
+        for (let i = 0; i < files.length; i++) {
+          formData.append('attachments', files[i]);
+        }
+      } else if (key === 'date') {
+        formData.append('date', formattedDate);
+      } else if (typeof value === 'string') {
+        formData.append(key, value);
+      }
+    });
+
+    const handleError = (err: HttpErrorResponse) => {
+      console.error('Error:', err);
+
+      // ✅ Check if backend sent field-level validation errors
+      if (err.error?.errors) {
+        const errors = err.error.errors;
+        Object.keys(errors).forEach((fieldName) => {
+          if (this.announcementForm.get(fieldName)) {
+            this.announcementForm.get(fieldName)?.setErrors({
+              backend: errors[fieldName],
+            });
+          }
         });
       }
+
+      this.snackBar.open(
+        'Failed to submit announcement: ' + (err.error?.message || err.message),
+        'Close',
+        {
+          duration: 4000,
+          verticalPosition: 'top',
+          panelClass: ['snackbar-error'],
+        }
+      );
+    };
+
+    if (this.mode === 'update' && this.announcementId) {
+      this.announcementService
+        .updateAnnouncement(this.announcementId, formData)
+        .subscribe({
+          next: (res: any) => {
+            console.log('Successfully updated:', res);
+            this.snackBar.open('Announcement updated successfully!', 'Close', {
+              duration: 3000,
+              verticalPosition: 'top',
+              panelClass: ['snackbar-success'],
+            });
+          },
+          error: handleError,
+        });
     } else {
-      console.log('Form Invalid');
+      this.announcementService.addAnnouncement(formData).subscribe({
+        next: (res: any) => {
+          console.log('Successfully submitted:', res);
+          this.snackBar.open('Announcement submitted successfully!', 'Close', {
+            duration: 3000,
+            verticalPosition: 'top',
+            panelClass: ['snackbar-success'],
+          });
+        },
+        error: handleError,
+      });
     }
   }
 

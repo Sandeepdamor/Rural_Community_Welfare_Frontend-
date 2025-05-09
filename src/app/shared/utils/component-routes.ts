@@ -40,6 +40,7 @@ export class ComponentRoutes {
 
   //Grievance
   static GRIEVANCELIST = 'grievance-list';
+  static GRIEVANCEDELETE = 'grievance-delete';
   static GRIEVANCES = 'grievance';
   static GRIEVANCEUPDATE = 'grievance-update';
   static GRIEVANCEADD = 'grievance-add';
