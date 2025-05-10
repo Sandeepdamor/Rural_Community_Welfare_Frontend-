@@ -66,7 +66,7 @@ export class GrievanceService {
       console.log('resident service is calling');
       url = `${this.apiUrl}/get-by-id`;
     } else if (role === 'SARPANCH') {
-      url = `${this.apiUrl}/get-sarpanch-grievances`;
+      url = `${this.apiUrl}/get-all-grievance`;
     } else {
       console.warn('Unauthorized role for fetching grievances:', role);
       return throwError(() => new Error('Unauthorized role'));

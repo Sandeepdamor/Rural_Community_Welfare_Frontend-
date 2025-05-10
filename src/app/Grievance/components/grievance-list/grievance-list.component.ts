@@ -66,7 +66,7 @@ export class GrievanceListComponent {
       { name: 'description', displayName: 'Description', type: 'text' },
       { name: 'submittedDate', displayName: 'Submitted Date', type: 'text' },
       { name: 'status', displayName: 'Status', type: 'text' },
-      { name: 'resident', displayName: 'Author Name', type: 'text' },
+      { name: 'residentName', displayName: 'Author Name', type: 'text' },
       //    { name: 'isDeleted', displayName: 'Deleted', type: 'text' },
       // { name: 'isActive', displayName: 'Active', type: 'status' },
       { name: 'response', displayName: 'Response', type: 'text' },
@@ -86,16 +86,20 @@ export class GrievanceListComponent {
   loadGrievance(paginationRequest: PaginationRequest) {
     this.isLoading = true;
     this.grievanceService
-      .getAllGrievance('RESOLVED', true, paginationRequest)
+      .getAllGrievance('PENDING', true, paginationRequest)
       .subscribe({
         next: (response) => {
           console.log('API Response:', response.content);
           console.log('Content length:', response.content.length);
           console.log('Total elements:', response.totalElements);
 
+          response.content.map((item) => item.resident.name);
           this.agencyTableConfig = {
             ...this.agencyTableConfig,
-            data: response.content,
+            data: response.content.map((item) => ({
+              ...item,
+              residentName: item.resident.name || 'N/A',
+            })),
             totalRecords: response.totalElements,
           };
           this.changeDetection.detectChanges();
@@ -176,6 +180,12 @@ export class GrievanceListComponent {
     const { action, element } = event;
     if (action === 'edit' && this.role === 'RESIDENT') {
       console.log('update=====RESIDENT');
+      this.router.navigate(['grievance/grievance-update', element.id], {
+        queryParams: { mode: 'update' },
+      });
+    }
+    if (action === 'edit' && this.role === 'SARPANCH') {
+      console.log('update=====SARPANCH');
       this.router.navigate(['grievance/grievance-update', element.id], {
         queryParams: { mode: 'update' },
       });

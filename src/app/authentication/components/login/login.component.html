@@ -1,154 +1,156 @@
 <div class="d-flex flex-column align-items-center justify-content-center gap-4 h-100 p-4 mx-auto"
-    style="max-width: 420px;">
-    <img src="assets/images/svg/logo.svg" alt="e-Gram Panchayat" style="height: 18%;" />
+  style="max-width: 420px;">
+  <img src="assets/images/svg/logo.svg" alt="e-Gram Panchayat" style="height: 18%;" />
 
 
-    <!-- Dynamic Heading -->
-    <div class="d-flex flex-column gap-2 align-items-center text-center mt-4">
-        <h2 class="mb-0 font-22 semibold textColor">{{ isRegisterMode ? 'Register' : 'Sign in' }}</h2>
-        <h3 class="mb-0 font-16 medium subTextColor">
-            {{ isRegisterMode ? 'Create a new account to continue.' : 'Please login to continue to your account.' }}
-        </h3>
-    </div>
-
-    <!-- Form Section -->
-    <form class="w-100" [formGroup]="isRegisterMode ? formRegister : formLogin"
-        (ngSubmit)="isRegisterMode ? onRegister() : onLogin()">
-        <!-- Success Message Display -->
-        <div class="d-flex flex-column gap-3 align-items-center w-100">
+  <!-- Dynamic Heading -->
+  <div class="d-flex flex-column gap-2 align-items-center text-center mt-4">
+    <h2 class="mb-0 font-22 semibold textColor">
+      {{ isRegisterMode && !isAdminOrSarpanchLogin ? 'Register' : 'Sign in' }}
+    </h2>
+    <h3 class="mb-0 font-16 medium subTextColor">
+      {{ isRegisterMode && !isAdminOrSarpanchLogin ? 'Create a new account to continue.' : 'Please login to
+      continue to your account.' }}
+    </h3>
+  </div>
 
 
-            <!-- Error Message Display -->
-            <div *ngIf="errorMessage" class="error-box animate">
-                <i class="fa fa-exclamation-circle"></i> {{ errorMessage }}
-            </div>
+  <!-- Form Section -->
+  <form class="w-100" [formGroup]="isRegisterMode ? formRegister : formLogin"
+    (ngSubmit)="isRegisterMode ? onRegister() : onLogin()">
+    <!-- Success Message Display -->
+    <div class="d-flex flex-column gap-3 align-items-center w-100">
 
 
-
-            <!-- Name (Only for Register) -->
-            <!-- Full Name (Only for Register) -->
-            <div *ngIf="isRegisterMode" class="d-flex flex-column gap-1 w-100">
-                <h4 class="mb-0 font-14 regular subTextColor">Full Name</h4>
-                <input type="text" class="input-field" formControlName="name" placeholder="Enter your full name"
-                    [ngClass]="{'is-invalid': isFieldInvalid('name')}" />
-
-                <div *ngIf="isFieldInvalid('name')" class="invalid-feedback">
-                    <small *ngIf="formRegister.controls['name'].errors?.['required']">Full Name is required.</small>
-                    <small *ngIf="formRegister.controls['name'].errors?.['minlength']">Name must be at least 3
-                        characters long.</small>
-                </div>
-            </div>
-
-
-            <!--  Mobile Number (For Login Mode) -->
-            <div class="d-flex flex-column gap-1 w-100">
-                <h4 class="mb-0 font-14 regular subTextColor">Mobile Number</h4>
-                <input type="text" class="input-field" placeholder="Enter your mobile number"
-                    formControlName="mobileNumber" name="formRegister"
-                    [ngClass]="{'is-invalid': isFieldInvalid('mobileNumber')}" />
-                <div *ngIf="isFieldInvalid('mobileNumber')" class="invalid-feedback">
-                    <small
-                        *ngIf="isRegisterMode ? formRegister.controls['mobileNumber'].errors?.['required'] : formLogin.controls['mobileNumber'].errors?.['required']">
-                        Mobile Number is required.
-                    </small>
-                    <small
-                        *ngIf="isRegisterMode ? formRegister.controls['mobileNumber'].errors?.['pattern'] : formLogin.controls['mobileNumber'].errors?.['pattern']">
-                        Enter a valid 10-digit number.
-                    </small>
-                </div>
-
-            </div>
-
-            <!-- Gender Selection (Only for Register) -->
-            <!-- Gender Selection (Only for Register) -->
-            <div *ngIf="isRegisterMode" class="d-flex flex-column gap-1 w-100">
-                <h4 class="mb-0 font-14 regular subTextColor">Gender</h4>
-                <select class="input-field" formControlName="gender"
-                    [ngClass]="{'is-invalid': isFieldInvalid('gender')}">
-                    <option value="" disabled selected>Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                </select>
-
-                <div *ngIf="isFieldInvalid('gender')" class="invalid-feedback">
-                    <small>Gender selection is required.</small>
-                </div>
-            </div>
+      <!-- Error Message Display -->
+      <div *ngIf="errorMessage" class="error-box animate">
+        <i class="fa fa-exclamation-circle"></i> {{ errorMessage }}
+      </div>
 
 
 
-            <!-- Password (For Both Login & Register) -->
-            <div class="d-flex flex-column gap-1 w-100">
-                <h4 class="mb-0 font-14 regular subTextColor">Password</h4>
-                <input type="password" class="input-field" placeholder="Password" formControlName="password"
-                    name="formRegister" [ngClass]="{'is-invalid': isFieldInvalid('password')}" />
-                <div *ngIf="isFieldInvalid('password')" class="invalid-feedback">
-                    <small *ngIf="formRegister.controls['password'].errors?.['required']">Password is required.</small>
-                    <small *ngIf="formRegister.controls['password'].errors?.['minlength']">Password must be at least 6
-                        characters.</small>
-                </div>
-            </div>
+      <!-- Name (Only for Register) -->
+      <!-- Full Name (Only for Register) -->
+      <div *ngIf="isRegisterMode" class="d-flex flex-column gap-1 w-100">
+        <h4 class="mb-0 font-14 regular subTextColor">Full Name</h4>
+        <input type="text" class="input-field" formControlName="name" placeholder="Enter your full name"
+          [ngClass]="{'is-invalid': isFieldInvalid('name')}" />
 
-            <!-- Confirm Password (Only for Register) -->
-            <div *ngIf="isRegisterMode" class="d-flex flex-column gap-1 w-100">
-                <h4 class="mb-0 font-14 regular subTextColor">Confirm Password</h4>
-                <input type="password" formControlName="confirmPsw" name="formRegister" class="input-field"
-                    placeholder="Confirm Password" />
-                <small *ngIf="formRegister.errors?.['passwordMismatch']">
-                    Password and Confirm Password do not match.
-                </small>
-            </div>
-            <!-- Address (Only for Register) -->
-            <!-- Address Selection (Only for Register) -->
-            <div *ngIf="isRegisterMode" class="d-flex flex-column gap-1 w-100">
-                <h4 class="mb-0 font-14 regular subTextColor">Address</h4>
-                <select class="input-field" formControlName="addressId"
-                    [ngClass]="{'is-invalid': isFieldInvalid('addressId')}">
-                    <option value="" disabled selected>Select Address</option>
-                    <option *ngFor="let address of addresses" [value]="address.id">
-                        {{ address.formattedAddress }}
-                    </option>
-                </select>
-
-                <div *ngIf="isFieldInvalid('addressId')" class="invalid-feedback">
-                    <small>Address selection is required.</small>
-                </div>
-            </div>
-
-
-
-            <!-- House No. (Only for Register) -->
-            <!-- House Number -->
-            <div *ngIf="isRegisterMode" class="d-flex flex-column gap-1 w-100">
-                <h4 class="mb-0 font-14 regular subTextColor">House No.</h4>
-                <input type="text" class="input-field" formControlName="houseNumber"
-                    placeholder="Enter your house number" [ngClass]="{'is-invalid': isFieldInvalid('houseNumber')}" />
-
-                <div *ngIf="isFieldInvalid('houseNumber')" class="invalid-feedback">
-                    <small>House Number is required.</small>
-                </div>
-            </div>
-
-
-            <!-- Forgot Password (Only for Login) -->
-            <!-- [routerLink]="'/forgot-password'" -->
-            <a *ngIf="!isRegisterMode" (click)="onForgotPassword()"
-                class="mb-0 font-14 medium textColor align-self-end cursor-pointer">
-                Forgot Password?
-            </a>
-
-            <!-- Submit Button  -->
-            <button class="primary-button w-100">
-                {{ isRegisterMode ? 'Register' : 'Sign In' }}
-            </button>
-
-            <!-- Toggle Between Sign In & Register -->
-            <p class="font-14 textColor cursor-pointer mt-3" (click)="toggleMode()">
-                {{ isRegisterMode ? 'Already have an account? Sign In' : 'New user? Register here' }}
-            </p>
+        <div *ngIf="isFieldInvalid('name')" class="invalid-feedback">
+          <small *ngIf="formRegister.controls['name'].errors?.['required']">Full Name is required.</small>
+          <small *ngIf="formRegister.controls['name'].errors?.['minlength']">Name must be at least 3
+            characters long.</small>
         </div>
-    </form>
+      </div>
+
+
+      <!--  Mobile Number (For Login Mode) -->
+      <div class="d-flex flex-column gap-1 w-100">
+        <h4 class="mb-0 font-14 regular subTextColor">Mobile Number</h4>
+        <input type="text" class="input-field" placeholder="Enter your mobile number" formControlName="mobileNumber"
+          name="formRegister" [ngClass]="{'is-invalid': isFieldInvalid('mobileNumber')}" />
+        <div *ngIf="isFieldInvalid('mobileNumber')" class="invalid-feedback">
+          <small
+            *ngIf="isRegisterMode ? formRegister.controls['mobileNumber'].errors?.['required'] : formLogin.controls['mobileNumber'].errors?.['required']">
+            Mobile Number is required.
+          </small>
+          <small
+            *ngIf="isRegisterMode ? formRegister.controls['mobileNumber'].errors?.['pattern'] : formLogin.controls['mobileNumber'].errors?.['pattern']">
+            Enter a valid 10-digit number.
+          </small>
+        </div>
+
+      </div>
+
+      <!-- Gender Selection (Only for Register) -->
+      <!-- Gender Selection (Only for Register) -->
+      <div *ngIf="isRegisterMode" class="d-flex flex-column gap-1 w-100">
+        <h4 class="mb-0 font-14 regular subTextColor">Gender</h4>
+        <select class="input-field" formControlName="gender" [ngClass]="{'is-invalid': isFieldInvalid('gender')}">
+          <option value="" disabled selected>Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <div *ngIf="isFieldInvalid('gender')" class="invalid-feedback">
+          <small>Gender selection is required.</small>
+        </div>
+      </div>
+
+
+
+      <!-- Password (For Both Login & Register) -->
+      <div class="d-flex flex-column gap-1 w-100">
+        <h4 class="mb-0 font-14 regular subTextColor">Password</h4>
+        <input type="password" class="input-field" placeholder="Password" formControlName="password" name="formRegister"
+          [ngClass]="{'is-invalid': isFieldInvalid('password')}" />
+        <div *ngIf="isFieldInvalid('password')" class="invalid-feedback">
+          <small *ngIf="formRegister.controls['password'].errors?.['required']">Password is required.</small>
+          <small *ngIf="formRegister.controls['password'].errors?.['minlength']">Password must be at least 6
+            characters.</small>
+        </div>
+      </div>
+
+      <!-- Confirm Password (Only for Register) -->
+      <div *ngIf="isRegisterMode" class="d-flex flex-column gap-1 w-100">
+        <h4 class="mb-0 font-14 regular subTextColor">Confirm Password</h4>
+        <input type="password" formControlName="confirmPsw" name="formRegister" class="input-field"
+          placeholder="Confirm Password" />
+        <small *ngIf="formRegister.errors?.['passwordMismatch']">
+          Password and Confirm Password do not match.
+        </small>
+      </div>
+      <!-- Address (Only for Register) -->
+      <!-- Address Selection (Only for Register) -->
+      <div *ngIf="isRegisterMode" class="d-flex flex-column gap-1 w-100">
+        <h4 class="mb-0 font-14 regular subTextColor">Address</h4>
+        <select class="input-field" formControlName="addressId" [ngClass]="{'is-invalid': isFieldInvalid('addressId')}">
+          <option value="" disabled selected>Select Address</option>
+          <option *ngFor="let address of addresses" [value]="address.id">
+            {{ address.formattedAddress }}
+          </option>
+        </select>
+
+        <div *ngIf="isFieldInvalid('addressId')" class="invalid-feedback">
+          <small>Address selection is required.</small>
+        </div>
+      </div>
+
+
+
+      <!-- House No. (Only for Register) -->
+      <!-- House Number -->
+      <div *ngIf="isRegisterMode" class="d-flex flex-column gap-1 w-100">
+        <h4 class="mb-0 font-14 regular subTextColor">House No.</h4>
+        <input type="text" class="input-field" formControlName="houseNumber" placeholder="Enter your house number"
+          [ngClass]="{'is-invalid': isFieldInvalid('houseNumber')}" />
+
+        <div *ngIf="isFieldInvalid('houseNumber')" class="invalid-feedback">
+          <small>House Number is required.</small>
+        </div>
+      </div>
+
+
+      <!-- Forgot Password (Only for Login) -->
+      <!-- [routerLink]="'/forgot-password'" -->
+      <a *ngIf="!isRegisterMode" (click)="onForgotPassword()"
+        class="mb-0 font-14 medium textColor align-self-end cursor-pointer">
+        Forgot Password?
+      </a>
+
+      <!-- Submit Button  -->
+      <button class="primary-button w-100">
+        {{ isRegisterMode && !isAdminOrSarpanchLogin ? 'Register' : 'Sign In' }}
+      </button>
+
+      <!-- Toggle Between Sign In & Register -->
+      <p *ngIf="!isAdminOrSarpanchLogin" class="font-14 textColor cursor-pointer mt-3" (click)="toggleMode()">
+        {{ isRegisterMode ? 'Already have an account? Sign In' : 'New user? Register here' }}
+      </p>
+
+    </div>
+  </form>
 </div>
 <!-- to load child routes like Verify OTP -->
 <router-outlet></router-outlet>

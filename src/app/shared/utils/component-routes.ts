@@ -5,7 +5,7 @@ export class ComponentRoutes {
   static readonly DASHBOARD = 'dashboard';
   static readonly USERAUTH = 'auth';
   static readonly LOGIN = 'login';
-  static readonly ADMIN_LOGIN = 'admin-login';
+  static readonly ADMIN_SARPANCH_LOGIN = 'login1';
   static readonly FORGOTPASSWORD = 'forgot-password';
   static readonly VERIFYOTP = 'verify-otp';
   static readonly VERIFY_AADHAR = 'verify-aadhar';
@@ -45,21 +45,16 @@ export class ComponentRoutes {
   static GRIEVANCEUPDATE = 'grievance-update';
   static GRIEVANCEADD = 'grievance-add';
 
-
   //Schemes
   static readonly SCHEMES = 'schemes';
   static readonly SCHEMESLIST = 'list';
   static readonly SCHEMEADD = 'add';
   static readonly DELETESCHEMESLIST = 'delete-list';
 
-
   //Category
-  static readonly CATEGORY = 'category'
-  static readonly CATEGORYADD = 'add'
-  static readonly CATEGORYLIST = 'list'
-
-
-
+  static readonly CATEGORY = 'category';
+  static readonly CATEGORYADD = 'add';
+  static readonly CATEGORYLIST = 'list';
 
   // Customer
   static readonly CUSTOMER = 'customer';

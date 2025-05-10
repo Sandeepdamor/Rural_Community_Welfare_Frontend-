@@ -61,7 +61,7 @@ export class ResidentGrievanceListComponent {
       { name: 'description', displayName: 'Description', type: 'text' },
       { name: 'submittedDate', displayName: 'Submitted Date', type: 'text' },
       { name: 'status', displayName: 'Status', type: 'text' },
-      { name: 'resident', displayName: 'Author Name', type: 'text' },
+      { name: 'residentName', displayName: 'Author Name', type: 'text' },
       //    { name: 'isDeleted', displayName: 'Deleted', type: 'text' },
       //   { name: 'isActive', displayName: 'Active', type: 'status' },
       { name: 'response', displayName: 'Response', type: 'text' },

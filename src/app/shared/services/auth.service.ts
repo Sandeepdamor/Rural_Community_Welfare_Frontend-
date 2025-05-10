@@ -11,10 +11,9 @@ import { ResidentService } from './resident.service';
 import { UserResponse } from '../interfaces/user/user-response';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
   private apiUrl = 'http://localhost:9096/auth';
 
   constructor(
@@ -24,15 +23,16 @@ export class AuthService {
     private userService: UserService,
     private sarpanchService: SarpanchService,
     private residentService: ResidentService
-  ) { }
+  ) {}
 
   // Login API call
-  public login(user: any): Observable<any> {
-    console.log("Logging in with: ", user);
+  public login(user: any, useAltUrl: boolean = false): Observable<any> {
+    console.log('Logging in with: ', user);
     this.tokenService.clearTokens();
-    return this.http.post(`${this.apiUrl}/login`, {
+    const endpoint = useAltUrl ? '/login1' : '/login';
+    return this.http.post(`${this.apiUrl}${endpoint}`, {
       mobileNumber: user.mobileNumber,
-      password: user.password
+      password: user.password,
     });
   }
 
@@ -48,18 +48,19 @@ export class AuthService {
 
   // Logout method
   logout(): void {
-    this.tokenService.clearTokens();  // Use TokenService to remove token
-    this.router.navigate([ComponentRoutes.USERAUTH]);
+    this.tokenService.clearTokens(); // Use TokenService to remove token
+    this.router.navigate(['/']);
   }
 
   // Verify OTP
   verifyOtp(otp: string): Observable<any> {
+    console.log('VERIFY OTP ==> ', otp);
     return this.http.post(`${this.apiUrl}/verify-otp`, { otp });
   }
 
   //Resend OTP
   resendOtp(): Observable<any> {
-    return this.http.post(`${this.apiUrl}/resend-otp`,null);
+    return this.http.post(`${this.apiUrl}/resend-otp`, null);
   }
 
   //Forgot Password
@@ -68,66 +69,72 @@ export class AuthService {
   }
 
   // Change Password
-  changePassword(newPassword: string, confirmPassword: string): Observable<any> {
+  changePassword(
+    newPassword: string,
+    confirmPassword: string
+  ): Observable<any> {
     const token = this.tokenService.getAccessToken();
-    return this.http.patch(`${this.apiUrl}/change-password`, { newPassword, confirmPassword });
+    return this.http.patch(`${this.apiUrl}/change-password`, {
+      newPassword,
+      confirmPassword,
+    });
   }
 
-//Verify Aadhar API 
-verifyAadhaar(aadharNumber: string): Observable<any> {
-  return this.http.post(`${this.apiUrl}/verify-aadhar`, { aadharNumber });
-}
-
-getLoggedInUserRole(): Role | null {
-  return this.tokenService.getRoleFromToken();
-}
-
-getLoggedInUser(): Observable<any> {
-  const mobile = this.tokenService.getMobileNumberFromAccessToken();
-
-  if (!mobile) {
-    return throwError(() => new Error('Mobile number not found in token.'));
+  //Verify Aadhar API
+  verifyAadhaar(aadharNumber: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/verify-aadhar`, { aadharNumber });
   }
 
-  // Step 1: Get base user by mobile number
-  return this.userService.getUserByMobile(mobile).pipe(
-    switchMap(userResponse => {
-      const user = userResponse.response;
+  getLoggedInUserRole(): Role | null {
+    return this.tokenService.getRoleFromToken();
+  }
 
-      if (!user) {
-        return throwError(() => new Error('User not found.'));
-      }
+  getLoggedInUser(): Observable<any> {
+    const mobile = this.tokenService.getMobileNumberFromAccessToken();
 
-      // If the role is 'ADMIN', return the user object directly
-      if (user.role === 'ADMIN') {
-        return of(user);
-      }
+    if (!mobile) {
+      return throwError(() => new Error('Mobile number not found in token.'));
+    }
 
-      // Step 2: For non-admin roles, fetch additional profile details
-      if (user.role === 'RESIDENT') {
-        return this.residentService.getResidentById(user.id).pipe(
-          map(residentResponse => ({
-            ...user,
-            profileDetails: residentResponse.response
-          }))
+    // Step 1: Get base user by mobile number
+    return this.userService.getUserByMobile(mobile).pipe(
+      switchMap((userResponse) => {
+        const user = userResponse.response;
+
+        if (!user) {
+          return throwError(() => new Error('User not found.'));
+        }
+
+        // If the role is 'ADMIN', return the user object directly
+        if (user.role === 'ADMIN') {
+          return of(user);
+        }
+
+        // Step 2: For non-admin roles, fetch additional profile details
+        if (user.role === 'RESIDENT') {
+          return this.residentService.getResidentById(user.id).pipe(
+            map((residentResponse) => ({
+              ...user,
+              profileDetails: residentResponse.response,
+            }))
+          );
+        } else if (user.role === 'SARPANCH') {
+          return this.sarpanchService.getSarpanchById(user.id).pipe(
+            map((sarpanchResponse) => ({
+              ...user,
+              profileDetails: sarpanchResponse.response,
+            }))
+          );
+        } else {
+          return throwError(() => new Error('Unknown role.'));
+        }
+      }),
+      catchError((error) => {
+        console.error('Error in getLoggedInUser:', error);
+        return throwError(
+          () => new Error(error.message || 'Failed to get user.')
         );
-      } else if (user.role === 'SARPANCH') {
-        return this.sarpanchService.getSarpanchById(user.id).pipe(
-          map(sarpanchResponse => ({
-            ...user,
-            profileDetails: sarpanchResponse.response
-          }))
-        );
-      } else {
-        return throwError(() => new Error('Unknown role.'));
-      }
-    }),
-    catchError(error => {
-      console.error('Error in getLoggedInUser:', error);
-      return throwError(() => new Error(error.message || 'Failed to get user.'));
-    })
-  );
-}
-
-
+      })
+    );
+  }
 }

@@ -166,7 +166,8 @@
       <li [routerLink]="'grievance/grievance-list'" routerLinkActive="active"><img
           src="assets/images/svg/user-list-icon.svg" alt="user-list-icon" class="white-icon" />Grievance List
       </li>
-      <li [routerLink]="'grievance/grievance-delete'" routerLinkActive="active" *ngIf="role==='ADMIN'">
+      <li [routerLink]="'grievance/grievance-delete'" routerLinkActive="active"
+        *ngIf="role === Role.RESIDENT || role === Role.SARPANCH">
         <img src="assets/images/svg/delete-user-icon.svg" alt="delete-user-icon" class="white-icon" />Deleted
         Grievance
       </li>
