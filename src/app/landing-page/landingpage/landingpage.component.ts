@@ -7,8 +7,12 @@ import { ComponentRoutes } from '../../shared/utils/component-routes';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './landingpage.component.html',
-  styleUrl: './landingpage.component.scss'
+  styleUrl: './landingpage.component.scss',
 })
 export class LandingpageComponent {
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
+
+  goToLogin() {
+    this.router.navigate(['/login']); // Replace '/login' with your actual route
+  }
 }

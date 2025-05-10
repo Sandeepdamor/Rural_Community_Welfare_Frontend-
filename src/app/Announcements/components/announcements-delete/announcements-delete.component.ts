@@ -12,7 +12,7 @@ import { AnnouncementSearch } from '../../../shared/interfaces/Announcement/anno
 
 @Component({
   selector: 'app-announcements-delete',
-  imports: [RouterLink, DynamicTableComponent, CommonModule, FormsModule],
+  imports: [DynamicTableComponent, CommonModule, FormsModule],
   templateUrl: './announcements-delete.component.html',
   styleUrl: './announcements-delete.component.scss',
 })
@@ -98,19 +98,6 @@ export class AnnouncementsDeleteComponent {
       authorName: [''],
     });
   }
-
-  // loadAnnouncementDetails(id: string) {
-  //   this.announcementService.getAnnouncementById(id).subscribe({
-  //     next: (data) => {
-  //       console.log(' load announcement:', data);
-  //       // this.announcementForm.patchValue(data);
-  //       // this.announcementForm.disable(); // make it read-only
-  //     },
-  //     error: (err) => {
-  //       console.error('Failed to load announcement:', err);
-  //     },
-  //   });
-  // }
 
   loadDeletedAnnouncements(paginationRequest: PaginationRequest): void {
     this.isLoading = true;

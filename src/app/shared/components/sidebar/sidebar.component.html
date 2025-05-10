@@ -78,7 +78,7 @@
         <li [routerLink]="'/announcements/list'" routerLinkActive="active"><img
             src="assets/images/svg/user-list-icon.svg" alt="user-list-icon" class="white-icon" />Announcements List
         </li>
-        <li [routerLink]="'/announcements/delete'" routerLinkActive="active">
+        <li [routerLink]="'/announcements/delete'" routerLinkActive="active" *ngIf="role==='ADMIN'">
           <img src="assets/images/svg/delete-user-icon.svg" alt="delete-user-icon" class="white-icon" />Deleted
           Announcements
           List
@@ -110,7 +110,7 @@
         <li [routerLink]="'grievance/grievance-list'" routerLinkActive="active"><img
             src="assets/images/svg/user-list-icon.svg" alt="user-list-icon" class="white-icon" />Grievance List
         </li>
-        <li [routerLink]="'grievance/grievance-delete'" routerLinkActive="active">
+        <li [routerLink]="'grievance/grievance-delete'" routerLinkActive="active" *ngIf="role==='ADMIN'">
           <img src="assets/images/svg/delete-user-icon.svg" alt="delete-user-icon" class="white-icon" />Deleted
           Grievance
         </li>
