@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { ComponentRoutes } from '../../shared/utils/component-routes';
 import { GrievanceListComponent } from './grievance-list/grievance-list.component';
 import { GrievanceUpdateComponent } from './grievance-update/grievance-update.component';
+import { ResidentGrievanceAddComponent } from './resident-grievance-add/resident-grievance-add.component';
+import { GrievanceDeleteComponent } from './grievance-delete/grievance-delete.component';
 
 const routes: Routes = [
   {
@@ -10,13 +12,20 @@ const routes: Routes = [
     component: GrievanceListComponent,
   },
   {
+    path: ComponentRoutes.GRIEVANCEDELETE,
+    component: GrievanceDeleteComponent,
+  },
+  {
     path: ComponentRoutes.GRIEVANCEUPDATE,
     component: GrievanceUpdateComponent,
   },
-
   {
-    path: 'grievance/grievance-update',
+    path: 'grievance-update/:id',
     component: GrievanceUpdateComponent,
+  },
+  {
+    path: ComponentRoutes.GRIEVANCEADD,
+    component: ResidentGrievanceAddComponent,
   },
 ];
 @NgModule({

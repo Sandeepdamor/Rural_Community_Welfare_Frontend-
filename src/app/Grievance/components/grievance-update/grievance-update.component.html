@@ -14,41 +14,65 @@
   </div>
   <!-- Form Inputs -->
   <div class="row g-4">
-    <!-- Name -->
-    <div class="col-md-6">
+    <!-- Response -->
+    <div class="col-md-6" *ngIf="role === 'ADMIN'">
       <div class="d-flex flex-column gap-1 w-100">
-        <h4 class="mb-0 font-14 regular subTextColor">Name</h4>
-        <input type="text" class="input-field" placeholder="Enter Name" />
-      </div>
-    </div>
-    <!-- Email -->
-    <div class="col-md-6">
-      <div class="d-flex flex-column gap-1 w-100">
-        <h4 class="mb-0 font-14 regular subTextColor">Email</h4>
-        <input type="text" class="input-field" placeholder="Enter Email" />
-      </div>
-    </div>
-    <!-- Phone Number -->
-    <div class="col-md-6">
-      <div class="d-flex flex-column gap-1 w-100">
-        <h4 class="mb-0 font-14 regular subTextColor">Phone no.</h4>
-        <input type="text" class="input-field" placeholder="Enter Phone no." />
-      </div>
-    </div>
-    <!-- select Role -->
-    <div class="col-md-6">
-      <div class="d-flex flex-column gap-1 w-100">
-        <h4 class="mb-0 font-14 regular subTextColor">Address</h4>
-        <input type="text" class="input-field" placeholder="Select" />
-      </div>
+        <h4 class="mb-0 font-14 regular subTextColor">
+          Response <span class="text-danger">*</span>
+        </h4>
+        <input type="text" class="input-field" placeholder="Enter Response" [(ngModel)]="grievance.response"
+          name="response" required minlength="5" maxlength="1000" pattern="^[A-Za-z0-9\s]*$" #responseRef="ngModel" />
 
+        <!-- Validation Errors -->
+        <div *ngIf="responseRef.touched && responseRef.invalid" class="text-danger mt-1">
+          <div *ngIf="responseRef.errors?.['required']">Response is required.</div>
+          <div *ngIf="responseRef.errors?.['minlength']">Response must be at least 5 characters long.</div>
+          <div *ngIf="responseRef.errors?.['maxlength']">Response must not exceed 1000 characters.</div>
+          <div *ngIf="responseRef.errors?.['pattern']">Response can contain only letters, numbers, and spaces.</div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-6" *ngIf="role==='RESIDENT'">
+      <div class="d-flex flex-column gap-1 w-100">
+        <h4 class="mb-0 font-14 regular subTextColor">Subject</h4>
+        <input type="text" class="input-field" placeholder="Enter Subject" [(ngModel)]="grievance.response"
+          name="subject" required />
+      </div>
+    </div>
+
+    <div class="col-md-6" *ngIf="role==='RESIDENT'">
+      <div class="d-flex flex-column gap-1 w-100">
+        <h4 class="mb-0 font-14 regular subTextColor">Description</h4>
+        <input type="text" class="input-field" placeholder="Enter Description" [(ngModel)]="grievance.response"
+          name="description" required />
+      </div>
+    </div>
+
+    <!-- Status -->
+    <div class="col-md-6">
+      <div class="d-flex flex-column gap-1 w-100">
+        <h4 class="mb-0 font-14 regular subTextColor">
+          Status <span class="text-danger">*</span>
+        </h4>
+        <select class="input-field form-select" [(ngModel)]="grievance.status" name="status" required
+          #statusRef="ngModel">
+          <option value="" disabled selected>Select status</option>
+          <option *ngFor="let status of statusList" [value]="status">{{ status }}</option>
+        </select>
+
+        <!-- Validation Errors -->
+        <div *ngIf="statusRef.touched && statusRef.invalid" class="text-danger mt-1">
+          <div *ngIf="statusRef.errors?.['required']">Status is required.</div>
+        </div>
+      </div>
     </div>
 
   </div>
   <!-- Button -->
   <div class="d-flex justify-content-end gap-4">
     <button type="button" class="secondary-button py-2 scalable-p-48-24">Cancel</button>
-    <button type="button" class="primary-button py-2 scalable-p-48-24">Save</button>
+    <button type="button" class="primary-button py-2 scalable-p-48-24" (click)="updateGrievance()">Save</button>
   </div>
-
 </div>

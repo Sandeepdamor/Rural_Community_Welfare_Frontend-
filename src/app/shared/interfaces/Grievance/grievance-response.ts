@@ -1,4 +1,5 @@
 import { Address } from '../address/address';
+import { Resident } from './Resident ';
 
 export interface GrievanceResponse {
   id: string;
@@ -10,5 +11,5 @@ export interface GrievanceResponse {
   submittedDate: string; // LocalDate as ISO string
   status: string; // Enum as string
   response: string;
-  // resident: Resident;        // You can define Resident separately
+  resident: Resident;
 }

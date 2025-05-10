@@ -1,40 +1,89 @@
-import { GrievanceFilter } from './../interfaces/Announcement/grievance-filter';
+import { GrievanceFilter } from './../interfaces/Grievance/grievance-filter';
+import { GrievanceResponse } from './../interfaces/Grievance/grievance-response';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { PaginationRequest } from '../interfaces/pagination-request';
 import { PageResponse } from '../interfaces/page-response';
-import { ResidentResponse } from '../interfaces/resident/resident-response';
 import { TokenService } from './token.service';
 import { ResidentSearch } from '../interfaces/resident/resident-search';
-import { ResidentFilter } from '../interfaces/resident/resident-filter';
-import { GrievanceResponse } from '../interfaces/Announcement/grievance-response';
+import { ErrorService } from './error.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GrievanceService {
   private apiUrl = 'http://localhost:9096/grievance';
+  private Url = 'http://localhost:9096/resident';
 
-  constructor(private http: HttpClient, private tokenService: TokenService) {}
+  constructor(
+    private http: HttpClient,
+    private tokenService: TokenService,
+    private errorService: ErrorService
+  ) {}
+
+  // getAllGrievance(
+  //   status: string,
+  //   isActive: boolean,
+  //   pagination: PaginationRequest
+  // ): Observable<PageResponse<GrievanceResponse>> {
+  //   return this.http.get<PageResponse<GrievanceResponse>>(
+  //     `${this.apiUrl}/get-all-grievance`,
+  //     {
+  //       params: {
+  //         status: status, // Dynamic status
+  //         isActive: isActive.toString(),
+  //         pageNumber: pagination.pageNumber.toString(),
+  //         pageSize: pagination.pageSize.toString(),
+  //         sortBy: pagination.sortBy,
+  //       },
+  //     }
+  //   );
+  // }
 
   getAllGrievance(
     status: string,
     isActive: boolean,
     pagination: PaginationRequest
   ): Observable<PageResponse<GrievanceResponse>> {
-    return this.http.get<PageResponse<GrievanceResponse>>(
-      `${this.apiUrl}/get-all-grievance`,
-      {
-        params: {
-          status: status, // Dynamic status
-          isActive: isActive.toString(),
-          pageNumber: pagination.pageNumber.toString(),
-          pageSize: pagination.pageSize.toString(),
-          sortBy: pagination.sortBy,
-        },
-      }
-    );
+    const role = this.tokenService.getRoleFromToken();
+    // const phone = this.tokenService.getMobileNumberFromAccessToken;
+    // const phone2 = this.tokenService.getMobileNumberFromAuthToken;
+    console.log('Role......' + role);
+
+    let params = new HttpParams()
+      .set('status', status)
+      .set('isActive', isActive.toString())
+      .set('pageNumber', pagination.pageNumber.toString())
+      .set('pageSize', pagination.pageSize.toString())
+      .set('sortBy', pagination.sortBy);
+
+    let url = '';
+    if (role === 'ADMIN') {
+      console.log('calling get-all-grievance ');
+      url = `${this.apiUrl}/get-all-grievance`;
+    } else if (role === 'RESIDENT') {
+      console.log('resident service is calling');
+      url = `${this.apiUrl}/get-by-id`;
+    } else if (role === 'SARPANCH') {
+      url = `${this.apiUrl}/get-sarpanch-grievances`;
+    } else {
+      console.warn('Unauthorized role for fetching grievances:', role);
+      return throwError(() => new Error('Unauthorized role'));
+    }
+    return this.http.get<PageResponse<GrievanceResponse>>(url, { params });
+  }
+
+  getResidentByMobile(mobile: string): Observable<any> {
+    return this.http
+      .get(`${this.Url}/get-by-mobile`, {
+        params: { mobile },
+      })
+      .pipe(
+        catchError((error) => {
+          return this.errorService.handleError(error);
+        })
+      );
   }
 
   searchGrievance(request: any): Observable<any> {
@@ -111,15 +160,18 @@ export class GrievanceService {
     });
   }
 
-  getResidentByMobile(mobile: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/get-by-mobile`, {
-      params: { mobile },
-    });
+  updateGrievance(grievance: {
+    id: string;
+    status: string;
+    response: string;
+  }): Observable<any> {
+    const url = `${this.apiUrl}/response-of-grievance/${grievance.id}`;
+    return this.http.put(url, grievance); // PUT request with body
   }
 
-  deleteResident(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/delete`, {
-      params: { id },
-    });
+  deleteGrievance(announcementId: string): Observable<any> {
+    const url = `${this.apiUrl}/delete-announcement`; // Keep URL as is, without the announcementId
+    const payload = { id: announcementId }; // Send the announcementId in the body
+    return this.http.delete<any>(url, { body: payload });
   }
 }

@@ -16,7 +16,7 @@ import { ProfileComponent } from '../../../profile/components/profile/profile.co
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterModule, NgClass, CommonModule], // Remove NgModule
+  imports: [RouterModule, CommonModule], // Remove NgModule
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'], // Corrected `styleUrls` property name
 })

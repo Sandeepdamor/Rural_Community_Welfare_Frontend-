@@ -24,8 +24,7 @@ export class ComponentRoutes {
   static readonly SARPANCH = 'sarpanch';
   static readonly SARPANCHLIST = 'list';
   static readonly SARPANCHADD = 'add';
-  static readonly SARPANCHHISTORY = 'history'
-
+  static readonly SARPANCHHISTORY = 'history';
 
   //Project
   static readonly PROJECT = 'project';
@@ -40,9 +39,11 @@ export class ComponentRoutes {
   static readonly DELETEANNOUNCEMENTS = 'delete';
 
   //Grievance
-  static readonly GRIEVANCELIST = 'grievance-list';
-  static readonly GRIEVANCES = 'grievance';
-  static readonly GRIEVANCEUPDATE = 'grievance-update';
+  static GRIEVANCELIST = 'grievance-list';
+  static GRIEVANCEDELETE = 'grievance-delete';
+  static GRIEVANCES = 'grievance';
+  static GRIEVANCEUPDATE = 'grievance-update';
+  static GRIEVANCEADD = 'grievance-add';
 
 
   //Schemes
@@ -56,8 +57,6 @@ export class ComponentRoutes {
   static readonly CATEGORY = 'category'
   static readonly CATEGORYADD = 'add'
   static readonly CATEGORYLIST = 'list'
-
-
 
 
 

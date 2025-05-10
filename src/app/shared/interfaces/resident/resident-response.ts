@@ -1,4 +1,4 @@
-import { Address } from "../address/address";
+import { Address } from '../address/address';
 
 export interface ResidentResponse {
   id: string;

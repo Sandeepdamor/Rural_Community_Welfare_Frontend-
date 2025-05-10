@@ -1,28 +1,29 @@
-import { GrievanceFilter } from './../../../shared/interfaces/Grievance/grievance-filter';
-import { GrievanceSearch } from '../../../shared/interfaces/Grievance/grievance-search';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { DynamicTableComponent } from '../../../shared/components/dynamic-table/dynamic-table.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { GrievanceService } from '../../../shared/services/grievanceService';
-import { PaginationRequest } from '../../../shared/interfaces/pagination-request';
-import { TableConfig } from '../../../shared/components/model/table-config';
-import { Role } from '../../../enums/role.enum';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TokenService } from '../../../shared/services/token.service';
+import { Role } from '../../../enums/role.enum';
+import { GrievanceSearch } from '../../../shared/interfaces/Grievance/grievance-search';
+import { TableConfig } from '../../../shared/components/model/table-config';
+import { PaginationRequest } from '../../../shared/interfaces/pagination-request';
+import { GrievanceFilter } from '../../../shared/interfaces/Grievance/grievance-filter';
 
 @Component({
-  selector: 'app-grievance-list',
-  imports: [DynamicTableComponent, CommonModule, FormsModule, RouterLink],
-  templateUrl: './grievance-list.component.html',
-  styleUrl: './grievance-list.component.scss',
+  selector: 'app-grievance-delete',
+  imports: [RouterLink, DynamicTableComponent, CommonModule, FormsModule],
+  templateUrl: './grievance-delete.component.html',
+  styleUrl: './grievance-delete.component.scss',
 })
-export class GrievanceListComponent {
+export class GrievanceDeleteComponent {
   searchTerm: string = '';
   showFilters: boolean = false;
   isLoading: boolean = false;
   role: Role;
+
   constructor(
     private changeDetection: ChangeDetectorRef,
     private grievanceService: GrievanceService,
@@ -77,36 +78,6 @@ export class GrievanceListComponent {
     data: [],
     actions: ['edit'],
   };
-
-  ngOnInit(): void {
-    console.log('LOAD ANNOUNCEMENT');
-    this.loadGrievance(this.currentPaginationRequest);
-  }
-
-  loadGrievance(paginationRequest: PaginationRequest) {
-    this.isLoading = true;
-    this.grievanceService
-      .getAllGrievance('RESOLVED', true, paginationRequest)
-      .subscribe({
-        next: (response) => {
-          console.log('API Response:', response.content);
-          console.log('Content length:', response.content.length);
-          console.log('Total elements:', response.totalElements);
-
-          this.agencyTableConfig = {
-            ...this.agencyTableConfig,
-            data: response.content,
-            totalRecords: response.totalElements,
-          };
-          this.changeDetection.detectChanges();
-          this.isLoading = false;
-        },
-        error: (err) => {
-          console.error('Error fetching grievance:', err.error);
-          this.isLoading = false;
-        },
-      });
-  }
 
   onSearchGrievance() {
     console.log('Search button clicked'); // Debug
@@ -172,24 +143,10 @@ export class GrievanceListComponent {
     });
   }
 
-  onActionClicked(event: { action: string; element: any }) {
-    const { action, element } = event;
-    if (action === 'edit' && this.role === 'RESIDENT') {
-      console.log('update=====RESIDENT');
-      this.router.navigate(['grievance/grievance-update', element.id], {
-        queryParams: { mode: 'update' },
-      });
-    } else if (action === 'edit' && this.role === 'ADMIN') {
-      console.log('update=====ADMIN');
-      this.router.navigate(['grievance/grievance-update', element.id], {
-        queryParams: { mode: 'update' },
-      });
-    }
-  }
+  onActionClicked(event: { action: string; element: any }) {}
+  closeFilterIfClickedOutside(event: MouseEvent) {}
 
   toggleFilter() {
     this.showFilters = !this.showFilters;
   }
-
-  closeFilterIfClickedOutside(event: MouseEvent) {}
 }

@@ -1,0 +1,73 @@
+<form [formGroup]="grievanceForm" (ngSubmit)="onSubmit()"
+  class="scalable-gap-24-16 scalable-p-16-8 cardBackground d-flex flex-column">
+  <!-- Back Arrow -->
+  <div class="d-flex gap-2 align-items-center">
+    <img src="assets/images/svg/Back-Icon.svg" class="cursor-pointer" height="30" width="30" />
+    <h2 class="font-18 medium black mb-0">Add Grievance</h2>
+  </div>
+
+  <!-- Form Inputs -->
+  <div class="row g-4">
+    <!-- Title -->
+    <!-- Subject -->
+    <div class="col-md-6">
+      <div class="d-flex flex-column gap-1 w-100">
+        <h4 class="mb-0 font-14 regular subTextColor">Subject <span class="text-danger">*</span></h4>
+        <input type="text" formControlName="subject" class="input-field" placeholder="Enter Subject"
+          [readonly]="isReadOnly" />
+
+        <!-- Error messages -->
+        <div *ngIf="grievanceForm.get('subject')?.touched && grievanceForm.get('subject')?.invalid"
+          class="text-danger mt-1">
+          <div *ngIf="grievanceForm.get('subject')?.errors?.['required']">Subject is required.</div>
+          <div *ngIf="grievanceForm.get('subject')?.errors?.['minlength']">Subject must be at least 3 characters.</div>
+          <div *ngIf="grievanceForm.get('subject')?.errors?.['maxlength']">Subject must not exceed 30 characters.</div>
+          <div *ngIf="grievanceForm.get('subject')?.errors?.['pattern']">Subject must contain only letters and spaces.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="col-md-6">
+      <div class="d-flex flex-column gap-1 w-100">
+        <h4 class="mb-0 font-14 regular subTextColor">Description <span class="text-danger">*</span></h4>
+        <input type="text" formControlName="description" class="input-field" placeholder="Enter Description" />
+
+        <!-- Error messages -->
+        <div *ngIf="grievanceForm.get('description')?.touched && grievanceForm.get('description')?.invalid"
+          class="text-danger mt-1">
+          <div *ngIf="grievanceForm.get('description')?.errors?.['required']">Description is required.</div>
+          <div *ngIf="grievanceForm.get('description')?.errors?.['minlength']">Must be at least 10 characters.</div>
+          <div *ngIf="grievanceForm.get('description')?.errors?.['maxlength']">Must not exceed 100 characters.</div>
+          <div *ngIf="grievanceForm.get('description')?.errors?.['pattern']">
+            Must contain at least one capital letter and only letters, numbers, spaces, commas, periods, or hyphens.
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- Attachments -->
+    <div class="col-md-6">
+      <div class="d-flex flex-column gap-1 w-100">
+        <h4 class="mb-0 font-14 regular subTextColor">Attachments</h4>
+        <input type="file" class="input-field" (change)="onFileSelected($event)" multiple />
+      </div>
+
+      <!-- Show Selected File Names -->
+      <ul class="mt-2">
+        <li *ngFor="let file of selectedFiles; let i = index">
+          {{ file.name }} <span class="text-danger cursor-pointer ms-2" (click)="removeAttachment(i)">×</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Buttons -->
+  <div class="d-flex justify-content-end gap-4">
+    <button type="button" class="secondary-button py-2 scalable-p-48-24">Cancel</button>
+    <button type="submit" class="primary-button py-2 scalable-p-48-24">Save</button>
+  </div>
+</form>
