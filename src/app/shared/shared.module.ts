@@ -4,28 +4,38 @@ import { CommonModule } from '@angular/common';
 import { SharedRoutingModule } from './shared-routing.module';
 import { FormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { GenderPipe } from './pipes/gender.pipe';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MessageDailogComponent } from './components/message-dailog/message-dailog.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { ReasonDialogComponent } from './components/reason-dialog/reason-dialog.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
-  declarations: [MessageDailogComponent],
+  declarations: [
+    MessageDailogComponent,
+    ReasonDialogComponent,
+    GenderPipe
+  ],
   imports: [
     CommonModule,
     SharedRoutingModule,
-    BrowserModule,
     FormsModule,
     MatRadioModule,
-    BrowserAnimationsModule,
     MatPaginatorModule,
-    GenderPipe,
     MatDialogModule,
     MatIconModule,
-  
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule
   ],
+  exports: [
+    MessageDailogComponent,
+    ReasonDialogComponent,
+    GenderPipe
+  ]
 })
 export class SharedModule {}

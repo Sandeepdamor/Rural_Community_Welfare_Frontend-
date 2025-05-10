@@ -6,7 +6,7 @@
         <div class="d-flex gap-2 align-items-center">
             <img src="assets/images/svg/Back-Icon.svg" class="cursor-pointer" height="30" width="30"
                 (click)="goBack()" />
-            <h2 class="font-18 medium black mb-0">{{ mode === 'add' ? 'Add New Project' : mode === 'edit' ? 'Update Project' : 'Project Details' }}  </h2>
+            <h2 class="font-18 medium black mb-0">{{ mode === 'add' ? 'Add New Project' : mode === 'edit' ? 'Update Project' : 'Project Details' }}</h2>
         </div>
 
         <!-- Form Inputs -->
@@ -79,7 +79,7 @@
             </div>
 
             <!-- Created By -->
-            <div class="col-md-6" *ngIf="mode === 'view'">
+            <div class="col-md-6" *ngIf="mode === 'view' && role !== 'RESIDENT'">
                 <div class="d-flex flex-column gap-1 w-100">
                     <h4 class="mb-0 font-14 regular subTextColor">Created By</h4>
                     <div class="input-field">{{ projectDetails.createdBy }}</div>
@@ -87,7 +87,7 @@
             </div>
 
             <!-- Project Progress -->
-            <div class="col-md-6" *ngIf="mode === 'view'">
+            <div class="col-md-6" *ngIf="mode === 'view'  && role !== 'RESIDENT'">
                 <div class="d-flex flex-column gap-1 w-100">
                     <h4 class="mb-0 font-14 regular subTextColor">Approval Status</h4>
                     <div class="input-field">{{ projectDetails.approvalStatus }}</div>
@@ -96,7 +96,7 @@
             </div>
 
             <!-- Approved By By -->
-            <div class="col-md-6" *ngIf="mode === 'view' && projectDetails.approvedBy">
+            <div class="col-md-6" *ngIf="mode === 'view' && projectDetails.approvedBy  && role !== 'RESIDENT'">
                 <div class="d-flex flex-column gap-1 w-100">
                     <h4 class="mb-0 font-14 regular subTextColor">Approved By</h4>
                     <div class="input-field">{{ projectDetails.approvedBy }}</div>
@@ -104,15 +104,15 @@
             </div>
 
              <!-- Approved Date -->
-             <div class="col-md-6" *ngIf="mode === 'view' && projectDetails.approvedDate">
+             <div class="col-md-6" *ngIf="mode === 'view' && projectDetails.approvedDate  && role !== 'RESIDENT'">
                 <div class="d-flex flex-column gap-1 w-100">
-                    <h4 class="mb-0 font-14 regular subTextColor">Approved Date</h4>
+                    <h4 class="mb-0 font-14 regular subTextColor">{{projectDetails.approvalStatus !== 'REJECTED' ? 'Approved Date' : 'Rejected Date'}}</h4>
                     <div class="input-field">{{ projectDetails.approvedDate | date: 'dd MMM yyyy, h:mm a' }}</div>
                 </div>
             </div>
 
             <!-- Created At -->
-            <div class="col-md-6" *ngIf="mode === 'view'">
+            <div class="col-md-6" *ngIf="mode === 'view'  && role !== 'RESIDENT'">
                 <div class="d-flex flex-column gap-1 w-100">
                     <h4 class="mb-0 font-14 regular subTextColor">Created At</h4>
                     <div class="input-field">{{ projectDetails.createdAt | date: 'dd MMM yyyy, h:mm a' }}</div>
@@ -120,7 +120,7 @@
             </div>
 
             <!-- Updated At -->
-            <div class="col-md-6" *ngIf="mode === 'view'">
+            <div class="col-md-6" *ngIf="mode === 'view'  && role !== 'RESIDENT'">
                 <div class="d-flex flex-column gap-1 w-100">
                     <h4 class="mb-0 font-14 regular subTextColor">Updated At</h4>
                     <div class="input-field">{{ projectDetails.updatedAt | date: 'dd MMM yyyy, h:mm a' }}</div>
@@ -232,11 +232,6 @@
                     </div>
                 </div>
             </div>
-
-
-
-
-
 
             <!-- Buttons -->
             <div class="d-flex justify-content-end gap-4 mt-3" *ngIf="mode !== 'view'">

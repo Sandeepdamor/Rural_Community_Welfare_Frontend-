@@ -44,7 +44,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
     }
     currentPaginationRequest: PaginationRequest = {
         pageNumber: 1,
-        pageSize: 5,
+        pageSize: 10,
         sortBy: ''
     };
     searchTerm: string = '';
@@ -58,7 +58,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
         isActive: null,
         aadharStatus: 'VERIFIED',
         pageNumber: 1,
-        pageSize: 5,
+        pageSize: 10,
         sortBy: ''
     };
     search: ResidentSearch = {
@@ -66,7 +66,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
         aadharStatus: 'VERIFIED',
         isDeleted: false,
         pageNumber: 1,
-        pageSize: 5,
+        pageSize: 10,
         sortBy: ''
     };
     gramPanchayatList: string[] = [];

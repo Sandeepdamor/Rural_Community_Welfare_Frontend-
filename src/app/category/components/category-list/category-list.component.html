@@ -1,0 +1,70 @@
+<div class="d-flex flex-column gap-3 h-100" (click)="closeFilterIfClickedOutside($event)">
+
+    <!-- Search & Filter -->
+    <div class="d-flex justify-content-between align-items-start flex-wrap mb-3 gap-3 position-relative">
+        <!-- Left: Search + Filter -->
+        <div class="d-flex flex-wrap gap-3 align-items-center">
+            <!-- Search -->
+            <div class="input-group" style="width: 280px;">
+                <input type="text" class="form-control form-control-sm" placeholder="Search by name"
+                    [(ngModel)]="searchTerm" style="background-color: #f8f9fa;">
+                <button class="btn btn-outline-primary btn-sm" type="button" (click)="onSearch()">
+                    <img src="assets/images/svg/search.svg" height="14" width="14" alt="search-icon">
+                </button>
+            </div>
+
+            <!-- Filter Button -->
+            <div class="dropdown">
+                <button
+                    class="btn btn-outline-primary custom-filter-btn d-flex align-items-center gap-1 dropdown-toggle"
+                    (click)="toggleFilter()" type="button">
+                    <i class="fa fa-filter me-2"></i><strong>Filter</strong>
+                </button>
+
+                <!-- Dropdown-style Filter Panel -->
+                <div class="dropdown-menu p-3 shadow"
+                    style="min-width: 320px; background-color: #f8f9fa; border: 1px solid #ddd;"
+                    [class.show]="showFilters">
+                    <!-- Status -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" style="color: #333;">
+                            <i class="fa fa-check-circle me-2" style="color: #007bff;"></i> Status
+                        </label>
+                        <select class="form-select form-select-sm" [(ngModel)]="filters.isActive" (change)="onFilter()"
+                            style="background-color: #e9ecef;">
+                            <option value="null">All Status</option>
+                            <option [value]="true">Active</option>
+                            <option [value]="false">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Button -->
+        <div class="d-flex justify-content-end">
+            <button class="primary-button p-8-12  d-flex align-items-center gap-2" [routerLink]="'/category/add'">
+                <div class="plus_icon">
+                    <img src="assets/images/svg/plus-icon.svg" height="12" width="12">
+                </div>
+                Add Category
+            </button>
+        </div>
+    </div>
+     
+
+    <!-- ⏳ Loader (Bonus Tip) -->
+    <div *ngIf="isLoading" class="text-center">
+        <p>Loading...</p>
+    </div>
+
+    <!-- 📋 Table -->
+    <app-dynamic-table *ngIf="!isLoading && agencyTableConfig.data.length > 0"
+        [config]="agencyTableConfig" (statusChanged)="updateIsActiveStatus($event)"></app-dynamic-table>
+    <!-- ❌ No Data Message -->
+    <p *ngIf="!isLoading && agencyTableConfig.data.length === 0" class="text-center mt-3 text-danger">
+        No Data Found
+    </p>
+</div>

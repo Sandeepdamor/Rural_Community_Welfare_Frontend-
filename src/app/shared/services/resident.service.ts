@@ -9,6 +9,8 @@ import { ResidentSearch } from '../interfaces/resident/resident-search';
 import { ResidentFilter } from '../interfaces/resident/resident-filter';
 import { Role } from '../../enums/role.enum';
 import { ErrorService } from './error.service';
+import { UpdatePasswordRequest } from '../interfaces/admin/update-password-request';
+import { ApiResponse } from '../interfaces/api-response';
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +46,12 @@ export class ResidentService {
     );
   }
 
+  updateDetails(id: string, payload: any): Observable<any> {
+    console.log('PAYLOAD IN UPDATE RESIDENT ===> ',payload);
+    return this.http.patch(`${this.apiUrl}/update/${id}`, payload).pipe(
+      catchError((error) => this.errorService.handleError(error))
+    );
+  }
 
 
   updateStatus(id: string, isActive: boolean): Observable<any> {
@@ -61,6 +69,15 @@ export class ResidentService {
       }
     });
   }
+
+  updatePassword(updatePasswordRequest: UpdatePasswordRequest): Observable<ApiResponse> {
+      // return this.http.post<ApiResponse>(`${this.apiUrl}/add`, sarpanchRequest).
+      return this.http.patch<ApiResponse>(`${this.apiUrl}/update-password`,updatePasswordRequest).pipe(
+        catchError((error) => {
+          return this.errorService.handleError(error); // Use ErrorService to handle errors
+        })
+      );
+    }
 
   updateAadharStatus(id: string, status: string): Observable<any> {
     const body = {
@@ -106,7 +123,7 @@ export class ResidentService {
     }
     if (filters.aadharStatus) params.aadharStatus = filters.aadharStatus;
 
-    console.log('FILTER REQUEST IN SERVICE ==>>> 3333 ',params)
+    console.log('FILTER REQUEST IN SERVICE ==>>> 3333 ', params)
     return this.http.get(`${this.apiUrl}/resident-filter-request`, { params });
   }
 

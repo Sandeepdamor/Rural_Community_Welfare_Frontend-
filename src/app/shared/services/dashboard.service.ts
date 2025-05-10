@@ -4,6 +4,7 @@ import { ErrorService } from './error.service';
 import { ApiResponse } from '../interfaces/api-response';
 import { DashboardData } from '../interfaces/dashboard-data';
 import { catchError, map, Observable } from 'rxjs';
+import { Project } from '../interfaces/project/project';
 
 @Injectable({
   providedIn: 'root'
@@ -21,5 +22,14 @@ export class DashboardService {
         })
       );
   }
+
+  getLatestProjects(): Observable<{ [key: string]: Project[] }> {
+  return this.http.get<ApiResponse>(`${this.apiUrl}/projects`)
+    .pipe(
+      map(res => res.response),
+      catchError(error => this.errorService.handleError(error))
+    );
+}
+
 
 }

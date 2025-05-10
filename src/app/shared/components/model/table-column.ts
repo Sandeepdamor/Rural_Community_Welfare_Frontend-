@@ -16,7 +16,7 @@ export interface TableColumn {
   | 'delete-status'
   | 'delete-announcement'
   | 'announcementStatus'
-  | 'projectProgress' | 'customText';
+  | 'projectProgress' | 'customText'|'projectstatus' | 'schemeStatus';
   sortable?: boolean;
   width?: string;
   customTextFn?: (row: any) => string;

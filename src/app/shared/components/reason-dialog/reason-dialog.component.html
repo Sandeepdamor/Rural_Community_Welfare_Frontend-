@@ -1,0 +1,16 @@
+<!-- reason-dialog.component.html -->
+<h2 mat-dialog-title>Enter FeedBack/Response</h2>
+<div mat-dialog-content>
+  <mat-form-field appearance="fill" class="w-100">
+    <mat-label>FeedBack/Response</mat-label>
+    <textarea matInput [(ngModel)]="reason" rows="4"></textarea>
+    <div *ngIf="errorMessage" class="error-text" style="color: red; margin-top: 8px; font-weight: bold;">
+      {{ errorMessage }}
+    </div>
+    
+  </mat-form-field>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="dialogRef.close()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="submit()">Submit</button>
+</div>

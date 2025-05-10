@@ -38,7 +38,7 @@ export class BlockUserListComponent {
   }
   currentPaginationRequest: PaginationRequest = {
     pageNumber: 1,
-    pageSize: 5,
+    pageSize: 10,
     sortBy: 'createdAt'
   };
   searchTerm: string = '';
@@ -53,7 +53,7 @@ export class BlockUserListComponent {
     isActive: null,
     aadharStatus: '',
     pageNumber: 1,
-    pageSize: 5,
+    pageSize: 10,
     sortBy: 'createdAt'
   };
 
@@ -62,7 +62,7 @@ export class BlockUserListComponent {
     aadharStatus: 'VERIFIED',
     isDeleted: true,
     pageNumber: 1,
-    pageSize: 5,
+    pageSize: 10,
     sortBy: 'createdAt'
   };
 

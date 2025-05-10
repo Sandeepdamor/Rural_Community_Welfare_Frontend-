@@ -1,10 +1,14 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { TokenService } from './token.service';
 import { Role } from '../../enums/role.enum';
 import { ComponentRoutes } from '../utils/component-routes';
+import { UserService } from './user.service';
+import { SarpanchService } from './sarpanch.service';
+import { ResidentService } from './resident.service';
+import { UserResponse } from '../interfaces/user/user-response';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +20,10 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private userService: UserService,
+    private sarpanchService: SarpanchService,
+    private residentService: ResidentService
   ) { }
 
   // Login API call
@@ -73,6 +80,53 @@ verifyAadhaar(aadharNumber: string): Observable<any> {
 
 getLoggedInUserRole(): Role | null {
   return this.tokenService.getRoleFromToken();
+}
+
+getLoggedInUser(): Observable<any> {
+  const mobile = this.tokenService.getMobileNumberFromAccessToken();
+
+  if (!mobile) {
+    return throwError(() => new Error('Mobile number not found in token.'));
+  }
+
+  // Step 1: Get base user by mobile number
+  return this.userService.getUserByMobile(mobile).pipe(
+    switchMap(userResponse => {
+      const user = userResponse.response;
+
+      if (!user) {
+        return throwError(() => new Error('User not found.'));
+      }
+
+      // If the role is 'ADMIN', return the user object directly
+      if (user.role === 'ADMIN') {
+        return of(user);
+      }
+
+      // Step 2: For non-admin roles, fetch additional profile details
+      if (user.role === 'RESIDENT') {
+        return this.residentService.getResidentById(user.id).pipe(
+          map(residentResponse => ({
+            ...user,
+            profileDetails: residentResponse.response
+          }))
+        );
+      } else if (user.role === 'SARPANCH') {
+        return this.sarpanchService.getSarpanchById(user.id).pipe(
+          map(sarpanchResponse => ({
+            ...user,
+            profileDetails: sarpanchResponse.response
+          }))
+        );
+      } else {
+        return throwError(() => new Error('Unknown role.'));
+      }
+    }),
+    catchError(error => {
+      console.error('Error in getLoggedInUser:', error);
+      return throwError(() => new Error(error.message || 'Failed to get user.'));
+    })
+  );
 }
 
 

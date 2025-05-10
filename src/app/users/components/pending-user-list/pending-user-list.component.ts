@@ -38,7 +38,7 @@ export class PendingUserListComponent {
     }
     currentPaginationRequest: PaginationRequest = {
         pageNumber: 1,
-        pageSize: 5,
+        pageSize: 10,
         sortBy: 'createdAt'
     };
     searchTerm: string = '';
@@ -53,7 +53,7 @@ export class PendingUserListComponent {
         isActive: null,
         aadharStatus: 'PENDING',
         pageNumber: 1,
-        pageSize: 5,
+        pageSize: 10,
         sortBy: 'createdAt'
     };
 
@@ -62,7 +62,7 @@ export class PendingUserListComponent {
         aadharStatus: 'PENDING',
         isDeleted: false,
         pageNumber: 1,
-        pageSize: 5,
+        pageSize: 10,
         sortBy: 'createdAt'
     };
 

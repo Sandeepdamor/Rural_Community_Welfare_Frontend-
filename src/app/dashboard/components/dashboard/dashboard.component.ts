@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
-import { ChartConfiguration, ChartType } from 'chart.js';
+import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { Role } from '../../../enums/role.enum';
 import { TokenService } from '../../../shared/services/token.service';
 import { DashboardData } from '../../../shared/interfaces/dashboard-data';
 import { DashboardService } from '../../../shared/services/dashboard.service';
+import { Project } from '../../../shared/interfaces/project/project';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,31 +21,35 @@ export class DashboardComponent implements OnInit {
   Role = Role;
   userRole: Role;
   dashboardData: DashboardData = {} as DashboardData;
+  selectedStatus: string = 'Ongoing'; // Default selected status
+  projects: { [key: string]: Project[] } = {}; // To store projects grouped by status
+  filteredProjects: Project[] = []; // To hold projects filtered by selected status
+
+  statusTabs = [
+    { key: 'ONGOING', label: 'Ongoing' },
+    { key: 'COMPLETED', label: 'Completed' },
+    { key: 'NOT_STARTED', label: 'Not Started' },
+    { key: 'ON_HOLD', label: 'On Hold' }
+  ];
+
+
   constructor(private tokenService: TokenService, private dashboardService: DashboardService) {
     const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
     this.userRole = roleString as Role; // ✅ safely assign enum
   }
 
   // 🍰 Gender Distribution Chart
-  genderChartData: ChartConfiguration<'pie'>['data'] = {
-    labels: ['Male', 'Female', 'Other'],
-    datasets: [{
-      data: [20, 25, 5],
-      backgroundColor: ['#4F46BB', '#FD9292', '#3CD856']
-    }]
+  genderChartType: ChartType = 'pie'; // or 'doughnut', 'bar', etc.
+
+  genderChartData: ChartData<'pie'> = {
+    labels: [],
+    datasets: [
+      {
+        data: [],
+        backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56'], // Male, Female, Other
+      }
+    ]
   };
-  genderChartType: ChartType = 'pie';
-
-
-  // 🏗️ Projects Section
-  selectedStatus = 'Ongoing';
-  projects = [
-    { name: 'Water Supply Project', status: 'Ongoing' },
-    { name: 'School Renovation', status: 'Ongoing' },
-    { name: 'Panchayat Office Setup', status: 'Completed' },
-    { name: 'Road Construction', status: 'Completed' }
-  ];
-  filteredProjects: any[] = [];
 
   // 📢 Announcements Section
   announcements = [
@@ -100,25 +105,78 @@ export class DashboardComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this.filterProjects();
     // Fetch the dashboard data when the component initializes
     this.dashboardService.getDashboardData().subscribe((data: DashboardData) => {
       this.dashboardData = data;
-      console.log('DASHBOARD DATA 11=> ',data);
-      console.log('DASHBOARD DATA 22 => ',this.dashboardData);
+      console.log('DASHBOARD DATA 11=> ', data);
+      console.log('DASHBOARD DATA 22 => ', this.dashboardData);
       // this.updateDashboardForRole();
+
+      // ✅ Update chart data
+      if (data.genderDistribution) {
+        const genderDist = data.genderDistribution;
+
+        this.genderChartData.labels = Object.keys(genderDist); // ['Male', 'Female', 'Other']
+        this.genderChartData.datasets[0].data = Object.values(genderDist); // [12, 18, 3]
+      }
     });
+    this.getLatestProjects(); // Fetch latest projects on initialization
+
   }
 
-  // 🔁 Project Filter based on status tab
-  onStatusChange(status: string) {
+  // Fetch the latest projects from the backend
+  getLatestProjects(): void {
+    this.dashboardService.getLatestProjects().subscribe(
+      (projectsByStatus: { [key: string]: Project[] }) => {
+        // Flatten all projects from the grouped response (e.g., APPROVED, PENDING)
+        const allProjects = Object.values(projectsByStatus).flat();
+
+        // Group projects by progressStatus like 'ONGOING', 'COMPLETED'
+        this.projects = allProjects.reduce((acc, project) => {
+          const key = project.progressStatus?.toUpperCase() || 'UNKNOWN';
+          console.log('PROJECT KEY ==> ', key);
+          if (!acc[key]) {
+            acc[key] = [];
+          }
+          acc[key].push(project);
+          return acc;
+        }, {} as { [key: string]: Project[] });
+
+        console.log('Grouped by progressStatus =>', this.projects);
+
+        this.filterProjectsByStatus(); // Filter on default status
+      },
+      error => {
+        console.error('Error fetching projects:', error);
+      }
+    );
+  }
+
+
+  // Filter projects based on selected status
+  filterProjectsByStatus(): void {
+    console.log('All Projects:', this.projects); // Log all projects to inspect the structure
+    console.log('Selected Status:', this.selectedStatus); // Log selected status to ensure it is correct
+
+    // Check if the selectedStatus exists in projects object and has values
+    if (this.projects && this.projects[this.selectedStatus]) {
+      this.filteredProjects = this.projects[this.selectedStatus];
+      console.log('Filtered Projects:', this.filteredProjects); // Log filtered projects
+    } else {
+      this.filteredProjects = []; // Reset filtered projects if no match
+      console.log('No projects found for this status');
+    }
+  }
+
+  // Handle status change in the tab
+  onStatusChange(status: string): void {
+    console.log('Status changing to:', status); // Log status change
     this.selectedStatus = status;
-    this.filterProjects();
+
+    // Ensure you call the filter function after the status change
+    this.filterProjectsByStatus();
   }
 
-  filterProjects() {
-    this.filteredProjects = this.projects.filter(p => p.status === this.selectedStatus);
-  }
 
   // ➕ Sarpanch buttons
   addAnnouncement() {

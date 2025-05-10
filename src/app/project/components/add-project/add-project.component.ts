@@ -16,6 +16,9 @@ import { SarpanchService } from '../../../shared/services/sarpanch.service';
 import { map } from 'rxjs';
 import { UserService } from '../../../shared/services/user.service';
 import { AadharStatus } from '../../../enums/aadhar-status.enum';
+import { AuthService } from '../../../shared/services/auth.service';
+import { TokenService } from '../../../shared/services/token.service';
+import { Role } from '../../../enums/role.enum';
 
 @Component({
   selector: 'app-add-project',
@@ -57,9 +60,9 @@ export class AddProjectComponent implements OnInit {
     gramPanchaytName: string; // Add gramPanchaytName
     assignedVillages: string;
   }[] = [];
-
-
-
+  currentUser: any;
+  Role = Role;
+  role: Role;
   constructor(
     private location: Location,
     private addressService: AddressService,
@@ -69,14 +72,29 @@ export class AddProjectComponent implements OnInit {
     private projectService: ProjectService,
     private route: ActivatedRoute,
     private sarpanchService: SarpanchService,
-    private userService: UserService
+    private userService: UserService,
+    private authService: AuthService,
+    private tokenService: TokenService
 
-  ) { }
+  ) { 
+    const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
+        this.role = roleString as Role; // ✅ safely assign enum
+  }
 
   ngOnInit(): void {
     this.detectMode();
     this.initializeForm();
-    this.fetchLocations();
+    // Fetch the logged-in user and then call fetchLocations()
+    this.authService.getLoggedInUser().subscribe({
+      next: (user) => {
+        this.currentUser = user;
+        this.fetchLocations();  // Now call fetchLocations after the user is fetched
+      },
+      error: (err) => {
+        console.error('Error fetching logged-in user:', err);
+        alert('Failed to load logged-in user.');
+      }
+    });
 
     if (this.mode !== 'add') {
       this.loadProjectById();
@@ -120,22 +138,52 @@ export class AddProjectComponent implements OnInit {
   }
 
   fetchLocations(): void {
-    this.addressService.getAddresses().subscribe(
-      (data: any) => {
-        this.locations = data;
-        console.log('ADDRESSES => ', this.locations);
-      },
-      (error) => {
-        console.error('Error fetching addresses:', error);
-        alert(error.message);
-      }
-    );
+    if (this.currentUser.role === 'ADMIN') {
+      // Show all addresses
+      this.addressService.getAddresses().subscribe({
+        next: (data) => {
+          this.locations = data;
+          console.log('All addresses:', this.locations);
+        },
+        error: (error) => {
+          console.error('Error fetching addresses:', error);
+          alert(error.message);
+        }
+      });
+
+    } else if (this.currentUser.role === 'SARPANCH') {
+       // Show Sarpancch addresses
+       this.addressService.getAddressesBySarpanchId(this.currentUser.id).subscribe({
+        next: (data) => {
+          this.locations = data;
+          console.log('All addresses:', this.locations);
+        },
+        error: (error) => {
+          console.error('Error fetching addresses:', error);
+          alert(error.message);
+        }
+      });
+    }
   }
+
 
   getFormattedLocations(locationId: string): string {
     const address = this.locations.find(location => location.id === locationId); // Find address by id (both strings)
     return address ? address.formattedAddress : 'Address not found'; // Return formatted address
   }
+
+  // getFormattedLocations(location: any): string {
+  //   if (this.currentUser.role === 'ADMIN') {
+  //     const address = this.locations.find((loc: any) => loc.id === location.id);
+  //     return address ? address.formattedAddress : 'Address not found';
+  //   } else if (this.currentUser.role === 'SARPANCH') {
+  //     console.log('LOCATION ===>> 123',location);
+  //     const address = this.locations.find((loc: any) => loc.id === location.id || loc.id === location);
+  //   return address ? address.formatAddress : 'Address not found';
+  //   }
+  //   return 'Invalid user role';
+  // }
+  
 
   get locationIds(): FormArray {
     return this.projectForm.get('locationIds') as FormArray;
@@ -298,11 +346,11 @@ export class AddProjectComponent implements OnInit {
 
           this.userService.getUserById(project.createdBy).subscribe(res => {
             const role = res.response.role;
-            console.log('GET USER BY ID => ',res.response);
-            console.log('GET USER BY ID ROLE => ',res.response.role);
+            console.log('GET USER BY ID => ', res.response);
+            console.log('GET USER BY ID ROLE => ', res.response.role);
             if (role === 'ADMIN') {
               this.projectDetails.createdBy = role;
-              
+
             }
             else if (role === 'SARPANCH') {
               this.sarpanchService.getSarpanchById(project.createdBy).subscribe(res => {
@@ -310,8 +358,9 @@ export class AddProjectComponent implements OnInit {
                 const name = user?.name || 'N/A';
                 const fatherOrHusbandName = user?.fatherOrHusbandName || 'N/A';
                 const gramPanchayatName = user?.gramPanchayatName || 'N/A';
+                const role = 'Sarpanch';
 
-                const createdByDetailsString = `${name} (${fatherOrHusbandName}), ${gramPanchayatName}`;
+                const createdByDetailsString = `${name} (${fatherOrHusbandName}), ${gramPanchayatName},${role}`;
                 this.projectDetails.createdBy = createdByDetailsString;
                 console.log('CREATED BY => ', this.projectDetails.createdBy);
                 console.log('USer => ', user);
@@ -322,7 +371,7 @@ export class AddProjectComponent implements OnInit {
           // Set other fields immediately
           this.projectDetails.approvalStatus = project.approvalStatus;
           this.projectDetails.progressStatus = project.progressStatus;
-          this.projectDetails.approvedBy = 'ADMIN';
+          this.projectDetails.approvedBy = project.approvedBy ? 'ADMIN' : 'Not Approved';
           this.projectDetails.approvedDate = project.approvedDate;
           this.projectDetails.createdAt = project.createdAt;
           this.projectDetails.updatedAt = project.updatedAt;
@@ -416,10 +465,6 @@ export class AddProjectComponent implements OnInit {
     const date = new Date(dateStr);
     return date.toISOString().split('T')[0]; // returns '2025-05-10'
   }
-
-
-
-
 
   goBack(): void {
     this.location.back();

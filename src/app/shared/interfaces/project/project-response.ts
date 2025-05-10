@@ -14,6 +14,7 @@ export interface ProjectResponse {
     createdBy: string; // ID of the creator
     approvedBy: string; // ID of the approver
     approvedDate: string; // ISO string representation of date
+    approvalReason: string;
     attachmenets: string[]; // List of attachment URLs
     isDeleted: boolean;
     isActive: boolean;

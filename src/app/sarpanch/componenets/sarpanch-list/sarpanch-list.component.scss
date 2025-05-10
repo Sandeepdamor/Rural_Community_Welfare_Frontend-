@@ -1,0 +1,28 @@
+.input-group .form-control:focus {
+    border-color: #4f46bb;
+    /* Blue border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    /* Subtle glow effect */
+}
+
+.input-group .btn:hover {
+    background-color: #4f46bb;
+    /* Change button color on hover */
+    border-color: #4f46bb;
+    /* Ensure button border changes on hover */
+}
+
+.input-group .btn:focus {
+    outline: none;
+    /* Remove outline on button focus */
+}
+
+.custom-filter-btn {
+    border-color: #4f46bb !important;
+    color: #4f46bb !important;
+}
+
+.custom-filter-btn:hover {
+    background-color: #4f46bb !important;
+    color: white !important;
+}   

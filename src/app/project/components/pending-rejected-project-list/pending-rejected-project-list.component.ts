@@ -7,8 +7,16 @@ import { PaginationRequest } from '../../../shared/interfaces/pagination-request
 import { DynamicTableComponent } from '../../../shared/components/dynamic-table/dynamic-table.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { forkJoin, map } from 'rxjs';
+import { forkJoin, map, Observable, of } from 'rxjs';
 import { SarpanchService } from '../../../shared/services/sarpanch.service';
+import { ProjectProgress } from '../../../enums/project-progress.enum';
+import { ProjectFilter } from '../../../shared/interfaces/project/project-filter-request';
+import { SearchRequest } from '../../../shared/interfaces/sarpanch/search-request';
+import { Role } from '../../../enums/role.enum';
+import { TokenService } from '../../../shared/services/token.service';
+import { UserService } from '../../../shared/services/user.service';
+import { AddressService } from '../../../shared/services/address.service';
+import { ProjectApprovalStatus } from '../../../enums/project-approval-status';
 
 @Component({
   selector: 'app-pending-rejected-project-list',
@@ -19,13 +27,21 @@ import { SarpanchService } from '../../../shared/services/sarpanch.service';
 })
 export class PendingRejectedProjectListComponent implements OnInit, AfterViewInit {
 
+  Role = Role;
+  role: Role;
   constructor(
     private changeDetection: ChangeDetectorRef,
     private router: Router,
     private toastService: ToastService,
     private projectService: ProjectService,
-    private sarpanchService: SarpanchService
-  ) {}
+    private sarpanchService: SarpanchService,
+    private tokenService: TokenService,
+    private userService: UserService,
+    private addressService: AddressService
+  ) {
+    const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
+    this.role = roleString as Role; // ✅ safely assign enum
+  }
 
   currentPaginationRequest: PaginationRequest = {
     pageNumber: 1,
@@ -34,6 +50,34 @@ export class PendingRejectedProjectListComponent implements OnInit, AfterViewIni
   };
 
   isLoading: boolean = false;
+  searchTerm: string = '';
+  showFilters: boolean = false;
+  gramPanchayatList: string[] = [];
+
+  search: SearchRequest = {
+    keyword: '',
+    approvalStatus: '',
+    pageNumber: 1,
+    pageSize: 5,
+    sortBy: ''
+  };
+
+  projectApprovalOptions = ['PENDING', 'REJECTED'];
+  filters: ProjectFilter = {
+    gramPanchayat: '',
+    progressStatus: null,
+    approvalStatus: ProjectApprovalStatus.PENDING,
+    minBudget: null,
+    maxBudget: null,
+    startDate: null,
+    endDate: null,
+    minApprovedDate: null,
+    maxApprovedDate: null,
+    createdBy: null,
+    pageNumber: 1,
+    pageSize: 5,
+    sortBy: 'createdAt'
+  };
 
   agencyTableConfig: TableConfig = {
     columns: [
@@ -44,23 +88,29 @@ export class PendingRejectedProjectListComponent implements OnInit, AfterViewIni
       { name: 'endDate', displayName: 'Project End Date', type: 'text' },
       {
         name: 'createdByDetails',
-        displayName: 'Request By',
+        displayName: 'Project Request By',
         type: 'customText',
         customTextFn: (row) => {
           const u = row.createdByDetails;
-          return u ? `${u.name}, ${u.fatherOrHusbandName}, ${u.gramPanchayatName}` : 'N/A';
+          return u ? `<strong>Name:</strong> ${u.name},\n<strong>Father/Husband Name:</strong> ${u.fatherOrHusbandName}, \n<strong>Gram Panchayat:</strong> ${u.gramPanchayatName}, \n<strong>Role:</strong> ${u.role}` : 'N/A';
         }
       },
-      { name: 'approvalStatus', displayName: 'Approval Status', type: 'aadharstatus' },
-      { name: 'isActive', displayName: 'Status', type: 'status' },
+      { name: 'approvalStatus', displayName: 'Approval Status', type: 'projectstatus' },
+      {
+        name: 'approvalReason',
+        displayName: 'FeedBack/Response',
+        type: 'text'
+      },
+      // { name: 'isActive', displayName: 'Status', type: 'status' },
       { name: 'action', displayName: 'Action', type: 'action' },
     ],
     data: [],
-    actions: ['edit', 'delete', 'view profile']
+    actions: ['edit','view profile']
   };
 
   ngOnInit(): void {
-    this.loadPendingRejectProjects('PENDING', this.currentPaginationRequest);
+    this.loadPendingRejectProjects(this.filters.approvalStatus, this.currentPaginationRequest);
+    this.loadGramPanchayats();
   }
 
   ngAfterViewInit(): void {
@@ -69,36 +119,22 @@ export class PendingRejectedProjectListComponent implements OnInit, AfterViewIni
     }, 200);
   }
 
-  loadPendingRejectProjects(approvalStatus: string, paginationRequest: PaginationRequest): void {
+  loadPendingRejectProjects(approvalStatus: ProjectApprovalStatus, paginationRequest: PaginationRequest): void {
     this.isLoading = true;
 
     this.projectService.getAllProjects(approvalStatus, paginationRequest).subscribe({
       next: (response) => {
         const projects = response.content;
+        console.log('PROJECT RESPONSE 111 ===> ',response.content);
+        this.mapProjectsWithCreatedByDetails(projects).subscribe(updatedProjects => {
 
-        const userRequests = projects.map(project =>
-          this.sarpanchService.getSarpanchById(project.createdBy).pipe(
-            map(userResponse => {
-              const user = userResponse.response; // Assuming .response exists
-              const limitedDetails = {
-                name: user?.name || 'N/A',
-                fatherOrHusbandName: user?.fatherOrHusbandName || 'N/A',
-                gramPanchayatName: user?.gramPanchayatName || 'N/A'
-              };
-              return {
-                ...project,
-                createdByDetails: limitedDetails
-              };
-            })
-          )
-        );
-
-        forkJoin(userRequests).subscribe(updatedProjects => {
+          // Update table config
           this.agencyTableConfig = {
             ...this.agencyTableConfig,
             data: updatedProjects,
             totalRecords: response.totalElements
           };
+
           this.changeDetection.detectChanges();
           this.isLoading = false;
         });
@@ -110,6 +146,71 @@ export class PendingRejectedProjectListComponent implements OnInit, AfterViewIni
       }
     });
   }
+
+
+  private mapProjectsWithCreatedByDetails(projects: any[]): Observable<any[]> {
+    if (!projects || projects.length === 0) {
+      return of([]);
+    }
+
+    const userRequests = projects.map(project =>
+      this.userService.getUserById(project.createdBy).pipe(
+        map(userResponse => {
+          const user = userResponse.response;
+          let createdByDetails: any = { role: user?.role || 'N/A' };
+
+          if (user?.role === 'SARPANCH') {
+            createdByDetails = {
+              name: user?.name || 'N/A',
+              fatherOrHusbandName: user?.fatherOrHusbandName || 'N/A',
+              gramPanchayatName: user?.gramPanchayatName || 'N/A',
+              role: 'Sarpanch'
+            };
+          } else if (user?.role === 'ADMIN') {
+            createdByDetails = {
+              name: user?.name || 'N/A',
+              role: 'Admin'
+            };
+          }
+
+          return { ...project, createdByDetails };
+        })
+      )
+    );
+    return forkJoin(userRequests);
+  }
+
+
+  loadGramPanchayats() {
+    this.addressService.getGramPanchayats().subscribe({
+      next: (data) => this.gramPanchayatList = data,
+      error: (err) => {
+        console.error('Error loading Gram Panchayats', err)
+        // Show error message using ToastService
+        this.toastService.showError(err.message || 'Something went wrong');
+
+      }
+
+    });
+  }
+
+  changeProjectApprovalStatus(event: { id: string, approvalStatus: string, reason: string }) {
+    console.log("IN PENDING REJECT COMPONENT.TS ", event.id, event.approvalStatus, event.reason);
+    this.projectService.updateProjectApprovalStatus(event.id, event.approvalStatus, event.reason).subscribe({
+      next: (response) => {
+        this.toastService.showSuccess(response.message);
+        this.loadPendingRejectProjects(this.filters.approvalStatus, this.currentPaginationRequest);
+      },
+      error: (err) => {
+        this.toastService.showError(err.error.message || 'Something went wrong');
+        this.isLoading = false;
+      }
+    });
+  }
+
+
+
+
 
   onAction(action: string, element: any): void {
     console.log(`${action} clicked for`, element);
@@ -132,12 +233,80 @@ export class PendingRejectedProjectListComponent implements OnInit, AfterViewIni
   }
 
   toggleFilter() {
-    // this.showFilters = !this.showFilters;
+    this.showFilters = !this.showFilters;
   }
   closeFilterIfClickedOutside(event: MouseEvent) {
-    // const target = event.target as HTMLElement;
-    // if (!target.closest('.dropdown')) {
-    //   this.showFilters = false;
-    // }
+    const target = event.target as HTMLElement;
+    if (!target.closest('.dropdown')) {
+      this.showFilters = false;
+    }
+  }
+
+  onFilter(): void {
+    this.isLoading = true;
+    const filterRequest = {
+      gramPanchayat: this.filters.gramPanchayat,
+      // progressStatus: this.filters.progressStatus,
+      approvalStatus: this.filters.approvalStatus,
+      minBudget: this.filters.minBudget,
+      maxBudget: this.filters.maxBudget,
+      startDate: this.filters.startDate,
+      endDate: this.filters.endDate,
+      minApprovedDate: this.filters.minApprovedDate,
+      maxApprovedDate: this.filters.maxApprovedDate,
+      createdBy: this.filters.createdBy,
+      pageNumber: this.currentPaginationRequest.pageNumber,
+      pageSize: this.currentPaginationRequest.pageSize,
+      sortBy: this.currentPaginationRequest.sortBy
+    };
+
+    this.projectService.filterProject(filterRequest).subscribe({
+      next: (response) => {
+        const projects = response.content;
+        console.log('FILTER RESULT ====> ', projects);
+        this.mapProjectsWithCreatedByDetails(projects).subscribe((updatedProjects: any[]) => {
+          this.agencyTableConfig = {
+            ...this.agencyTableConfig,
+            data: updatedProjects,
+            totalRecords: response.totalElements
+          };
+          this.changeDetection.detectChanges();
+          this.isLoading = false;
+        });
+      },
+      error: (err) => {
+        console.error('Search failed:', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+
+  onSearch() {
+    this.isLoading = true;
+    this.search.keyword = this.searchTerm;
+    this.search.approvalStatus = this.filters.approvalStatus
+    this.search.pageNumber = this.currentPaginationRequest.pageNumber;
+    this.search.pageSize = this.currentPaginationRequest.pageSize;
+    this.search.sortBy = this.currentPaginationRequest.sortBy;
+
+    this.projectService.searchProject(this.search).subscribe({
+      next: (response) => {
+        const projects = response.content;
+        this.mapProjectsWithCreatedByDetails(projects).subscribe((updatedProjects: any[]) => {
+          this.agencyTableConfig = {
+            ...this.agencyTableConfig,
+            data: updatedProjects,
+            totalRecords: response.totalElements
+          };
+          this.changeDetection.detectChanges();
+          this.isLoading = false;
+        });
+      },
+      error: (err) => {
+        console.error('Search failed:', err);
+        this.isLoading = false;
+      }
+    });
   }
 }

@@ -253,3 +253,18 @@ input:checked + .slider:before {
     scale: 0.8;
   }
 }
+
+.custom-text-cell {
+  display: block;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  padding: 8px 12px;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  white-space: normal;
+}
+.custom-text-cell strong {
+  color: #2c3e50;
+}
+

@@ -39,6 +39,8 @@ import { ProjectProgress } from '../../../enums/project-progress.enum';
 import { Project } from '../../interfaces/project/project';
 import { Role } from '../../../enums/role.enum';
 import { TokenService } from '../../services/token.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ReasonDialogComponent } from '../reason-dialog/reason-dialog.component';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -50,13 +52,15 @@ import { TokenService } from '../../services/token.service';
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
-    // MatCheckboxModule,
+    //MatCheckboxModule,
     MatButtonModule,
     FormsModule,
     MatMenuModule,
+    NgClass,
     MatSlideToggleModule,
     ReactiveFormsModule,
     CommonModule,
+    MatDialogModule
   ],
   templateUrl: './dynamic-table.component.html',
   styleUrls: ['./dynamic-table.component.scss'],
@@ -76,10 +80,12 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
   @ViewChild(MatSort) sort!: MatSort;
 
   displayedColumns: string[] = [];
-  pageSizeOptions = [5, 10, 20]; // Define page size options here
-  defaultPageSize = 5; // Default items per page
+  pageSizeOptions = [10, 20, 30]; // Define page size options here
+  defaultPageSize = 10; // Default items per page
   // @Output() statusIsDeletedChanged = new EventEmitter<{ id: string, isActive: boolean }>();
   @Output() aadharStatusChanged = new EventEmitter<{ id: string, aadharVerificationStatus: string }>();
+  @Output() projectApprovalStatusChanged = new EventEmitter<{ id: string, approvalStatus: string, reason: string }>();
+  @Output() projectProgressStatusChanged = new EventEmitter<{ id: string, progressStatus: string }>();
   @Output() actionClicked = new EventEmitter<{ action: string, element: any }>();
 
   @Output() pageChanged = new EventEmitter<{
@@ -89,6 +95,10 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
   @Output() statusChanged = new EventEmitter<{
     id: string;
     isActive: boolean;
+  }>();
+  @Output() schemeStatusChanged = new EventEmitter<{
+    id: string;
+    status: string;
   }>();
   @Output() changeAnnouncementStatusEvent = new EventEmitter<{
     id: number;
@@ -102,7 +112,7 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
 
   Role = Role;
   userRole: Role;
-  constructor(private router: Router, private tokenService: TokenService) {
+  constructor(private router: Router, private tokenService: TokenService, private dialog: MatDialog) {
     const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
     this.userRole = roleString as Role;
   }
@@ -129,6 +139,10 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
     this.statusChanged.emit({ id: element.id, isActive: newStatus });
   }
 
+  changeSchemeStatus(element: any, newStatus: string) {
+    this.schemeStatusChanged.emit({ id: element.id, status: newStatus });
+  }
+
   changeAnnouncementsStatus(element: any, newStatus: string) {
     this.changeAnnouncementStatusEvent.emit({
       id: element.id,
@@ -142,6 +156,48 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
       aadharVerificationStatus: newStatus,
     });
   }
+
+  changeProjectApprovalStatus(element: any, newStatus: string) {
+    console.log('IN DYNAMIC TABLE CHANGE APPROVAL STATUS ==> ', element, newStatus);
+
+    if (newStatus === 'PENDING') {
+      this.projectApprovalStatusChanged.emit({
+        id: element.id,
+        approvalStatus: newStatus,
+        reason: '' // No reason required
+      });
+      return;
+    }
+
+    const dialogRef = this.dialog.open(ReasonDialogComponent, {
+      width: '400px',
+      disableClose: true, // Prevent closing without action
+      data: { status: newStatus }
+    });
+
+    dialogRef.afterClosed().subscribe((reason: string) => {
+      if (reason && reason.trim().length > 0) {
+        this.projectApprovalStatusChanged.emit({
+          id: element.id,
+          approvalStatus: newStatus,
+          reason: reason.trim()
+        });
+      } else {
+        console.warn('Reason is required but not provided.');
+        // Optionally reopen the dialog or show a message
+      }
+    });
+  }
+
+  changeProjectProgressStatus(element: any, newStatus: any): void {
+    console.log(`Changing status of project to: ${newStatus}`, element);
+    this.projectProgressStatusChanged.emit({
+      id: element.id,
+      progressStatus: newStatus,
+    });
+  }
+
+
 
   // getSerialNumber(row: any): number {
   //   const index = this.dataSource?.data.indexOf(row);
@@ -195,12 +251,6 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
       return '#4F46BB';
     }
     return '#000';
-  }
-
-  changeProjectProgressStatus(element: any, progressStatus: any): void {
-    console.log(`Changing status of project to: ${progressStatus}`, element);
-    element.progressStatus = progressStatus;  // Update the status of the project
-    // You can call a service to update the status in the backend here.
   }
 
 

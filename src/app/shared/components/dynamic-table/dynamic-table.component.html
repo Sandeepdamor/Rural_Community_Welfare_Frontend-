@@ -3,7 +3,8 @@
     <table mat-table [dataSource]="dataSource" matSort class="table-responsive cursor_pointer">
 
       <!-- Dynamic Columns -->
-      @for (column of config.columns; track column) {
+      @for (column of config.columns; track column)
+      {
       <ng-container [matColumnDef]="column.name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header
           [class]="column.type === 'checkbox' ? 'Primarylight_background' : ''">
@@ -35,6 +36,31 @@
           }
 
 
+          @case ("schemeStatus") {
+          <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status"
+            [style.backgroundColor]="element[column.name] === 'PUBLISHED' ? '#edecf8' : 'rgba(255, 53, 53, 0.05)'"
+            [style.color]="element[column.name] === 'PUBLISHED' ? '#4F46BB' : '#FF3535'">
+            {{ element[column.name] }}
+            <img src="assets/images/svg/arrow-dropdown.svg" height="14" width="14"
+              [ngClass]="{ 'filter-active': element[column.name] === 'PUBLISHED', 'filter-deactive': element[column.name] !== 'PUBLISHED' }" />
+          </button>
+
+          <mat-menu #statusMenu="matMenu">
+            <!-- Only show 'PUBLISHED' option if current is DRAFT -->
+            <button *ngIf="element[column.name] === 'DRAFT'" mat-menu-item
+              (click)="changeSchemeStatus(element, 'PUBLISHED')">
+              PUBLISHED
+            </button>
+
+            <!-- Only show 'DRAFT' option if current is not PUBLISHED -->
+            <button *ngIf="element[column.name] !== 'PUBLISHED'" mat-menu-item
+              (click)="changeSchemeStatus(element, 'DRAFT')">
+              DRAFT
+            </button>
+          </mat-menu>
+          }
+
+
 
           @case ("aadharstatus") {
           <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status" [style.backgroundColor]="
@@ -59,34 +85,81 @@
           </mat-menu>
           }
 
+          @case ("projectstatus") {
+          <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status" [style.backgroundColor]="
+                element[column.name] === 'APPROVED' ? '#edecf8' :
+                element[column.name] === 'PENDING' ? 'rgba(255, 53, 53, 0.05)' : '#F5F6FA'" [style.color]="
+                element[column.name] === 'REJECTED' ? '#4F46BB' :
+                element[column.name] === 'APPROVED' ? '#515563' : '#515563'">
+
+            {{ element[column.name] }}
+            <img *ngIf="userRole === 'ADMIN'" src="assets/images/svg/arrow-dropdown.svg" height="14" width="14"
+              [ngClass]="{
+                  'filter-temporary': element[column.name] === 'PENDING',
+                  'filter-active': element[column.name] === 'APPROVED',
+                  'filter-deactive': element[column.name] === 'REJECTED'
+                }" />
+          </button>
+
+          <mat-menu #statusMenu="matMenu">
+            <button *ngIf="element[column.name] !== 'APPROVED' && userRole === 'ADMIN'" mat-menu-item
+              (click)="changeProjectApprovalStatus(element, 'APPROVED')">
+              Approved
+            </button>
+
+            <button *ngIf="element[column.name] !== 'REJECTED' && userRole === 'ADMIN'" mat-menu-item
+              (click)="changeProjectApprovalStatus(element, 'REJECTED')">
+              Rejected
+            </button>
+          </mat-menu>
+          }
+
+
+
 
           @case ("projectProgress") {
-
-          <!-- 👇 Show dropdown only if role is SARPANCH -->
-          <ng-container *ngIf="userRole === 'SARPANCH'">
+          <!-- 👇 Show dropdown only if role is SARPANCH and project is not COMPLETED -->
+          <ng-container *ngIf="userRole === 'SARPANCH' && element[column.name] !== 'COMPLETED'">
             <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status"
               [style.backgroundColor]="getBackgroundColor(element[column.name])"
               [style.color]="getStatusColor(element[column.name])">
               {{ element[column.name] }}
               <img src="assets/images/svg/arrow-dropdown.svg" height="14" width="14" [ngClass]="{
-                    'filter-active': element[column.name] === 'NOT_STARTED',
-                    'filter-deactive': element[column.name] === 'ONGOING',
-                    'filter-temporary': element[column.name] === 'ON_HOLD' || element[column.name] === 'COMPLETED'
-                  }" />
+                  'filter-active': element[column.name] === 'NOT_STARTED',
+                  'filter-deactive': element[column.name] === 'ONGOING',
+                  'filter-temporary': element[column.name] === 'ON_HOLD' || element[column.name] === 'COMPLETED'
+                }" />
             </button>
 
             <mat-menu #statusMenu="matMenu">
-              <ng-container *ngIf="element[column.name] !== 'COMPLETED'">
-                <button mat-menu-item (click)="changeProjectProgressStatus(element, 'NOT_STARTED')">NOT_STARTED</button>
-                <button mat-menu-item (click)="changeProjectProgressStatus(element, 'ONGOING')">ONGOING</button>
-                <button mat-menu-item (click)="changeProjectProgressStatus(element, 'ON_HOLD')">ON_HOLD</button>
-                <button mat-menu-item (click)="changeProjectProgressStatus(element, 'COMPLETED')">COMPLETED</button>
-              </ng-container>
+              <!-- Show NOT_STARTED only if the current status is not ONGOING or ON_HOLD -->
+              <button
+                *ngIf="element[column.name] !== 'NOT_STARTED' && element[column.name] !== 'ONGOING' && element[column.name] !== 'ON_HOLD'"
+                mat-menu-item (click)="changeProjectProgressStatus(element, 'NOT_STARTED')">
+                NOT_STARTED
+              </button>
+
+              <!-- Show ONGOING and ON_HOLD as usual -->
+              <button mat-menu-item (click)="changeProjectProgressStatus(element, 'ONGOING')"
+                [disabled]="element[column.name] === 'ONGOING'">
+                ONGOING
+              </button>
+
+              <button mat-menu-item (click)="changeProjectProgressStatus(element, 'ON_HOLD')"
+                [disabled]="element[column.name] === 'ON_HOLD'">
+                ON_HOLD
+              </button>
+
+              <!-- Allow COMPLETED to be selected but can't go back to NOT_STARTED -->
+              <button mat-menu-item (click)="changeProjectProgressStatus(element, 'COMPLETED')"
+                [disabled]="element[column.name] === 'COMPLETED'">
+                COMPLETED
+              </button>
             </mat-menu>
           </ng-container>
 
-          <!-- 👇 For NON-SARPANCH users, just show status (view-only, no dropdown) -->
-          <ng-container *ngIf="userRole !== 'SARPANCH'">
+          <!-- For NON-SARPANCH users or COMPLETED projects, show only view mode -->
+          <ng-container *ngIf="userRole !== 'SARPANCH' || element[column.name] === 'COMPLETED'">
             <span class="table_status view-only" [style.backgroundColor]="getBackgroundColor(element[column.name])"
               [style.color]="getStatusColor(element[column.name])">
               {{ element[column.name] }}
@@ -127,60 +200,74 @@
 
 
           @case ("text") {
-          <!-- Check if it's a date field -->
-          <ng-container *ngIf="['startDate', 'endDate', 'approvedDate'].includes(column.name); else normalText">
-            <span>{{ element[column.name] | date: 'dd MMM yyyy, h:mm a'}}</span>
+          <ng-container [ngSwitch]="column.name">
+            <span *ngSwitchCase="'approvedDate'">
+              {{ element[column.name] | date: 'dd MMM yyyy, h:mm a' }}
+            </span>
+            <span *ngSwitchCase="'startDate'">
+              {{ element[column.name] | date: 'dd MMM yyyy' }}
+            </span>
+            <span *ngSwitchCase="'endDate'">
+              {{ element[column.name] | date: 'dd MMM yyyy' }}
+            </span>
+            <span *ngSwitchCase="'createdAt'">
+              {{ element[column.name] | date: 'dd MMM yyyy, h:mm a' }}
+            </span>
+            <span *ngSwitchCase="'updatedAt'">
+              {{ element[column.name] | date: 'dd MMM yyyy, h:mm a' }}
+            </span>
+            <span *ngSwitchCase="'approvalReason'">
+              {{ element[column.name] ?? '--' }}
+            </span>
+            <span *ngSwitchDefault>
+              {{ element[column.name] }}
+            </span>
           </ng-container>
-          <ng-template #normalText>
-            <span>{{ element[column.name] }}</span>
-          </ng-template>
           }
 
-          @case ('customText') {
-          <span>
-            {{
-            column.customTextFn
-            ? column.customTextFn(element)
-            : element[column.name]
-            }}
-          </span>
-          }
 
+          @case('customText') {
+          <span class="custom-text-cell"
+            [innerHTML]="column.customTextFn ? column.customTextFn(element) : element[column.name]"></span>
+          }
 
           @case ("documents") {
           <!-- Text column -->
           <span class="borderBottom cursor-pointer" data-bs-target="#createVendor" data-bs-toggle="modal">{{
             element[column.name] }}</span>
           }
+
+          <!-- Toggle Column for isActive -->
           @case ("toggle") {
-          <!-- Checkbox column -->
+          @if(userRole === 'ADMIN' || userRole === 'SARPANCH'){
           <div>
             <label class="switch">
-              <input type="checkbox">
+              <input type="checkbox" [checked]="element[column.name]"
+                (change)="changeStatus(element, !element[column.name])">
               <span class="slider round"></span>
             </label>
           </div>
           }
-
+          }
 
           @case ("action") {
           <div class="d-flex gap-3 align-items-center">
 
-            @if (config.actions?.includes('edit')) {
+            @if (config.actions.includes('edit')) {
             <button *ngIf="config.actions?.includes('edit')" type="button" class="table_action_icon bgPrimaryLight"
               (click)="onAction('edit', element)">
               <img src="assets/images/svg/edit.svg" />
             </button>
             }
 
-            @if (config.actions?.includes('delete')) {
+            @if (config.actions.includes('delete')) {
             <button *ngIf="config.actions?.includes('delete')" type="button" class="table_action_icon bgRedLight"
               (click)="onAction('delete', element)">
               <img src="assets/images/svg/delete.svg" />
             </button>
             }
 
-            @if (config.actions?.includes('view profile')) {
+            @if (config.actions.includes('view profile')) {
             <!-- View Profile Button -->
             <button *ngIf="config.actions?.includes('view profile')" type="button"
               class="table_action_icon bgPrimaryLight" (click)="onAction('view profile', element)">
@@ -188,38 +275,20 @@
             </button>
             }
 
-            <!-- @if(config.actions?.includes('manage-permission')) {
-            <h4 class="font-14 medium themeColor mb-0 cursor-pointer" [routerLink]="componentRoutes.MANAGEROLEADD">
-              Manage Permission
-            </h4>
-            } -->
-
           </div>
           }
 
-          @case ("view-action") {
+          <!-- View Profile Button -->
+          <!-- @case ("view-action") {
           <div class="d-flex gap-3 align-items-center">
-
             @if (config.actions?.includes('view profile')) {
-            <!-- View Profile Button -->
             <button *ngIf="config.actions?.includes('view profile')" type="button"
               class="table_action_icon bgPrimaryLight" (click)="onAction('view profile', element)">
               <img src="assets/images/svg/eye.svg" alt="View" />
             </button>
             }
-
-            <!-- @if(config.actions?.includes('manage-permission')) {
-              <h4 class="font-14 medium themeColor mb-0 cursor-pointer" [routerLink]="componentRoutes.MANAGEROLEADD">
-                Manage Permission
-              </h4>
-              } -->
-
           </div>
-          }
-
-
-
-
+          } -->
 
           @default {
           <span>Unknown Type</span>
@@ -241,7 +310,7 @@
   <!-- <mat-paginator [length]="config.totalRecords ?? 0" [pageSize]="defaultPageSize" [pageSizeOptions]="pageSizeOptions"
     showFirstLastButtons (page)="pageChanged.emit($event)">
   </mat-paginator> -->
-  <mat-paginator [length]="config.totalRecords ?? 0" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
+  <mat-paginator [length]="config.totalRecords ?? 0" [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons
     (page)="pageChanged.emit($event)">
   </mat-paginator>
 

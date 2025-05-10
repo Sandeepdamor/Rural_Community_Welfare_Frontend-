@@ -18,18 +18,18 @@
       </li>
       <!-- Resident Dropdown -->
       <!-- Parent item -->
-      <li class="cursor-pointer dropdown-toggle" (click)="toggleUserMenu()" [class.active]="isUserMenuOpen">
+      <li *ngIf="role === Role.ADMIN || role === Role.SARPANCH" class="cursor-pointer dropdown-toggle"
+        (click)="toggleUserMenu()" [class.active]="isUserMenuOpen">
         <img src="assets/images/svg/user.svg">
         <span class="menu-text singleLine">Resident</span>
       </li>
 
       <ul *ngIf="isUserMenuOpen" class="sub-menu">
-        <li *ngIf="role === Role.ADMIN || role === Role.SARPANCH" [routerLink]="'/user/list'" routerLinkActive="active">
+        <li [routerLink]="'/user/list'" routerLinkActive="active">
           <img src="assets/images/svg/user-list-icon.svg" alt="user-list-icon" class="white-icon" />
           Residents List
         </li>
-        <li *ngIf="role === Role.ADMIN || role === Role.SARPANCH" [routerLink]="'/user/delete-user-list'"
-          routerLinkActive="active">
+        <li [routerLink]="'/user/delete-user-list'" routerLinkActive="active">
           <img src="assets/images/svg/delete-user-icon.svg" alt="delete-user-icon" class="white-icon" />
           Deleted Residents List
         </li>
@@ -38,6 +38,12 @@
           Pending Residents List
         </li>
       </ul>
+
+      <!-- Sarpanch Menu For Resident only -->
+      <li *ngIf="role === Role.RESIDENT" class="cursor-pointer" (click)="navigateToSarpanch()">
+        <img src="assets/images/svg/user.svg" style="width: 23px; height: 23px;">
+        <span class="menu-text singleLine">Sarpanh Details</span>
+      </li>
 
       <!-- Sarpanch Dropdown -->
       <!-- Parent item -->
@@ -61,23 +67,22 @@
 
       <!-- Project Dropdown -->
       <!-- Parent item -->
-      <li *ngIf="role === Role.ADMIN || role === Role.SARPANCH || role === Role.RESIDENT"
-        class="cursor-pointer dropdown-toggle" (click)="toggleProjectMenu()" [class.active]="isSarpanchMenuOpen">
-        <img src="assets/images/svg/project.svg" alt="project-icon" class="white-icon">
+      <li *ngIf="role === Role.ADMIN || role === Role.SARPANCH" class="cursor-pointer dropdown-toggle"
+        (click)="toggleProjectMenu()" [class.active]="isProjectMenuOpen">
+        <img src="assets/images/svg/project.svg" alt="project-icon" class="white-icon"
+          style="width: 23px; height: 23px;">
         <!-- <i class="bi bi-folder2-open"></i> -->
         <span class="menu-text singleLine">Project</span>
       </li>
 
       <!-- Submenu -->
       <ul *ngIf="isProjectMenuOpen" class="sub-menu">
-        <li *ngIf="role === Role.ADMIN || role === Role.SARPANCH || role === Role.RESIDENT"
-          [routerLink]="'/project/list'" routerLinkActive="active">
+        <li [routerLink]="'/project/list'" routerLinkActive="active">
           <img src="assets/images/svg/project-list-icon.svg" alt="project-list-icon" class="white-icon" />
           <!-- <i class="bi bi-card-list white-icon"></i> -->
           Projects List
         </li>
-        <li *ngIf="role === Role.ADMIN || role === Role.SARPANCH" [routerLink]="'/project/pending-rejected-list'"
-          routerLinkActive="active">
+        <li [routerLink]="'/project/pending-rejected-list'" routerLinkActive="active">
           <img src="assets/images/svg/pending-project-icon.svg" alt="pending-project-icon"
             class="white-icon" />Pending/Rejected Requests
         </li>
@@ -85,6 +90,11 @@
                         src="assets/images/svg/pending-user-icon.svg" alt="pending-user-icon"
                         class="white-icon" />Pending Users List</li> -->
       </ul>
+      <!-- Project Menu For Resident only -->
+      <li *ngIf="role === Role.RESIDENT" class="cursor-pointer" [routerLink]="'/project/list'">
+        <img src="assets/images/svg/project.svg" class="white-icon" style="width: 23px; height: 23px;">
+        <span class="menu-text singleLine">Projects</span>
+      </li>
 
       <!-- Announcements Dropdown -->
       <!-- Parent item -->
@@ -109,10 +119,38 @@
                           class="white-icon" />Pending Users List</li> -->
       </ul>
 
-      <!-- <li class="cursor-pointer" [routerLink]="'/managerole'"
-                [ngClass]="{ 'active': isActiveRoute('/managerole') }" id="managerole"><img
-                    src="assets/images/svg/Manage Role.svg"><span class="menu-text singleLine">My
-                        Grievances</span></li> -->
+      <!-- Schemes Dropdown -->
+      <!-- Parent item -->
+      <li *ngIf="role === Role.ADMIN" class="cursor-pointer dropdown-toggle"
+        (click)="toggleSchemesMenu()" [class.active]="isSchemeMenuOpen">
+        <img src="assets/images/svg/scheme-icon.svg" class="white-icon" style="width: 20px; height: 20px;">
+        <span class="menu-text singleLine">Schemes</span>
+      </li>
+
+      <!-- Submenu -->
+      <ul *ngIf="isSchemeMenuOpen" class="sub-menu">
+        <li *ngIf="role === Role.ADMIN" [routerLink]="'/schemes/list'" routerLinkActive="active">
+          <img src="assets/images/svg/project-list-icon.svg" alt="project-list-icon" class="white-icon" />
+          <!-- <i class="bi bi-card-list white-icon"></i> -->
+          Schemes List
+        </li>
+        <li *ngIf="role === Role.ADMIN" [routerLink]="'/schemes/delete-list'" routerLinkActive="active">
+          <img src="assets/images/svg/delete-icon.svg" alt="pending-project-icon" class="white-icon" />
+          Deleted Schemes
+        </li>
+      </ul>
+
+      <!-- SCHEME Menu For Resident only -->
+      <li *ngIf="role === Role.RESIDENT || role === Role.SARPANCH" class="cursor-pointer" [routerLink]="'/schemes/list'">
+        <img src="assets/images/svg/scheme-icon.svg" class="white-icon" style="width: 20px; height: 20px;">
+        <span class="menu-text singleLine">Schemes</span>
+      </li>
+
+      <!-- Category Menu For Admin only -->
+      <li *ngIf="role === Role.ADMIN" class="cursor-pointer" [routerLink]="'/category/list'">
+        <img src="assets/images/svg/category.svg" class="white-icon" style="width: 23px; height: 23px;">
+        <span class="menu-text singleLine">Category</span>
+      </li>
 
       <!-- grievance Dropdown -->
       <!-- Parent item -->

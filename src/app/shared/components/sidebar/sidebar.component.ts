@@ -9,6 +9,9 @@ import {
 } from '@angular/router';
 import { TokenService } from '../../services/token.service';
 import { Role } from '../../../enums/role.enum';
+import { ToastService } from '../../services/toast.service';
+import { ResidentService } from '../../services/resident.service';
+import { ProfileComponent } from '../../../profile/components/profile/profile.component';
 
 @Component({
   selector: 'app-sidebar',
@@ -22,11 +25,15 @@ export class SidebarComponent implements OnInit {
   isUserMenuOpen = false;
   isSarpanchMenuOpen = false;
   isProjectMenuOpen = false;
+  isSchemeMenuOpen = false;
   isAnnouncementMenuOpen = false;
   isGrievanceMenuOpen = false;
   Role = Role;
   role: Role;
-  constructor(private router: Router, private route: ActivatedRoute, private tokenService: TokenService) {
+  sarpanchId = null;
+  constructor(private router: Router, private route: ActivatedRoute, private tokenService: TokenService,
+    private toastService: ToastService, private residentService: ResidentService
+  ) {
     const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
     this.role = roleString as Role; // ✅ safely assign enum
   }
@@ -40,6 +47,9 @@ export class SidebarComponent implements OnInit {
   }
   toggleProjectMenu() {
     this.isProjectMenuOpen = !this.isProjectMenuOpen;
+  }
+  toggleSchemesMenu() {
+    this.isSchemeMenuOpen = !this.isSchemeMenuOpen;
   }
   toggleAnnouncementMenu() {
     this.isAnnouncementMenuOpen = !this.isAnnouncementMenuOpen;
@@ -60,10 +70,30 @@ export class SidebarComponent implements OnInit {
       }
     });
     console.log('ROLE SIDEBAR => ', this.role);
+    if (this.role === 'RESIDENT') {
+      const mobile = this.tokenService.getMobileNumberFromAccessToken();
+      if (mobile) {
+        this.residentService.getResidentByMobile(mobile).subscribe(response => {
+          console.log('RESPONSE FOR SARPANCH ID ==> ', response.response.sarpanch.id);
+          this.sarpanchId = response.response.sarpanch.id;
+        });
+      }
+    }
+
+
+
   }
 
   isActiveRoute(route: string): boolean {
     return this.currentRoute === route;
+  }
+
+  navigateToSarpanch() {
+    if (this.sarpanchId) {
+      this.router.navigate(['/sarpanch/profile', 'sarpanch', this.sarpanchId]);
+    } else {
+      this.toastService.showError("No Sarpanch assigned to your village yet.");
+    }
   }
 
   @HostListener('window:load', ['$event'])

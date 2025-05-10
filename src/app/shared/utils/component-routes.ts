@@ -34,15 +34,33 @@ export class ComponentRoutes {
   static readonly PENDING_REJECT_PROJECT_LIST = 'pending-rejected-list';
 
   //Announcements
-  static ANNOUNCEMENTS = 'announcements';
-  static ANNOUNCEMENTLIST = 'list';
-  static ADDANNOUNCEMENTS = 'add';
-  static DELETEANNOUNCEMENTS = 'delete';
+  static readonly ANNOUNCEMENTS = 'announcements';
+  static readonly ANNOUNCEMENTLIST = 'list';
+  static readonly ADDANNOUNCEMENTS = 'add';
+  static readonly DELETEANNOUNCEMENTS = 'delete';
 
   //Grievance
-  static GRIEVANCELIST = 'grievance-list';
-  static GRIEVANCES = 'grievance';
-  static GRIEVANCEUPDATE = 'grievance-update';
+  static readonly GRIEVANCELIST = 'grievance-list';
+  static readonly GRIEVANCES = 'grievance';
+  static readonly GRIEVANCEUPDATE = 'grievance-update';
+
+
+  //Schemes
+  static readonly SCHEMES = 'schemes';
+  static readonly SCHEMESLIST = 'list';
+  static readonly SCHEMEADD = 'add';
+  static readonly DELETESCHEMESLIST = 'delete-list';
+
+
+  //Category
+  static readonly CATEGORY = 'category'
+  static readonly CATEGORYADD = 'add'
+  static readonly CATEGORYLIST = 'list'
+
+
+
+
+
 
   // Customer
   static readonly CUSTOMER = 'customer';

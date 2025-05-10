@@ -63,6 +63,7 @@ export class ProfileComponent implements OnInit {
         if (loggedInRole === 'RESIDENT') {
           this.residentService.getResidentByMobile(mobile).subscribe({
             next: (res) => {
+              console.log('SARPANCH PROFILE ==>>',res.response);
               this.resident = res.response;
               this.userType = 'resident';
               this.isViewOnly = false;
@@ -75,9 +76,10 @@ export class ProfileComponent implements OnInit {
         } else if (loggedInRole === 'SARPANCH') {
           this.sarpanchService.getSarpanchByMobile(mobile).subscribe({
             next: (res) => {
+              console.log('SARPACH PROFILE ==> ',res);
               this.sarpanch = res.response;
               this.userType = 'sarpanch';
-              this.isViewOnly = false;
+              this.isViewOnly = true;
               this.isDataLoaded = true;
             },
             error: (err) => {

@@ -11,6 +11,7 @@ import { SearchRequest } from '../interfaces/sarpanch/search-request';
 import { UserService } from './user.service';
 import { TokenService } from './token.service';
 import { ResidentService } from './resident.service';
+import { ProjectFilter } from '../interfaces/project/project-filter-request';
 
 @Injectable({
   providedIn: 'root'
@@ -60,8 +61,8 @@ export class ProjectService {
 
           return this.residentService.getResidentById(residentId).pipe(
             switchMap((residentResponse) => {
-              console.log('RESIDENT RESPONSE => ',residentResponse);
-              console.log('RESIDENT RESPONSE 2 => ',residentResponse.response);
+              console.log('RESIDENT RESPONSE => ', residentResponse);
+              console.log('RESIDENT RESPONSE 2 => ', residentResponse.response);
               const sarpanchId = residentResponse.response?.sarpanch?.id || '';
               return of(sarpanchId);
             })
@@ -118,6 +119,71 @@ export class ProjectService {
       })
     );
   }
+
+  filterProject(filters: ProjectFilter): Observable<any> {
+
+    const params: any = {
+      pageNumber: filters.pageNumber,
+      pageSize: filters.pageSize,
+      sortBy: filters.sortBy || 'createdAt',
+    };
+
+    if (filters.gramPanchayat) params.gramPanchayat = filters.gramPanchayat;
+    if (filters.progressStatus) params.progressStatus = filters.progressStatus;
+    if (filters.approvalStatus) params.approvalStatus = filters.approvalStatus;
+    if (filters.minBudget !== undefined && filters.minBudget !== null) {
+      params.minBudget = filters.minBudget;
+    }
+    if (filters.maxBudget !== undefined && filters.maxBudget !== null) {
+      params.maxBudget = filters.maxBudget;
+    }
+    if (filters.startDate !== undefined && filters.startDate !== null) {
+      params.startDate = filters.startDate;
+    }
+    if (filters.endDate !== undefined && filters.endDate !== null) {
+      params.endDate = filters.endDate;
+    }
+    if (filters.minApprovedDate !== undefined && filters.minApprovedDate !== null) {
+      params.minApprovedDate = filters.minApprovedDate;
+    }
+    if (filters.maxApprovedDate !== undefined && filters.maxApprovedDate !== null) {
+      params.maxApprovedDate = filters.maxApprovedDate;
+    }
+    if (filters.createdBy !== undefined && filters.createdBy !== null) {
+      params.createdBy = filters.createdBy;
+    }
+    return this.http.get(`${this.apiUrl}/filter-request`, { params }).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+    );
+  }
+
+  updateProjectApprovalStatus(id: string, approvalStatus: string, reason: string): Observable<any> {
+    const body = {
+      requestId: id,
+      status: approvalStatus,
+      response: reason
+    };
+    return this.http.patch(`${this.apiUrl}/update-approval-status`, body).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error);
+      })
+    );
+  }
+
+  updateProjectProgressStatus(id: string, progressStatus: string): Observable<any> {
+    const body = {
+      requestId: id,
+      status: progressStatus
+    };
+    return this.http.patch(`${this.apiUrl}/update-progress-status`, body).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error);
+      })
+    );
+}
+
 
 
 

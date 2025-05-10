@@ -14,8 +14,14 @@ export class AddressService {
   // Fetch addresses from the backend
   getAddresses(): Observable<any[]> {
     return this.http.get<string[]>(`${this.apiUrl}/get-all-address`);
-    
   }
+
+  // Method to get village by ID
+ getAddressesBySarpanchId(sarpanchId: string): Observable<any> {
+  return this.http.get(`${this.apiUrl}/get-by-sarpanch-id`, {
+    params: { sarpanchId }
+  });
+}
 
   // Method to get village by ID
  getVillageById(id: string): Observable<any> {

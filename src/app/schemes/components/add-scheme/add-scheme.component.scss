@@ -1,0 +1,241 @@
+.village-select {
+    width: auto;
+    height: auto;
+    /* Full width */
+    padding: 10px;
+    /* Padding inside the select box */
+    border: 1px solid #ccc;
+    /* Light gray border */
+    border-radius: 4px;
+    /* Rounded corners */
+    background-color: #fff;
+    /* White background */
+    font-size: 16px;
+    /* Font size for options */
+    box-sizing: border-box;
+    /* Box model adjustment */
+    transition: border 0.3s ease;
+    /* Smooth transition for focus */
+  }
+  
+  /* Add focus styles to the select dropdown */
+  .village-select:focus {
+    border-color: #007bff;
+    /* Blue border on focus */
+    outline: none;
+    
+    /* Remove default focus outline */
+  }
+  
+  /* Attachments List Styling */
+  ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  ul li {
+    background-color: #f8f9fa;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+  }
+  
+  /* Remove Icon Styling for Attachments */
+  ul li span {
+    font-weight: bold;
+    cursor: pointer;
+    color: #dc3545; // Bootstrap red
+    margin-left: 10px;
+    font-size: 16px;
+    transition: color 0.3s ease;
+  }
+  
+  ul li span:hover {
+    color: #a71d2a;
+  }
+  
+  /* Selected Village Chip Styling */
+  .selected-chip {
+    background-color: #e9f7ef;
+    border: 1px solid #28a745; // green border
+    color: #155724;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+  }
+  
+  .selected-chip span {
+    margin-left: 10px;
+    font-weight: bold;
+    color: #dc3545;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .selected-chip span:hover {
+    color: #a71d2a;
+  }
+  
+  .assigned-sarpanch-box {
+    .assigned-sarpanch-item {
+      background-color: #f9f9f9;
+      border-left: 4px solid #007bff;
+      transition: box-shadow 0.2s;
+  
+      .form-label {
+        font-size: 0.85rem;
+        color: #6c757d;
+      }
+  
+      .form-value {
+        font-weight: 500;
+        color: #343a40;
+      }
+  
+      &:hover {
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.075);
+      }
+    }
+  }
+  .village-chip {
+    background-color: #e8f0fe;
+    color: #1a73e8;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  
+  
+  /* Style for attachments container */
+  .attachments-container {
+    background: #f9f9f9;
+    padding: 16px;
+    border-radius: 10px;
+    box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  }
+  
+  .attachments-container h4 {
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  
+  .attachment-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .attachment-item {
+    max-width: 150px;
+    text-align: center;
+  }
+  
+  .attachment-image {
+    width: 150px; /* or any fixed width */
+    height: 150px; /* or any fixed height */
+    object-fit: cover; /* crop and fit the image */
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    transition: transform 0.3s;
+    cursor: pointer;
+  }
+  
+  .attachment-image:hover {
+    transform: scale(1.05);
+  }
+  
+  .attachment-file-link {
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: #e7f3ff;
+    border: 1px solid #aad1f4;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #0077cc;
+    font-size: 14px;
+    word-break: break-all;
+  }
+  
+  .attachment-file-link:hover {
+    background-color: #d3eaff;
+  }
+  
+  .image-viewer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  
+  .full-image {
+    max-width: 90%;
+    max-height: 80vh;
+    border-radius: 6px;
+  }
+  
+  .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 32px;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .nav-btn {
+    position: absolute;
+    top: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 24px;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+  
+  .prev {
+    left: 10px;
+  }
+  
+  .next {
+    right: 10px;
+  }
+  
+  .nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .remove-icon {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: white;
+  border-radius: 50%;
+  font-size: 18px;
+  color: #dc3545; /* Bootstrap red */
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: color 0.3s ease;
+}
+
+.remove-icon:hover {
+  color: #a71d2a;
+}

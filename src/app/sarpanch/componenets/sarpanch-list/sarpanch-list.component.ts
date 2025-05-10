@@ -31,7 +31,7 @@ export class SarpanchListComponent implements OnInit, AfterViewInit {
   ) { }
   currentPaginationRequest: PaginationRequest = {
     pageNumber: 1,
-    pageSize: 5,
+    pageSize: 10,
     sortBy: 'createdAt'
   };
   isLoading: boolean = false;
@@ -48,13 +48,13 @@ export class SarpanchListComponent implements OnInit, AfterViewInit {
     minElectionYear: null,
     maxElectionYear: null,
     pageNumber: 1,
-    pageSize: 5,
+    pageSize: 10,
     sortBy: 'createdAt'
   };
   search: SearchRequest = {
     keyword: '',
     pageNumber: 1,
-    pageSize: 5,
+    pageSize: 10,
     sortBy: ''
   };
 
@@ -89,7 +89,7 @@ export class SarpanchListComponent implements OnInit, AfterViewInit {
 
 
   toggleFilter() {
-    this.showFilters = !this.showFilters;
+    this.showFilters = !this.showFilters; // Toggle the visibility of the dropdown
   }
   closeFilterIfClickedOutside(event: MouseEvent) {
     const target = event.target as HTMLElement;
@@ -130,7 +130,7 @@ export class SarpanchListComponent implements OnInit, AfterViewInit {
       },
       error: (err) => {
         console.error('Error fetching Sarpanches:', err.error);
-        alert(err.error.message);
+        // alert(err.error.message);
         this.isLoading = false;
       }
     });

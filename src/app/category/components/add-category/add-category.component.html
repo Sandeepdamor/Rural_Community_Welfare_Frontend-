@@ -1,0 +1,28 @@
+<div class="scalable-gap-24-16 scalable-p-16-8 cardBackground d-flex flex-column" [formGroup]="categoryForm">
+    <!-- Back Arrow -->
+    <div class="d-flex gap-2 align-items-center">
+        <img src="assets/images/svg/Back-Icon.svg" class="cursor-pointer" height="30" width="30" (click)="goBack()" />
+        <h2 class="font-18 medium black mb-0">Add Category</h2>
+    </div>
+
+    <!-- Form Inputs -->
+    <div class="row g-4">
+        <!-- Name -->
+        <div class="col-md-6">
+            <div class="d-flex flex-column gap-1 w-100">
+                <h4 class="mb-0 font-14 regular subTextColor">Category Name</h4>
+                <input type="text" class="input-field" placeholder="Enter Category Name" formControlName="name" />
+                <small class="text-danger" *ngIf="isFieldInvalid('name')">
+                    Category name is required and must be between 3 and 50 characters.
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Button -->
+    <div class="d-flex justify-content-end gap-4 mt-4">
+        <button type="button" class="secondary-button py-2 scalable-p-48-24" (click)="cancel()">Cancel</button>
+        <button type="submit" class="primary-button py-2 scalable-p-48-24" [disabled]="!categoryForm.valid"
+            (click)="submit()">Save</button>
+    </div>
+</div>

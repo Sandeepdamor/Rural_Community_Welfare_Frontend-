@@ -57,6 +57,16 @@ const routes: Routes = [
           ),
       },
       {
+        path: ComponentRoutes.SCHEMES,
+        loadChildren: () =>
+          import('../schemes/scheme.module').then((m) => m.SchemesModule),
+      },
+      {
+        path: ComponentRoutes.CATEGORY,
+        loadChildren: () =>
+          import('../category/category.module').then((m) => m.CategoryModule),
+      },
+      {
         path: ComponentRoutes.CUSTOMER,
         loadChildren: () =>
           import('../customer/customer.module').then((m) => m.CustomerModule),
