@@ -101,6 +101,29 @@ export class TokenService {
   }
 
 
+  /// Extract Role from Token (JWT Decoding)
+  getRoleFromAuthToken(): Role | null {
+    const token = this.getAuthToken(); // Get token from localStorage
+    if (!token) return null;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1])); // Decode JWT payload
+
+      // ✅ Ensure 'roleType' exists and is a valid RoleEnum
+      if (payload?.roleType && Object.values(Role).includes(payload.roleType)) {
+        return payload.roleType as Role;
+      }
+
+      console.warn('Invalid roleType in token:', payload?.roleType);
+      return null;
+
+    } catch (e) {
+      console.error('Error decoding token:', e);
+      return null;
+    }
+  }
+
+
   // TokenService.ts
 isTokenExpired(): boolean {
   const token = this.getAccessToken();

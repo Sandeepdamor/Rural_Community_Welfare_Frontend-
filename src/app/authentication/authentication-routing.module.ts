@@ -8,19 +8,24 @@ import { NewPasswordComponent } from './components/new-password/new-password.com
 import { OtpVerificationComponent } from './components/otp-verification/otp-verification.component';
 import { authGuard } from '../guards/auth.guard';
 import { AadhaarVerificationComponent } from './components/aadhaar-verification/aadhaar-verification.component';
+import { AdminLoginComponent } from './components/admin-login/admin-login.component';
 const routes: Routes = [
   {
     path: '',
     component: AuthenticationComponent,
     canActivate: [authGuard],
     children: [
-      {
-        path: '',
-        component: LoginComponent,
-        pathMatch: 'full',
-      },
+      // {
+      //   path: '',
+      //   component: LoginComponent,
+      //   pathMatch: 'full',
+      // },
       {
         path: ComponentRoutes.LOGIN,  // ✅ Set LoginComponent as the default child route
+        component: LoginComponent,
+      },
+      {
+        path: ComponentRoutes.ADMIN_SARPANCH_LOGIN,  // ✅ Set LoginComponent as the default child route
         component: LoginComponent,
       },
       {

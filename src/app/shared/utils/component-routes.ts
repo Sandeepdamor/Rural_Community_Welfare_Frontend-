@@ -5,6 +5,7 @@ export class ComponentRoutes {
   static readonly DASHBOARD = 'dashboard';
   static readonly USERAUTH = 'auth';
   static readonly LOGIN = 'login';
+  static readonly ADMIN_SARPANCH_LOGIN = 'login1';
   static readonly ADMIN_LOGIN = 'admin-login';
   static readonly FORGOTPASSWORD = 'forgot-password';
   static readonly VERIFYOTP = 'verify-otp';

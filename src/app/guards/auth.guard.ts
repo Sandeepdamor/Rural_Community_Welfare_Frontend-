@@ -21,6 +21,7 @@ export const authGuard: CanActivateFn = (route, state) => {
     ComponentRoutes.FORGOTPASSWORD, // '/forgot-password'
     ComponentRoutes.VERIFYOTP, // '/verify-otp'
     ComponentRoutes.NEWPASSWORD, // '/new-password'
+    ComponentRoutes.ADMIN_SARPANCH_LOGIN, // '/new-password'
   ];
   const isPublic = cleanUrl.startsWith('/auth') && publicRoutes.some(route => cleanUrl === `/auth/${route}`);
 

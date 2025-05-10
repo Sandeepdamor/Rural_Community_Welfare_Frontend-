@@ -5,11 +5,15 @@
 
     <!-- Dynamic Heading -->
     <div class="d-flex flex-column gap-2 align-items-center text-center mt-4">
-        <h2 class="mb-0 font-22 semibold textColor">{{ isRegisterMode ? 'Register' : 'Sign in' }}</h2>
+        <h2 class="mb-0 font-22 semibold textColor">
+            {{ isRegisterMode && !isAdminOrSarpanchLogin ? 'Register' : 'Sign in' }}
+        </h2>
         <h3 class="mb-0 font-16 medium subTextColor">
-            {{ isRegisterMode ? 'Create a new account to continue.' : 'Please login to continue to your account.' }}
+            {{ isRegisterMode && !isAdminOrSarpanchLogin ? 'Create a new account to continue.' : 'Please login to
+            continue to your account.' }}
         </h3>
     </div>
+
 
     <!-- Form Section -->
     <form class="w-100" [formGroup]="isRegisterMode ? formRegister : formLogin"
@@ -140,13 +144,14 @@
 
             <!-- Submit Button  -->
             <button class="primary-button w-100">
-                {{ isRegisterMode ? 'Register' : 'Sign In' }}
+                {{ isRegisterMode && !isAdminOrSarpanchLogin ? 'Register' : 'Sign In' }}
             </button>
 
             <!-- Toggle Between Sign In & Register -->
-            <p class="font-14 textColor cursor-pointer mt-3" (click)="toggleMode()">
+            <p *ngIf="!isAdminOrSarpanchLogin" class="font-14 textColor cursor-pointer mt-3" (click)="toggleMode()">
                 {{ isRegisterMode ? 'Already have an account? Sign In' : 'New user? Register here' }}
             </p>
+
         </div>
     </form>
 </div>

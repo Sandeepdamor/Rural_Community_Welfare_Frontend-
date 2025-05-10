@@ -25,6 +25,7 @@ export class LoginComponent {
   otp: string = "";
   errorMessage: string = "";
   submitted: boolean = false;
+  isAdminOrSarpanchLogin = false;
 
   addresses: any[] = []; // Store fetched addresses
   selectedAddressId: number | null = null; // Store selected address ID
@@ -39,6 +40,16 @@ export class LoginComponent {
   }
 
   ngOnInit() {
+    const currentUrl = this.route.snapshot.routeConfig?.path;
+    console.log('CURRENT URL ====>>>> ', currentUrl);
+    // Adjust this based on your route names
+    this.isAdminOrSarpanchLogin = currentUrl === 'login1';
+    console.log('isAdminOrSarpanchLogin URL ====>>>> ', this.isAdminOrSarpanchLogin);
+
+    // Optionally prevent switching to register mode if admin/sarpanch
+    if (this.isAdminOrSarpanchLogin) {
+      this.isRegisterMode = false;
+    }
     this.createForm();
     this.loadAddresses();
     this.route.queryParams.subscribe(params => {
@@ -71,6 +82,8 @@ export class LoginComponent {
   }
 
   toggleMode() {
+    // Prevent toggling for admin/sarpanch login
+    if (this.isAdminOrSarpanchLogin) return;
     this.isRegisterMode = !this.isRegisterMode;
     this.errorMessage = "";
   }
@@ -107,11 +120,26 @@ export class LoginComponent {
           console.log('Auth Token:', res.response.token);
           this.tokenService.saveAuthToken(res.response.token);
           if (res.message) {
+            const role = this.tokenService.getRoleFromAuthToken();
+            console.log('LOGIN ROLE ===> ', role, ' : ==> ', this.isAdminOrSarpanchLogin);
+            // Check if only Admin or Sarpanch can login when isAdminOrSarpanchLogin is true
+            if (role) {
+              if (this.isAdminOrSarpanchLogin && !['ADMIN', 'SARPANCH'].includes(role)) {
+                alert('Only Admin or Sarpanch roles are allowed to login.');
+                return; // Prevent further navigation
+              }
+
+              // Check if only Resident can login when isAdminOrSarpanchLogin is false
+              if (!this.isAdminOrSarpanchLogin && role !== 'RESIDENT') {
+                alert('Only Resident can login.');
+                return; // Prevent further navigation
+              }
+            }
             // Show alert with success message
             alert(res.message);
           }
           if (res.message === 'You have not completed Aadhaar verification. Please verify your Aadhaar to proceed with login.') {
-            this.router.navigate([ComponentRoutes.USERAUTH,ComponentRoutes.VERIFY_AADHAR]);
+            this.router.navigate([ComponentRoutes.USERAUTH, ComponentRoutes.VERIFY_AADHAR]);
             return;
           }
           if (res.message === 'Aadhaar verification is pending. You cannot log-in until your Aadhaar is verified by the admin.') {
@@ -122,8 +150,9 @@ export class LoginComponent {
           }
 
 
+
           // Redirect to Verify OTP page
-          this.router.navigate([ComponentRoutes.USERAUTH,ComponentRoutes.VERIFYOTP], {
+          this.router.navigate([ComponentRoutes.USERAUTH, ComponentRoutes.VERIFYOTP], {
             queryParams: {
               mobileNumber: this.tokenService.getMobileNumberFromAuthToken(),
               otp: res.response.otp
@@ -165,7 +194,7 @@ export class LoginComponent {
 
           console.log('Mobile Number => ', this.tokenService.getMobileNumberFromAuthToken())
           // Redirect to Verify OTP page
-          this.router.navigate([ComponentRoutes.USERAUTH,ComponentRoutes.VERIFYOTP], {
+          this.router.navigate([ComponentRoutes.USERAUTH, ComponentRoutes.VERIFYOTP], {
             queryParams: {
               mobileNumber: this.tokenService.getMobileNumberFromAuthToken(),
               otp: res.response.otp
@@ -193,7 +222,11 @@ export class LoginComponent {
 
 
   onForgotPassword() {
-    // Redirect to Forgot Password page
-    this.router.navigate([ComponentRoutes.USERAUTH,ComponentRoutes.FORGOTPASSWORD]);
+    // Pass isAdminOrSarpanchLogin and isRegisterMode via NavigationExtras state
+    this.router.navigate([ComponentRoutes.USERAUTH, ComponentRoutes.FORGOTPASSWORD], {
+      state: {
+        isAdminOrSarpanchLogin: this.isAdminOrSarpanchLogin,
+      }
+    });
   }
 }
