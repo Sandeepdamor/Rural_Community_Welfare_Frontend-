@@ -74,7 +74,7 @@ export class ForgetPasswordComponent implements OnInit {
             alert('Something went wrong. Please try again.');
             return;
           }
-          this.tokenService.saveAuthToken(res.response);
+          this.tokenService.saveAuthToken(res.response.token);
           console.log('Forgot Password Token ', res.response);
           // Check if the user is allowed to reset the password
           const role = this.tokenService.getRoleFromAuthToken(); // Extract role from token

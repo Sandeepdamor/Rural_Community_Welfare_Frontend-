@@ -15,6 +15,8 @@ import { AnnouncementFilter } from '../../../shared/interfaces/Announcement/anno
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AnnouncementSearch } from '../../../shared/interfaces/Announcement/announcement-search';
+import { Role } from '../../../enums/role.enum';
+import { TokenService } from '../../../shared/services/token.service';
 
 @Component({
   selector: 'app-announcement-list',
@@ -26,13 +28,18 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
   searchTerm: string = '';
   showFilters: boolean = false;
   isLoading: boolean = false;
+  role: Role;
 
   constructor(
     private changeDetection: ChangeDetectorRef,
     private announcementService: AnnouncementService,
     private snackBar: MatSnackBar,
-    private router: Router
-  ) {}
+    private router: Router,
+    private tokenService: TokenService
+  ) {
+    const roleStr = tokenService.getRoleFromToken();
+    this.role = roleStr as Role;
+  }
 
   currentPaginationRequest: PaginationRequest = {
     pageNumber: 1,
@@ -102,7 +109,6 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     console.log('LOAD ANNOUNCEMENT');
-
     this.loadAllAnnouncements(this.currentPaginationRequest);
   }
 
@@ -163,7 +169,7 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
       event.AnnouncementStatus
     );
     const payload = {
-      id: event.id.toString(), // ✅ Correct
+      id: event.id.toString(), //  Correct
       status: event.AnnouncementStatus,
     };
 
@@ -179,7 +185,6 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
 
   onActionClicked(event: { action: string; element: any }) {
     const { action, element } = event;
-
     if (action === 'delete') {
       this.onDeleteAnnouncement(element);
     } else if (action === 'edit') {

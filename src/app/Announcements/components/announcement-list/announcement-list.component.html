@@ -46,7 +46,8 @@
 
     <!-- Right: Add User -->
     <div>
-      <button class="primary-button p-8-12 d-flex align-items-center gap-2" [routerLink]="'/announcements/add'">
+      <button class="primary-button p-8-12 d-flex align-items-center gap-2"
+        *ngIf="role === 'ADMIN' || role === 'SARPANCH'" [routerLink]="'/announcements/add'">
         <div class="plus_icon">
           <img src="assets/images/svg/plus-icon.svg" height="12" width="12">
         </div>
@@ -60,7 +61,6 @@
   <div *ngIf="isLoading" class="text-center">
     <p>Loading...</p>
   </div>
-
 
 
   <app-dynamic-table *ngIf="!isLoading && agencyTableConfig.data.length > 0" [config]="agencyTableConfig"

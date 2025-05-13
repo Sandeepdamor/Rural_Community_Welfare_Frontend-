@@ -16,6 +16,8 @@ import { Role } from '../../../enums/role.enum';
 export class GrievanceUpdateComponent {
   selectedStatus: string = '';
   role: Role;
+  statusList: string[] = [];
+
   constructor(
     private changeDetection: ChangeDetectorRef,
     private grievanceService: GrievanceService,
@@ -28,14 +30,22 @@ export class GrievanceUpdateComponent {
     this.role = roleStr as Role;
   }
 
-  statusList: string[] = [
-    'PENDING',
-    'FORWARDED',
-    'REJECTED',
-    'ACCEPTED',
-    'IN_PROGRESS',
-    'RESOLVED',
-  ];
+  // statusList: string[] = [
+  //   'PENDING',
+  //   'FORWARDED',
+  //   'REJECTED',
+  //   'ACCEPTED',
+  //   'IN_PROGRESS',
+  //   'RESOLVED',
+  // ];
+
+  // statusList1: string[] = [
+  //   'FORWARDED',
+  //   'REJECTED',
+  //   'ACCEPTED',
+  //   'IN_PROGRESS',
+  //   'RESOLVED',
+  // ];
 
   grievance = {
     id: '', // Make sure to set this from route or selected grievance
@@ -44,6 +54,26 @@ export class GrievanceUpdateComponent {
   };
 
   ngOnInit(): void {
+    // Assign status list based on user role
+    if (this.role === 'ADMIN' || this.role === 'SARPANCH') {
+      this.statusList = [
+        'FORWARDED',
+        'REJECTED',
+        'ACCEPTED',
+        'IN_PROGRESS',
+        'RESOLVED',
+      ];
+    } else {
+      this.statusList = [
+        'PENDING',
+        'FORWARDED',
+        'REJECTED',
+        'ACCEPTED',
+        'IN_PROGRESS',
+        'RESOLVED',
+      ];
+    }
+
     // Subscribe to route params and get 'id'
     this.route.params.subscribe((params) => {
       this.grievance.id = params['id']; // Access the ID from the route

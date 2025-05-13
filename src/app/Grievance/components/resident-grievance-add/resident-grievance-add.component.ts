@@ -10,6 +10,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-resident-grievance-add',
@@ -27,7 +28,8 @@ export class ResidentGrievanceAddComponent {
   constructor(
     private fb: FormBuilder,
     private residentgrievanceservice: ResidentGrievanceService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -43,7 +45,7 @@ export class ResidentGrievanceAddComponent {
         ],
       ],
       description: ['', Validators.required],
-      attachment: [],
+      attachments: [],
     });
 
     // Check route parameters for update mode (if any)
@@ -58,26 +60,49 @@ export class ResidentGrievanceAddComponent {
     if (this.grievanceForm.valid) {
       const formData = new FormData();
 
-      console.log('Form Values (for debug):', this.grievanceForm.value);
-
       Object.entries(this.grievanceForm.value).forEach(([key, value]) => {
-        if (key === 'attachment' && value) {
-          const files = value as FileList;
-          for (let i = 0; i < files.length; i++) {
-            formData.append('attachments', files[i]);
-          }
+        if (key === 'attachments') {
+          // const files = value as FileList;
+          // for (let i = 0; i < files.length; i++) {
+          //   formData.append('attachments', files[i]);
+          // }
+          console.log('SELECTED FILES ==> ', this.selectedFiles);
+          this.selectedFiles.forEach((file: File) => {
+            console.log(' FILE ===> ', file);
+            formData.append('attachments', file);
+          });
         } else if (typeof value === 'string') {
           formData.append(key, value);
         }
       });
+      console.log(
+        'Form Values ==============================(for debug):',
+        formData.values
+      );
 
       // Call the service to submit the grievance
       this.residentgrievanceservice.addGrievance(formData).subscribe({
         next: (res: any) => {
           console.log('Successfully submitted:', res);
+          this.snackBar.open('Grievance submitted successfully!', 'Close', {
+            duration: 3000,
+            verticalPosition: 'top',
+            horizontalPosition: 'center',
+            panelClass: ['snackbar-success'], // Optional custom class
+          });
         },
         error: (err: HttpErrorResponse) => {
           console.error('Error submitting grievance:', err.message);
+          this.snackBar.open(
+            'Failed to submit grievance. Please try again.',
+            'Close',
+            {
+              duration: 3000,
+              verticalPosition: 'top',
+              horizontalPosition: 'center',
+              panelClass: ['snackbar-error'],
+            }
+          );
         },
       });
     } else {
@@ -95,13 +120,17 @@ export class ResidentGrievanceAddComponent {
   // Handle file input change and add selected files
   onFileSelected(event: any): void {
     const files: FileList = event.target.files;
+    console.log('Selected Files:------', files); // Debugging the selected file
     if (files.length > 0) {
+      console.log('Adding file:------', files); // Log each file being added
       this.selectedFiles = Array.from(files); // Store selected files in an array
     }
   }
 
   // Remove selected file from the list
   removeAttachment(index: number): void {
+    console.log('Removing file at index:------', index); // Debug the index being removed
     this.selectedFiles.splice(index, 1);
+    console.log('Updated Files List:-----', this.selectedFiles); // Check the updated list
   }
 }

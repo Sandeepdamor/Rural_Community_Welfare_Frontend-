@@ -39,6 +39,8 @@ export class LoginComponent {
   errorMessage: string = '';
   submitted: boolean = false;
   isAdminOrSarpanchLogin = false;
+  showPassword: boolean = false;
+  showConfirmPassword: boolean = false;
 
   addresses: any[] = []; // Store fetched addresses
   selectedAddressId: number | null = null; // Store selected address ID
@@ -52,6 +54,14 @@ export class LoginComponent {
     private addressService: AddressService
   ) {
     this.createForm();
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 
   ngOnInit() {

@@ -51,7 +51,7 @@
     </div>
 
     <!-- Status -->
-    <div class="col-md-6">
+    <div class="col-md-6" *ngIf="role !== 'RESIDENT'">
       <div class="d-flex flex-column gap-1 w-100">
         <h4 class="mb-0 font-14 regular subTextColor">
           Status <span class="text-danger">*</span>
@@ -68,6 +68,7 @@
         </div>
       </div>
     </div>
+
 
   </div>
   <!-- Button -->

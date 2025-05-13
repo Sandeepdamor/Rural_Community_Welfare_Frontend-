@@ -60,7 +60,7 @@ import { ReasonDialogComponent } from '../reason-dialog/reason-dialog.component'
     MatSlideToggleModule,
     ReactiveFormsModule,
     CommonModule,
-    MatDialogModule
+    MatDialogModule,
   ],
   templateUrl: './dynamic-table.component.html',
   styleUrls: ['./dynamic-table.component.scss'],
@@ -83,10 +83,23 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
   pageSizeOptions = [10, 20, 30]; // Define page size options here
   defaultPageSize = 10; // Default items per page
   // @Output() statusIsDeletedChanged = new EventEmitter<{ id: string, isActive: boolean }>();
-  @Output() aadharStatusChanged = new EventEmitter<{ id: string, aadharVerificationStatus: string }>();
-  @Output() projectApprovalStatusChanged = new EventEmitter<{ id: string, approvalStatus: string, reason: string }>();
-  @Output() projectProgressStatusChanged = new EventEmitter<{ id: string, progressStatus: string }>();
-  @Output() actionClicked = new EventEmitter<{ action: string, element: any }>();
+  @Output() aadharStatusChanged = new EventEmitter<{
+    id: string;
+    aadharVerificationStatus: string;
+  }>();
+  @Output() projectApprovalStatusChanged = new EventEmitter<{
+    id: string;
+    approvalStatus: string;
+    reason: string;
+  }>();
+  @Output() projectProgressStatusChanged = new EventEmitter<{
+    id: string;
+    progressStatus: string;
+  }>();
+  @Output() actionClicked = new EventEmitter<{
+    action: string;
+    element: any;
+  }>();
 
   @Output() pageChanged = new EventEmitter<{
     pageIndex: number;
@@ -112,7 +125,11 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
 
   Role = Role;
   userRole: Role;
-  constructor(private router: Router, private tokenService: TokenService, private dialog: MatDialog) {
+  constructor(
+    private router: Router,
+    private tokenService: TokenService,
+    private dialog: MatDialog
+  ) {
     const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
     this.userRole = roleString as Role;
   }
@@ -158,13 +175,17 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
   }
 
   changeProjectApprovalStatus(element: any, newStatus: string) {
-    console.log('IN DYNAMIC TABLE CHANGE APPROVAL STATUS ==> ', element, newStatus);
+    console.log(
+      'IN DYNAMIC TABLE CHANGE APPROVAL STATUS ==> ',
+      element,
+      newStatus
+    );
 
     if (newStatus === 'PENDING') {
       this.projectApprovalStatusChanged.emit({
         id: element.id,
         approvalStatus: newStatus,
-        reason: '' // No reason required
+        reason: '', // No reason required
       });
       return;
     }
@@ -172,7 +193,7 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
     const dialogRef = this.dialog.open(ReasonDialogComponent, {
       width: '400px',
       disableClose: true, // Prevent closing without action
-      data: { status: newStatus }
+      data: { status: newStatus },
     });
 
     dialogRef.afterClosed().subscribe((reason: string) => {
@@ -180,7 +201,7 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
         this.projectApprovalStatusChanged.emit({
           id: element.id,
           approvalStatus: newStatus,
-          reason: reason.trim()
+          reason: reason.trim(),
         });
       } else {
         console.warn('Reason is required but not provided.');
@@ -196,8 +217,6 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
       progressStatus: newStatus,
     });
   }
-
-
 
   // getSerialNumber(row: any): number {
   //   const index = this.dataSource?.data.indexOf(row);
@@ -247,12 +266,14 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
   }
 
   getStatusColor(status: string): string {
-    if (status === ProjectProgress.ON_HOLD || status === ProjectProgress.COMPLETED) {
+    if (
+      status === ProjectProgress.ON_HOLD ||
+      status === ProjectProgress.COMPLETED
+    ) {
       return '#4F46BB';
     }
     return '#000';
   }
-
 
   checkboxLabel(row?: any): string {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row`;

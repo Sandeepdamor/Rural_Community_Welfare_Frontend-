@@ -22,8 +22,7 @@ export class AddUserComponent implements OnInit {
     });
   }
   loadUserDetails(id: string) {
-    this.residentService.getResidentById(id).subscribe((data) => {
-      
+    this.residentService.getResidentById(id).subscribe((data) => {    
     });
   }
 }
