@@ -127,9 +127,9 @@ export class ResidentProfileComponent implements OnInit {
   onPrivacyToggle(): void {
     this.isPublic = !this.isPublic;
 
-    const updatedPrivacy = { 
+    const updatedPrivacy = {
       id: this.data.id,
-      isPublic: this.isPublic 
+      isPublic: this.isPublic
     };
 
     // this.residentService.updatePrivacySetting(updatedPrivacy).subscribe({
@@ -230,5 +230,4 @@ export class ResidentProfileComponent implements OnInit {
       modal.show();
     }
   }
-
 }
