@@ -229,4 +229,9 @@ export class LoginComponent {
       }
     });
   }
+  isFieldRequired(fieldName: string): boolean {
+  // Replace with your form control logic to check if the field is required
+  return this.formRegister.get(fieldName)?.hasValidator(Validators.required) ?? false;
+}
+
 }

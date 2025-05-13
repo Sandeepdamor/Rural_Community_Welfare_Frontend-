@@ -32,7 +32,7 @@
             <!-- Name (Only for Register) -->
             <!-- Full Name (Only for Register) -->
             <div *ngIf="isRegisterMode" class="d-flex flex-column gap-1 w-100">
-                <h4 class="mb-0 font-14 regular subTextColor">Full Name</h4>
+                <h4 class="mb-0 font-14 regular subTextColor">Full Name <span class="text-danger" *ngIf="isFieldRequired('houseNumber')">*</span></h4>
                 <input type="text" class="input-field" formControlName="name" placeholder="Enter your full name"
                     [ngClass]="{'is-invalid': isFieldInvalid('name')}" />
 
@@ -46,7 +46,7 @@
 
             <!--  Mobile Number (For Login Mode) -->
             <div class="d-flex flex-column gap-1 w-100">
-                <h4 class="mb-0 font-14 regular subTextColor">Mobile Number</h4>
+                <h4 class="mb-0 font-14 regular subTextColor">Mobile Number  <span class="text-danger" *ngIf="isFieldRequired('houseNumber')">*</span></h4>
                 <input type="text" class="input-field" placeholder="Enter your mobile number"
                     formControlName="mobileNumber" name="formRegister"
                     [ngClass]="{'is-invalid': isFieldInvalid('mobileNumber')}" />
@@ -64,9 +64,8 @@
             </div>
 
             <!-- Gender Selection (Only for Register) -->
-            <!-- Gender Selection (Only for Register) -->
             <div *ngIf="isRegisterMode" class="d-flex flex-column gap-1 w-100">
-                <h4 class="mb-0 font-14 regular subTextColor">Gender</h4>
+                <h4 class="mb-0 font-14 regular subTextColor">Gender <span class="text-danger" *ngIf="isFieldRequired('houseNumber')">*</span></h4>
                 <select class="input-field" formControlName="gender"
                     [ngClass]="{'is-invalid': isFieldInvalid('gender')}">
                     <option value="" disabled selected>Select Gender</option>
@@ -84,7 +83,7 @@
 
             <!-- Password (For Both Login & Register) -->
             <div class="d-flex flex-column gap-1 w-100">
-                <h4 class="mb-0 font-14 regular subTextColor">Password</h4>
+                <h4 class="mb-0 font-14 regular subTextColor">Password  <span class="text-danger" *ngIf="isFieldRequired('houseNumber')">*</span></h4>
                 <input type="password" class="input-field" placeholder="Password" formControlName="password"
                     name="formRegister" [ngClass]="{'is-invalid': isFieldInvalid('password')}" />
                 <div *ngIf="isFieldInvalid('password')" class="invalid-feedback">
@@ -106,7 +105,7 @@
             <!-- Address (Only for Register) -->
             <!-- Address Selection (Only for Register) -->
             <div *ngIf="isRegisterMode" class="d-flex flex-column gap-1 w-100">
-                <h4 class="mb-0 font-14 regular subTextColor">Address</h4>
+                <h4 class="mb-0 font-14 regular subTextColor">Address  <span class="text-danger" *ngIf="isFieldRequired('houseNumber')">*</span></h4>
                 <select class="input-field" formControlName="addressId"
                     [ngClass]="{'is-invalid': isFieldInvalid('addressId')}">
                     <option value="" disabled selected>Select Address</option>
@@ -125,10 +124,9 @@
             <!-- House No. (Only for Register) -->
             <!-- House Number -->
             <div *ngIf="isRegisterMode" class="d-flex flex-column gap-1 w-100">
-                <h4 class="mb-0 font-14 regular subTextColor">House No.</h4>
+                <h4 class="mb-0 font-14 regular subTextColor">House No.  <span class="text-danger" *ngIf="isFieldRequired('houseNumber')">*</span></h4>
                 <input type="text" class="input-field" formControlName="houseNumber"
                     placeholder="Enter your house number" [ngClass]="{'is-invalid': isFieldInvalid('houseNumber')}" />
-
                 <div *ngIf="isFieldInvalid('houseNumber')" class="invalid-feedback">
                     <small>House Number is required.</small>
                 </div>

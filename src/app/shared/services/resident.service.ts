@@ -7,7 +7,6 @@ import { ResidentResponse } from '../interfaces/resident/resident-response';
 import { TokenService } from './token.service';
 import { ResidentSearch } from '../interfaces/resident/resident-search';
 import { ResidentFilter } from '../interfaces/resident/resident-filter';
-import { Role } from '../../enums/role.enum';
 import { ErrorService } from './error.service';
 import { UpdatePasswordRequest } from '../interfaces/admin/update-password-request';
 import { ApiResponse } from '../interfaces/api-response';
@@ -36,7 +35,10 @@ export class ResidentService {
       url = `${this.apiUrl}/getAllResident`;
     } else if (role === 'SARPANCH') {
       url = `${this.apiUrl}/get-residents`;
-    } else {
+    } else if (role === 'RESIDENT') {
+      url = `${this.apiUrl}/get-residents`;
+    }
+    else {
       console.warn('Unauthorized role for fetching residents:', role);
       return throwError(() => new Error('Unauthorized role'));
     }
@@ -47,7 +49,7 @@ export class ResidentService {
   }
 
   updateDetails(id: string, payload: any): Observable<any> {
-    console.log('PAYLOAD IN UPDATE RESIDENT ===> ',payload);
+    console.log('PAYLOAD IN UPDATE RESIDENT ===> ', payload);
     return this.http.patch(`${this.apiUrl}/update/${id}`, payload).pipe(
       catchError((error) => this.errorService.handleError(error))
     );
@@ -71,18 +73,18 @@ export class ResidentService {
   }
 
   updatePassword(updatePasswordRequest: UpdatePasswordRequest): Observable<ApiResponse> {
-      // return this.http.post<ApiResponse>(`${this.apiUrl}/add`, sarpanchRequest).
-      return this.http.patch<ApiResponse>(`${this.apiUrl}/update-password`,updatePasswordRequest).pipe(
-        catchError((error) => {
-          return this.errorService.handleError(error); // Use ErrorService to handle errors
-        })
-      );
-    }
+    return this.http.patch<ApiResponse>(`${this.apiUrl}/update-password`, updatePasswordRequest).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+    );
+  }
 
-  updateAadharStatus(id: string, status: string): Observable<any> {
+  updateAadharStatus(id: string, status: string, response: string): Observable<any> {
     const body = {
       residentId: id,
-      aadharStatus: status
+      aadharStatus: status,
+      response: response
     };
     return this.http.patch(`${this.apiUrl}/verify-aadhar`, body);
   }
@@ -146,5 +148,12 @@ export class ResidentService {
     });
   }
 
+  updatePrivacySetting(data: { id: string, isPublic: boolean }): Observable<any> {
+    return this.http.patch<ApiResponse>(`${this.apiUrl}/update-privacy`, data).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+    );
+  }
 
 }

@@ -106,21 +106,23 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     // Fetch the dashboard data when the component initializes
-    this.dashboardService.getDashboardData().subscribe((data: DashboardData) => {
-      this.dashboardData = data;
-      console.log('DASHBOARD DATA 11=> ', data);
-      console.log('DASHBOARD DATA 22 => ', this.dashboardData);
-      // this.updateDashboardForRole();
+    if (this.userRole !== Role.RESIDENT) {
+      this.dashboardService.getDashboardData().subscribe((data: DashboardData) => {
+        this.dashboardData = data;
+        console.log('DASHBOARD DATA 11=> ', data);
+        console.log('DASHBOARD DATA 22 => ', this.dashboardData);
+        // this.updateDashboardForRole();
 
-      // ✅ Update chart data
-      if (data.genderDistribution) {
-        const genderDist = data.genderDistribution;
+        // ✅ Update chart data
+        if (data.genderDistribution) {
+          const genderDist = data.genderDistribution;
 
-        this.genderChartData.labels = Object.keys(genderDist); // ['Male', 'Female', 'Other']
-        this.genderChartData.datasets[0].data = Object.values(genderDist); // [12, 18, 3]
-      }
-    });
-    this.getLatestProjects(); // Fetch latest projects on initialization
+          this.genderChartData.labels = Object.keys(genderDist); // ['Male', 'Female', 'Other']
+          this.genderChartData.datasets[0].data = Object.values(genderDist); // [12, 18, 3]
+        }
+      });
+      this.getLatestProjects(); // Fetch latest projects on initialization
+    }
 
   }
 

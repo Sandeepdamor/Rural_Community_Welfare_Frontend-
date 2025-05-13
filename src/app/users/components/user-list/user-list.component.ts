@@ -19,6 +19,7 @@ import { ToastService } from '../../../shared/services/toast.service';
 import { AddressService } from '../../../shared/services/address.service';
 import { Role } from '../../../enums/role.enum';
 import { TokenService } from '../../../shared/services/token.service';
+import { TableColumn } from '../../../shared/components/model/table-column';
 
 @Component({
     selector: 'app-user-list',
@@ -76,6 +77,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
     ngOnInit(): void {
         this.loadResidents(this.currentPaginationRequest);
         this.loadGramPanchayats();
+        this.setTableColumnsByRole();
     }
 
     ngAfterViewInit(): void {
@@ -85,18 +87,49 @@ export class UserListComponent implements OnInit, AfterViewInit {
     }
 
     agencyTableConfig: TableConfig = {
-        columns: [
-            // { name: 'serialNumber', displayName: 'S. No.', type: 'serial' }, 
-            { name: 'name', displayName: 'Full Name', type: 'text' },
+        columns: [],
+        data: [],
+        actions: []
+      };
+    // agencyTableConfig: TableConfig = {
+    //     columns: [
+    //         // { name: 'serialNumber', displayName: 'S. No.', type: 'serial' }, 
+    //         { name: 'profileUrl', displayName: 'Profile Picture', type: 'image'},
+    //         { name: 'name', displayName: 'Full Name', type: 'text' },
+    //         { name: 'mobile', displayName: 'Phone Number', type: 'text' },
+    //         { name: 'aadharNumber', displayName: 'Aadhar Number', type: 'text' },
+    //         { name: 'address', displayName: 'Address', type: 'text' },
+    //         { name: 'isActive', displayName: 'Status', type: 'status' },
+    //         { name: 'action', displayName: 'Action', type: 'action' },
+    //     ],
+    //     data: [],
+    //     actions: ['delete', 'view profile']
+    // };
+
+    private setTableColumnsByRole(): void {
+        let commonColumns: TableColumn[] = [
+          { name: 'profileUrl', displayName: 'Profile', type: 'image' },
+          { name: 'name', displayName: 'User Name', type: 'text' },
+          { name: 'address', displayName: 'Address', type: 'text' },
+        ];
+    
+        if (this.role === Role.RESIDENT) {
+          this.agencyTableConfig.columns = [
+            ...commonColumns,
+            { name: 'action', displayName: 'Action', type: 'action' } // only view profile shown
+          ];
+          this.agencyTableConfig.actions = ['view profile'];
+        } else if (this.role === Role.SARPANCH || this.role === Role.ADMIN) {
+          this.agencyTableConfig.columns = [
+            ...commonColumns,
             { name: 'mobile', displayName: 'Phone Number', type: 'text' },
             { name: 'aadharNumber', displayName: 'Aadhar Number', type: 'text' },
-            { name: 'address', displayName: 'Address', type: 'text' },
             { name: 'isActive', displayName: 'Status', type: 'status' },
             { name: 'action', displayName: 'Action', type: 'action' },
-        ],
-        data: [],
-        actions: ['delete', 'view profile']
-    };
+          ];
+          this.agencyTableConfig.actions = ['delete','view profile'];
+        }
+      }
 
     handlePageChange(event: { pageIndex: number, pageSize: number }) {
         console.log('PAGE NUMBER => ', event.pageIndex + 1);

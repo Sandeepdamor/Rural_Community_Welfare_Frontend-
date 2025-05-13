@@ -32,4 +32,58 @@
     padding: 2px 8px;
     border-radius: 8px;
   }
+
+  /* Container for the Privacy Settings tab */
+.privacy-settings-section {
+  background-color: #f9f9f9;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  max-width: 500px;
+  margin-top: 24px;
+}
+
+/* Title inside Privacy Settings */
+.privacy-settings-section h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Label with account status text */
+.privacy-settings-section label {
+  font-size: 14px;
+  color: #555;
+}
+
+/* Toggle display row */
+.privacy-settings-section .form-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* Switch style */
+.privacy-settings-section .form-check-input {
+  width: 50px;
+  height: 24px;
+  background-color: #ccc;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.privacy-settings-section .form-check-input:checked {
+  background-color: #1125cb;
+}
+
+/* Text next to switch */
+.privacy-settings-section .form-check-label {
+  font-weight: 500;
+  color: #333;
+  margin-left: 8px;
+}
+
   

@@ -105,7 +105,7 @@ export class PendingRejectedProjectListComponent implements OnInit, AfterViewIni
       { name: 'action', displayName: 'Action', type: 'action' },
     ],
     data: [],
-    actions: ['edit','view profile']
+    actions: ['edit', 'view profile']
   };
 
   ngOnInit(): void {
@@ -125,7 +125,7 @@ export class PendingRejectedProjectListComponent implements OnInit, AfterViewIni
     this.projectService.getAllProjects(approvalStatus, paginationRequest).subscribe({
       next: (response) => {
         const projects = response.content;
-        console.log('PROJECT RESPONSE 111 ===> ',response.content);
+        console.log('PROJECT RESPONSE 111 ===> ', response.content);
         this.mapProjectsWithCreatedByDetails(projects).subscribe(updatedProjects => {
 
           // Update table config
@@ -188,9 +188,7 @@ export class PendingRejectedProjectListComponent implements OnInit, AfterViewIni
         console.error('Error loading Gram Panchayats', err)
         // Show error message using ToastService
         this.toastService.showError(err.message || 'Something went wrong');
-
       }
-
     });
   }
 

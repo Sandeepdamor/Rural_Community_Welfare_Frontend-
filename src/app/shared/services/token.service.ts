@@ -104,6 +104,7 @@ export class TokenService {
   /// Extract Role from Token (JWT Decoding)
   getRoleFromAuthToken(): Role | null {
     const token = this.getAuthToken(); // Get token from localStorage
+    console.log('TOKEN GET FROM LOCAL STORAGE = > ', token);
     if (!token) return null;
 
     try {

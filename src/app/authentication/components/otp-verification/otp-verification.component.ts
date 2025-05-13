@@ -95,12 +95,12 @@ export class OtpVerificationComponent {
           this.tokenService.saveAccessToken(response.response.token);
           console.log('Access Token Saved response.rep.token:', response.response.token);
         }
-        else {
-          this.tokenService.clearAccessTokens();
-          console.error('No token received in response.');
-          alert('Something went wrong. Please try again.');
-          return;
-        }
+        // else {
+        //   this.tokenService.clearAccessTokens();
+        //   console.error('No token received in response.');
+        //   alert('Something went wrong. Please try again.');
+        //   return;
+        // }
         //Handling different scenarios based on the response message
         // if (response.message === 'User Verified Successfully, Please Enter Otp to Login') {
         //   this.tokenService.clearAuthTokens();
@@ -127,7 +127,7 @@ export class OtpVerificationComponent {
         }
       },
       (error) => {
-        this.tokenService.clearTokens();
+        // this.tokenService.clearTokens();
         console.error('Error verifying OTP:', error);
         alert(error.error?.message || 'OTP verification failed.');
       }

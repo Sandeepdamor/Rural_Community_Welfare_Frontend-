@@ -1,5 +1,4 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
 import { ToastService } from '../../../shared/services/toast.service';
 import { PaginationRequest } from '../../../shared/interfaces/pagination-request';
@@ -8,15 +7,13 @@ import { DynamicTableComponent } from '../../../shared/components/dynamic-table/
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../../shared/services/project.service';
-import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { SearchRequest } from '../../../shared/interfaces/sarpanch/search-request';
 import { AddressService } from '../../../shared/services/address.service';
-import { SarpanchFilter } from '../../../shared/interfaces/sarpanch/sarpanch-filter';
 import { ProjectFilter } from '../../../shared/interfaces/project/project-filter-request';
 import { ProjectProgress } from '../../../enums/project-progress.enum';
 import { Role } from '../../../enums/role.enum';
 import { TokenService } from '../../../shared/services/token.service';
-import { filter, forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import { forkJoin, map, Observable, of } from 'rxjs';
 import { UserService } from '../../../shared/services/user.service';
 import { ProjectApprovalStatus } from '../../../enums/project-approval-status';
 import { TableColumn } from '../../../shared/components/model/table-column';

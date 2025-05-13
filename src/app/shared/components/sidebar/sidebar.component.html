@@ -1,6 +1,6 @@
 <!-- SIDEBAR -->
 <div class="sidebar h-100" id="sidebar">
-  <div class="logo d-flex justify-content-center">
+  <div class="logo d-flex justify-content-center" [routerLink]="'/'" style="cursor: pointer;">
     <div class="logo-collapsed">
       <img src="assets/images/svg/logo-collapsed.svg" class="p-3">
     </div>
@@ -39,6 +39,12 @@
         Pending Residents List
       </li>
     </ul>
+
+    <!-- Resident Menu For Resident only -->
+    <li *ngIf="role === Role.RESIDENT" [class.active]="isUserMenuOpen" class="cursor-pointer" [routerLink]="'/user/list'">
+      <img src="assets/images/svg/user.svg" style="width: 23px; height: 23px;">
+      <span class="menu-text singleLine">Users</span>
+    </li>
 
     <!-- Sarpanch Menu For Resident only -->
     <li *ngIf="role === Role.RESIDENT" class="cursor-pointer" (click)="navigateToSarpanch()">

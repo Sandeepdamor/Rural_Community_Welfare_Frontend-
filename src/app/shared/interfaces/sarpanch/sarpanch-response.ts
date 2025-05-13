@@ -22,4 +22,5 @@ export interface SarpanchResponse {
   gramPanchayatName: string;
   villages: Address[];
   deletedAt: string;
+  profileImage: string;
 }

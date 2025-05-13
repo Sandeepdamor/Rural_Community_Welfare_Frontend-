@@ -16,4 +16,7 @@ export interface ResidentResponse {
   isActive: boolean | null;
   createdAt: string; // Use string if it's serialized as ISO date from backend
   updatedAt: string;
+  response:string;
+  profileImage:string;
+  isPublic:boolean;
 }

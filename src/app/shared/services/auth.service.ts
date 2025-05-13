@@ -49,7 +49,7 @@ export class AuthService {
   // Logout method
   logout(): void {
     this.tokenService.clearTokens();  // Use TokenService to remove token
-    this.router.navigate([ComponentRoutes.USERAUTH]);
+    this.router.navigate(['/']);
   }
 
   // Verify OTP

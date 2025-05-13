@@ -1,11 +1,26 @@
 <!-- profile Image -->
-<div class="position-relative">
+<div class="position-relative d-inline-block">
     <img src="assets/images/png/profile-background.png" alt="profile-background"
         class="img-fluid w-100 profileEdit-img">
-    <label for="file-input">
-        <img src="assets/images/svg/profile.svg" class="choose-File object-fit-cover rounded-circle img-fluid">
-    </label>
-    <input type="file" id="file-input" style="display: none;" accept="image/*" [disabled]="isViewOnly" />
+    <!-- Profile Image (Dropdown Toggle) -->
+    <img [src]="userService.profileImage() || 'assets/images/svg/profile.svg'" alt="profile"
+        class="choose-File object-fit-cover rounded-circle img-fluid dropdown-toggle" data-bs-toggle="dropdown"
+        aria-expanded="false" style="cursor: pointer;" />
+    <!-- Dropdown Menu -->
+    <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+            <a class="dropdown-item d-flex align-items-center gap-2" style="cursor: pointer;" (click)="openImage()">
+                <i class="fa fa-eye"></i> Open Image
+            </a>
+        </li>
+        <li *ngIf="!isViewOnly">
+            <label class="dropdown-item d-flex align-items-center gap-2" style="cursor: pointer;">
+                <i class="fa fa-upload"></i> Change Profile Image
+                <input type="file" id="file-input" accept="image/*" hidden (change)="onFileSelected($event)"
+                    [readonly]="isViewOnly" />
+            </label>
+        </li>
+    </ul>
 </div>
 
 <div class="profile-container d-flex flex-column">
@@ -77,8 +92,8 @@
                 </div>
                 <div class="d-flex flex-column gap-1 w-100">
                     <h4 class="mb-0 font-14 regular subTextColor">Personal Address</h4>
-                    <input type="text" class="input-field" placeholder="Enter Address" [value]="isDeleted ? data.address : formattedAddress"
-                        [disabled]="isViewOnly" />
+                    <input type="text" class="input-field" placeholder="Enter Address"
+                        [value]="isDeleted ? data.address : formattedAddress" [disabled]="isViewOnly" />
                 </div>
                 <div class="d-flex flex-column gap-1 w-100">
                     <h4 class="mb-0 font-14 regular subTextColor">Gram Panchayat Namer</h4>
@@ -135,3 +150,20 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- Image Preview Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">Profile Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <img [src]="selectedImage || 'assets/images/svg/default-image.svg'" alt="Preview"
+                    class="img-fluid w-100 rounded">
+            </div>
+        </div>
+    </div>
+</div>

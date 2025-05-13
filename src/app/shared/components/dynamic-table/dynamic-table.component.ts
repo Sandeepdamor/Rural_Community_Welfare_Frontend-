@@ -1,3 +1,4 @@
+declare var bootstrap: any;
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -83,7 +84,7 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
   pageSizeOptions = [10, 20, 30]; // Define page size options here
   defaultPageSize = 10; // Default items per page
   // @Output() statusIsDeletedChanged = new EventEmitter<{ id: string, isActive: boolean }>();
-  @Output() aadharStatusChanged = new EventEmitter<{ id: string, aadharVerificationStatus: string }>();
+  @Output() aadharStatusChanged = new EventEmitter<{ id: string, aadharVerificationStatus: string, response: string }>();
   @Output() projectApprovalStatusChanged = new EventEmitter<{ id: string, approvalStatus: string, reason: string }>();
   @Output() projectProgressStatusChanged = new EventEmitter<{ id: string, progressStatus: string }>();
   @Output() actionClicked = new EventEmitter<{ action: string, element: any }>();
@@ -112,11 +113,24 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
 
   Role = Role;
   userRole: Role;
+  selectedImage: string | null = null;
   constructor(private router: Router, private tokenService: TokenService, private dialog: MatDialog) {
     const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
     this.userRole = roleString as Role;
   }
+  
+  
+ openImageModal(imageUrl: string) {
+    this.selectedImage = imageUrl || 'assets/images/svg/profile.svg';
 
+    const modalElement = document.getElementById('imageModal');
+    if (modalElement) {
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }
+  
+  
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['config'] && changes['config'].currentValue) {
       this.dataSource = new MatTableDataSource(this.config.data);
@@ -151,9 +165,32 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
   }
 
   changeAadharStatus(element: any, newStatus: string) {
-    this.aadharStatusChanged.emit({
-      id: element.id,
-      aadharVerificationStatus: newStatus,
+    if (newStatus === 'PENDING') {
+      this.aadharStatusChanged.emit({
+        id: element.id,
+        aadharVerificationStatus: newStatus,
+        response: '' // No reason required
+      });
+      return;
+    }
+
+    const dialogRef = this.dialog.open(ReasonDialogComponent, {
+      width: '400px',
+      disableClose: true, // Prevent closing without action
+      data: { status: newStatus }
+    });
+
+    dialogRef.afterClosed().subscribe((response: string) => {
+      if (response && response.trim().length > 0) {
+        this.aadharStatusChanged.emit({
+          id: element.id,
+          aadharVerificationStatus: newStatus,
+          response: response.trim()
+        });
+      } else {
+        console.warn('Reason is required but not provided.');
+        // Optionally reopen the dialog or show a message
+      }
     });
   }
 
