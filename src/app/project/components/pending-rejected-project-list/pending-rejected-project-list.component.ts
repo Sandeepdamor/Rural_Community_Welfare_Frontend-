@@ -1,4 +1,9 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from '@angular/core';
 import { TableConfig } from '../../../shared/components/model/table-config';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../shared/services/toast.service';
@@ -23,10 +28,10 @@ import { ProjectApprovalStatus } from '../../../enums/project-approval-status';
   standalone: true,
   imports: [DynamicTableComponent, CommonModule, FormsModule],
   templateUrl: './pending-rejected-project-list.component.html',
-  styleUrl: './pending-rejected-project-list.component.scss'
+  styleUrl: './pending-rejected-project-list.component.scss',
 })
-export class PendingRejectedProjectListComponent implements OnInit, AfterViewInit {
-
+export class PendingRejectedProjectListComponent
+  implements OnInit, AfterViewInit {
   Role = Role;
   role: Role;
   constructor(
@@ -46,7 +51,7 @@ export class PendingRejectedProjectListComponent implements OnInit, AfterViewIni
   currentPaginationRequest: PaginationRequest = {
     pageNumber: 1,
     pageSize: 5,
-    sortBy: 'createdAt'
+    sortBy: 'createdAt',
   };
 
   isLoading: boolean = false;
@@ -59,7 +64,7 @@ export class PendingRejectedProjectListComponent implements OnInit, AfterViewIni
     approvalStatus: '',
     pageNumber: 1,
     pageSize: 5,
-    sortBy: ''
+    sortBy: '',
   };
 
   projectApprovalOptions = ['PENDING', 'REJECTED'];
@@ -76,7 +81,7 @@ export class PendingRejectedProjectListComponent implements OnInit, AfterViewIni
     createdBy: null,
     pageNumber: 1,
     pageSize: 5,
-    sortBy: 'createdAt'
+    sortBy: 'createdAt',
   };
 
   agencyTableConfig: TableConfig = {
@@ -92,24 +97,33 @@ export class PendingRejectedProjectListComponent implements OnInit, AfterViewIni
         type: 'customText',
         customTextFn: (row) => {
           const u = row.createdByDetails;
-          return u ? `<strong>Name:</strong> ${u.name},\n<strong>Father/Husband Name:</strong> ${u.fatherOrHusbandName}, \n<strong>Gram Panchayat:</strong> ${u.gramPanchayatName}, \n<strong>Role:</strong> ${u.role}` : 'N/A';
-        }
+          return u
+            ? `<strong>Name:</strong> ${u.name},\n<strong>Father/Husband Name:</strong> ${u.fatherOrHusbandName}, \n<strong>Gram Panchayat:</strong> ${u.gramPanchayatName}, \n<strong>Role:</strong> ${u.role}`
+            : 'N/A';
+        },
       },
-      { name: 'approvalStatus', displayName: 'Approval Status', type: 'projectstatus' },
+      {
+        name: 'approvalStatus',
+        displayName: 'Approval Status',
+        type: 'projectstatus',
+      },
       {
         name: 'approvalReason',
         displayName: 'FeedBack/Response',
-        type: 'text'
+        type: 'text',
       },
       // { name: 'isActive', displayName: 'Status', type: 'status' },
       { name: 'action', displayName: 'Action', type: 'action' },
     ],
     data: [],
-    actions: ['edit', 'view profile']
+    actions: ['view profile'],
   };
 
   ngOnInit(): void {
-    this.loadPendingRejectProjects(this.filters.approvalStatus, this.currentPaginationRequest);
+    this.loadPendingRejectProjects(
+      this.filters.approvalStatus,
+      this.currentPaginationRequest
+    );
     this.loadGramPanchayats();
   }
 
@@ -119,43 +133,48 @@ export class PendingRejectedProjectListComponent implements OnInit, AfterViewIni
     }, 200);
   }
 
-  loadPendingRejectProjects(approvalStatus: ProjectApprovalStatus, paginationRequest: PaginationRequest): void {
+  loadPendingRejectProjects(
+    approvalStatus: ProjectApprovalStatus,
+    paginationRequest: PaginationRequest
+  ): void {
     this.isLoading = true;
-
     this.projectService.getAllProjects(approvalStatus, paginationRequest).subscribe({
       next: (response) => {
         const projects = response.content;
         console.log('PROJECT RESPONSE 111 ===> ', response.content);
-        this.mapProjectsWithCreatedByDetails(projects).subscribe(updatedProjects => {
+        this.mapProjectsWithCreatedByDetails(projects).subscribe(
+          (updatedProjects) => {
+            // Update table config
+            this.agencyTableConfig = {
+              ...this.agencyTableConfig,
+              data: updatedProjects,
+              totalRecords: response.totalElements,
+            };
 
-          // Update table config
-          this.agencyTableConfig = {
-            ...this.agencyTableConfig,
-            data: updatedProjects,
-            totalRecords: response.totalElements
-          };
-
-          this.changeDetection.detectChanges();
-          this.isLoading = false;
-        });
+            this.changeDetection.detectChanges();
+            this.isLoading = false;
+          }
+        );
       },
       error: (err) => {
         console.error('Error fetching projects:', err.error);
-        alert(err.error?.message || 'Something went wrong while fetching projects.');
+        alert(
+          err.error?.message ||
+          'Something went wrong while fetching projects.'
+        );
         this.isLoading = false;
-      }
+      },
     });
   }
-
 
   private mapProjectsWithCreatedByDetails(projects: any[]): Observable<any[]> {
     if (!projects || projects.length === 0) {
       return of([]);
     }
 
-    const userRequests = projects.map(project =>
+    const userRequests = projects.map((project) =>
       this.userService.getUserById(project.createdBy).pipe(
-        map(userResponse => {
+        map((userResponse) => {
           const user = userResponse.response;
           let createdByDetails: any = { role: user?.role || 'N/A' };
 
@@ -164,12 +183,12 @@ export class PendingRejectedProjectListComponent implements OnInit, AfterViewIni
               name: user?.name || 'N/A',
               fatherOrHusbandName: user?.fatherOrHusbandName || 'N/A',
               gramPanchayatName: user?.gramPanchayatName || 'N/A',
-              role: 'Sarpanch'
+              role: 'Sarpanch',
             };
           } else if (user?.role === 'ADMIN') {
             createdByDetails = {
               name: user?.name || 'N/A',
-              role: 'Admin'
+              role: 'Admin',
             };
           }
 
@@ -180,35 +199,44 @@ export class PendingRejectedProjectListComponent implements OnInit, AfterViewIni
     return forkJoin(userRequests);
   }
 
-
   loadGramPanchayats() {
     this.addressService.getGramPanchayats().subscribe({
-      next: (data) => this.gramPanchayatList = data,
+      next: (data) => (this.gramPanchayatList = data),
       error: (err) => {
-        console.error('Error loading Gram Panchayats', err)
+        console.error('Error loading Gram Panchayats', err);
         // Show error message using ToastService
         this.toastService.showError(err.message || 'Something went wrong');
       }
     });
   }
 
-  changeProjectApprovalStatus(event: { id: string, approvalStatus: string, reason: string }) {
-    console.log("IN PENDING REJECT COMPONENT.TS ", event.id, event.approvalStatus, event.reason);
+  changeProjectApprovalStatus(event: {
+    id: string;
+    approvalStatus: string;
+    reason: string;
+  }) {
+    console.log(
+      'IN PENDING REJECT COMPONENT.TS ',
+      event.id,
+      event.approvalStatus,
+      event.reason
+    );
     this.projectService.updateProjectApprovalStatus(event.id, event.approvalStatus, event.reason).subscribe({
       next: (response) => {
         this.toastService.showSuccess(response.message);
-        this.loadPendingRejectProjects(this.filters.approvalStatus, this.currentPaginationRequest);
+        this.loadPendingRejectProjects(
+          this.filters.approvalStatus,
+          this.currentPaginationRequest
+        );
       },
       error: (err) => {
-        this.toastService.showError(err.error.message || 'Something went wrong');
+        this.toastService.showError(
+          err.error.message || 'Something went wrong'
+        );
         this.isLoading = false;
-      }
+      },
     });
   }
-
-
-
-
 
   onAction(action: string, element: any): void {
     console.log(`${action} clicked for`, element);
@@ -255,35 +283,36 @@ export class PendingRejectedProjectListComponent implements OnInit, AfterViewIni
       createdBy: this.filters.createdBy,
       pageNumber: this.currentPaginationRequest.pageNumber,
       pageSize: this.currentPaginationRequest.pageSize,
-      sortBy: this.currentPaginationRequest.sortBy
+      sortBy: this.currentPaginationRequest.sortBy,
     };
 
     this.projectService.filterProject(filterRequest).subscribe({
       next: (response) => {
         const projects = response.content;
         console.log('FILTER RESULT ====> ', projects);
-        this.mapProjectsWithCreatedByDetails(projects).subscribe((updatedProjects: any[]) => {
-          this.agencyTableConfig = {
-            ...this.agencyTableConfig,
-            data: updatedProjects,
-            totalRecords: response.totalElements
-          };
-          this.changeDetection.detectChanges();
-          this.isLoading = false;
-        });
+        this.mapProjectsWithCreatedByDetails(projects).subscribe(
+          (updatedProjects: any[]) => {
+            this.agencyTableConfig = {
+              ...this.agencyTableConfig,
+              data: updatedProjects,
+              totalRecords: response.totalElements,
+            };
+            this.changeDetection.detectChanges();
+            this.isLoading = false;
+          }
+        );
       },
       error: (err) => {
         console.error('Search failed:', err);
         this.isLoading = false;
-      }
+      },
     });
   }
-
 
   onSearch() {
     this.isLoading = true;
     this.search.keyword = this.searchTerm;
-    this.search.approvalStatus = this.filters.approvalStatus
+    this.search.approvalStatus = this.filters.approvalStatus;
     this.search.pageNumber = this.currentPaginationRequest.pageNumber;
     this.search.pageSize = this.currentPaginationRequest.pageSize;
     this.search.sortBy = this.currentPaginationRequest.sortBy;
@@ -291,20 +320,22 @@ export class PendingRejectedProjectListComponent implements OnInit, AfterViewIni
     this.projectService.searchProject(this.search).subscribe({
       next: (response) => {
         const projects = response.content;
-        this.mapProjectsWithCreatedByDetails(projects).subscribe((updatedProjects: any[]) => {
-          this.agencyTableConfig = {
-            ...this.agencyTableConfig,
-            data: updatedProjects,
-            totalRecords: response.totalElements
-          };
-          this.changeDetection.detectChanges();
-          this.isLoading = false;
-        });
+        this.mapProjectsWithCreatedByDetails(projects).subscribe(
+          (updatedProjects: any[]) => {
+            this.agencyTableConfig = {
+              ...this.agencyTableConfig,
+              data: updatedProjects,
+              totalRecords: response.totalElements,
+            };
+            this.changeDetection.detectChanges();
+            this.isLoading = false;
+          }
+        );
       },
       error: (err) => {
         console.error('Search failed:', err);
         this.isLoading = false;
-      }
+      },
     });
   }
 }

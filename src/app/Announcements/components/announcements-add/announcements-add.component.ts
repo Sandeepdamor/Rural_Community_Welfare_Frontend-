@@ -11,6 +11,9 @@ import { AnnouncementService } from '../../../shared/services/announcement.servi
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Role } from '../../../enums/role.enum';
+import { ToastService } from '../../../shared/services/toast.service';
+import { TokenService } from '../../../shared/services/token.service';
 
 @Component({
   selector: 'app-announcements-add',
@@ -23,13 +26,18 @@ export class AnnouncementsAddComponent {
   isReadOnly = false;
   mode: string | null = null; // 🔁 To track view/add/update mode
   announcementId: string | null = null; // 📌 To store the ID if in update/view mode
+  role: Role;
 
   constructor(
     private fb: FormBuilder,
     private announcementService: AnnouncementService,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
-  ) {}
+    private snackBar: MatSnackBar,
+    private tokenService: TokenService
+  ) {
+    const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
+    this.role = roleString as Role; // ✅ safely assign enum
+  }
 
   ngOnInit(): void {
     this.announcementForm = this.fb.group({

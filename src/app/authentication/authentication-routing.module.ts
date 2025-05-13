@@ -21,7 +21,11 @@ const routes: Routes = [
       //   pathMatch: 'full',
       // },
       {
-        path: ComponentRoutes.LOGIN,  // ✅ Set LoginComponent as the default child route
+        path: ComponentRoutes.LOGIN, // ✅ Set LoginComponent as the default child route
+        component: LoginComponent,
+      },
+      {
+        path: ComponentRoutes.ADMIN_SARPANCH_LOGIN, // ✅ Set LoginComponent as the default child route
         component: LoginComponent,
       },
       {
@@ -52,4 +56,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AuthenticationRoutingModule { }
+export class AuthenticationRoutingModule {}

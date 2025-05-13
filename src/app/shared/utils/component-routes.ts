@@ -46,21 +46,16 @@ export class ComponentRoutes {
   static GRIEVANCEUPDATE = 'grievance-update';
   static GRIEVANCEADD = 'grievance-add';
 
-
   //Schemes
   static readonly SCHEMES = 'schemes';
   static readonly SCHEMESLIST = 'list';
   static readonly SCHEMEADD = 'add';
   static readonly DELETESCHEMESLIST = 'delete-list';
 
-
   //Category
-  static readonly CATEGORY = 'category'
-  static readonly CATEGORYADD = 'add'
-  static readonly CATEGORYLIST = 'list'
-
-
-
+  static readonly CATEGORY = 'category';
+  static readonly CATEGORYADD = 'add';
+  static readonly CATEGORYLIST = 'list';
 
   // Customer
   static readonly CUSTOMER = 'customer';

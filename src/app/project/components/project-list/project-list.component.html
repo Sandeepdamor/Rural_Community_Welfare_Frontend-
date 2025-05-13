@@ -1,137 +1,133 @@
 <div class="d-flex flex-column gap-3 h-100" (click)="closeFilterIfClickedOutside($event)">
 
-    <!-- Search & Filter -->
-    <div class="d-flex justify-content-between align-items-start flex-wrap mb-3 gap-3 position-relative">
-        <!-- Left: Search + Filter -->
-        <div class="d-flex flex-wrap gap-2 align-items-center">
-            <!-- Search -->
-            <div class="input-group" style="width: 280px;">
-                <input type="text" class="form-control form-control-sm" placeholder="Search by name, description"
-                    [(ngModel)]="searchTerm" [ngClass]="{'border-primary': searchTerm}">
-                <button class="btn btn-outline-primary btn-sm" type="button" (click)="onSearch()">
-                    <img src="assets/images/svg/search.svg" height="14" width="14" alt="search-icon">
-                </button>
+  <!-- Search & Filter -->
+  <div class="d-flex justify-content-between align-items-start flex-wrap mb-3 gap-3 position-relative">
+    <!-- Left: Search + Filter -->
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+      <!-- Search -->
+      <div class="input-group" style="width: 280px;">
+        <input type="text" class="form-control form-control-sm" placeholder="Search by name, description"
+          [(ngModel)]="searchTerm" [ngClass]="{'border-primary': searchTerm}">
+        <button class="btn btn-outline-primary btn-sm" type="button" (click)="onSearch()">
+          <img src="assets/images/svg/search.svg" height="14" width="14" alt="search-icon">
+        </button>
+      </div>
+
+      <!-- Filter Button -->
+      <div class="dropdown" [class.show]="showFilters" style="position: relative;">
+        <button class="btn btn-outline-primary custom-filter-btn d-flex align-items-center gap-1 dropdown-toggle"
+          (click)="toggleFilter()" type="button">
+          <i class="fa fa-filter me-2"></i><strong>Filter</strong>
+        </button>
+
+        <!-- Dropdown-style Filter Panel -->
+        <div class="dropdown-menu p-3 shadow-lg border rounded bg-light"
+          style="min-width: 320px; max-height: 80vh; overflow-y: auto;" [class.show]="showFilters">
+
+          <!-- Gram Panchayat -->
+          <div class="mb-3" *ngIf="role==='ADMIN'">
+            <label class="form-label fw-semibold text-primary">
+              <i class="fa fa-building me-2"></i> Gram Panchayat
+            </label>
+            <select class="form-select form-select-sm" [(ngModel)]="filters.gramPanchayat" (change)="onFilter()">
+              <option [ngValue]="''">All Gram Panchayats</option>
+              <option *ngFor="let gp of gramPanchayatList" [ngValue]="gp">{{ gp }}</option>
+            </select>
+          </div>
+
+          <!-- Progress Status -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold text-primary">
+              <i class="fa fa-tasks me-2"></i> Progress Status
+            </label>
+            <select class="form-select form-select-sm" [(ngModel)]="filters.progressStatus" (change)="onFilter()">
+              <option [ngValue]="null">All Status</option>
+              <option *ngFor="let status of projectProgressOptions" [ngValue]="status">{{ status }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Created By -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold text-primary">
+              <i class="fa fa-user me-2"></i> Created By
+            </label>
+            <select class="form-select form-select-sm" [(ngModel)]="filters.createdBy" (change)="onFilter()">
+              <option [ngValue]="null">All</option>
+              <option [value]="Role.ADMIN">Admin</option>
+              <option [value]="Role.SARPANCH">Sarpanch</option>
+            </select>
+          </div>
+
+          <!-- Budget -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold text-primary">
+              <i class="fa fa-wallet me-2"></i> Budget Range (₹)
+            </label>
+            <div class="d-flex gap-2">
+              <input type="number" class="form-control form-control-sm" placeholder="Min"
+                [(ngModel)]="filters.minBudget" (input)="onFilter()" />
+              <input type="number" class="form-control form-control-sm" placeholder="Max"
+                [(ngModel)]="filters.maxBudget" (input)="onFilter()" />
             </div>
+          </div>
 
-            <!-- Filter Button -->
-            <div class="dropdown" [class.show]="showFilters" style="position: relative;">
-                <button
-                    class="btn btn-outline-primary custom-filter-btn d-flex align-items-center gap-1 dropdown-toggle"
-                    (click)="toggleFilter()" type="button">
-                    <i class="fa fa-filter me-2"></i><strong>Filter</strong>
-                </button>
-
-                <!-- Dropdown-style Filter Panel -->
-                <div class="dropdown-menu p-3 shadow-lg border rounded bg-light"
-                    style="min-width: 320px; max-height: 80vh; overflow-y: auto;" [class.show]="showFilters">
-
-                    <!-- Gram Panchayat -->
-                    <div class="mb-3" *ngIf="role==='ADMIN'">
-                        <label class="form-label fw-semibold text-primary">
-                            <i class="fa fa-building me-2"></i> Gram Panchayat
-                        </label>
-                        <select class="form-select form-select-sm" [(ngModel)]="filters.gramPanchayat"
-                            (change)="onFilter()">
-                            <option [ngValue]="''">All Gram Panchayats</option>
-                            <option *ngFor="let gp of gramPanchayatList" [ngValue]="gp">{{ gp }}</option>
-                        </select>
-                    </div>
-
-                    <!-- Progress Status -->
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold text-primary">
-                            <i class="fa fa-tasks me-2"></i> Progress Status
-                        </label>
-                        <select class="form-select form-select-sm" [(ngModel)]="filters.progressStatus"
-                            (change)="onFilter()">
-                            <option [ngValue]="null">All Status</option>
-                            <option *ngFor="let status of projectProgressOptions" [ngValue]="status">{{ status }}
-                            </option>
-                        </select>
-                    </div>
-
-                    <!-- Created By -->
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold text-primary">
-                            <i class="fa fa-user me-2"></i> Created By
-                        </label>
-                        <select class="form-select form-select-sm" [(ngModel)]="filters.createdBy"
-                            (change)="onFilter()">
-                            <option [ngValue]="null">All</option>
-                            <option [value]="Role.ADMIN">Admin</option>
-                            <option [value]="Role.SARPANCH">Sarpanch</option>
-                        </select>
-                    </div>
-
-                    <!-- Budget -->
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold text-primary">
-                            <i class="fa fa-wallet me-2"></i> Budget Range (₹)
-                        </label>
-                        <div class="d-flex gap-2">
-                            <input type="number" class="form-control form-control-sm" placeholder="Min"
-                                [(ngModel)]="filters.minBudget" (input)="onFilter()" />
-                            <input type="number" class="form-control form-control-sm" placeholder="Max"
-                                [(ngModel)]="filters.maxBudget" (input)="onFilter()" />
-                        </div>
-                    </div>
-
-                    <!-- Project Duration -->
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold text-primary">
-                            <i class="fa fa-calendar me-2"></i> Project Duration
-                        </label>
-                        <div class="d-flex gap-2">
-                            <input type="date" class="form-control form-control-sm" [(ngModel)]="filters.startDate"
-                                (input)="onFilter()" />
-                            <input type="date" class="form-control form-control-sm" [(ngModel)]="filters.endDate"
-                                (input)="onFilter()" />
-                        </div>
-                    </div>
-
-                    <!-- Approval Date -->
-                    <div class="mb-1">
-                        <label class="form-label fw-semibold text-primary">
-                            <i class="fa fa-check-circle me-2"></i> Approval Date Range
-                        </label>
-                        <div class="d-flex gap-2">
-                            <input type="date" class="form-control form-control-sm"
-                                [(ngModel)]="filters.minApprovedDate" (input)="onFilter()" />
-                            <input type="date" class="form-control form-control-sm"
-                                [(ngModel)]="filters.maxApprovedDate" (input)="onFilter()" />
-                        </div>
-                    </div>
-                </div>
+          <!-- Project Duration -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold text-primary">
+              <i class="fa fa-calendar me-2"></i> Project Duration
+            </label>
+            <div class="d-flex gap-2">
+              <input type="date" class="form-control form-control-sm" [(ngModel)]="filters.startDate"
+                (input)="onFilter()" />
+              <input type="date" class="form-control form-control-sm" [(ngModel)]="filters.endDate"
+                (input)="onFilter()" />
             </div>
+          </div>
+
+          <!-- Approval Date -->
+          <div class="mb-1">
+            <label class="form-label fw-semibold text-primary">
+              <i class="fa fa-check-circle me-2"></i> Approval Date Range
+            </label>
+            <div class="d-flex gap-2">
+              <input type="date" class="form-control form-control-sm" [(ngModel)]="filters.minApprovedDate"
+                (input)="onFilter()" />
+              <input type="date" class="form-control form-control-sm" [(ngModel)]="filters.maxApprovedDate"
+                (input)="onFilter()" />
+            </div>
+          </div>
         </div>
-        <!-- Button -->
-        <div class="d-flex justify-content-end" *ngIf="role !== 'RESIDENT'">
-            <button class="primary-button p-8-12  d-flex align-items-center gap-2" [routerLink]="'/project/add'">
-                <div class="plus_icon">
-                    <img src="assets/images/svg/plus-icon.svg" height="12" width="12">
-                </div>
-                Add Project
-            </button>
+      </div>
+    </div>
+    <!-- Button -->
+    <div class="d-flex justify-content-end" *ngIf="role !== 'RESIDENT'">
+      <button class="primary-button p-8-12  d-flex align-items-center gap-2" [routerLink]="'/project/add'">
+        <div class="plus_icon">
+          <img src="assets/images/svg/plus-icon.svg" height="12" width="12">
         </div>
+        Add Project
+      </button>
     </div>
+  </div>
 
 
 
 
 
-    <!-- ⏳ Loader (Bonus Tip) -->
-    <div *ngIf="isLoading" class="text-center">
-        <p>Loading...</p>
-    </div>
+  <!-- ⏳ Loader (Bonus Tip) -->
+  <div *ngIf="isLoading" class="text-center">
+    <p>Loading...</p>
+  </div>
 
-    <!-- 📋 Table -->
-    <app-dynamic-table *ngIf="!isLoading && agencyTableConfig.data.length > 0" [config]="agencyTableConfig"
-        (projectProgressStatusChanged)="updateProjectProgressStatus($event)"
-        (actionClicked)="onAction($event.action, $event.element)">
-    </app-dynamic-table>
+  <!-- 📋 Table -->
+  <app-dynamic-table *ngIf="!isLoading && agencyTableConfig.data.length > 0" [config]="agencyTableConfig"
+    (projectProgressStatusChanged)="updateProjectProgressStatus($event)"
+    (actionClicked)="onAction($event.action, $event.element)">
+  </app-dynamic-table>
 
-    <!-- ❌ No Data Message -->
-    <p *ngIf="!isLoading && agencyTableConfig.data.length === 0" class="text-center mt-3 text-danger">
-        No Data Found
-    </p>
+  <!-- ❌ No Data Message -->
+  <p *ngIf="!isLoading && agencyTableConfig.data.length === 0" class="text-center mt-3 text-danger">
+    No Data Found
+  </p>
 </div>

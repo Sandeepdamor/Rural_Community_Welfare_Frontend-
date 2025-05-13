@@ -1,19 +1,6 @@
 declare var bootstrap: any;
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  inject,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges,
-  ViewChild,
-} from '@angular/core';
-
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
-
 import { CommonModule, DatePipe, NgClass } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableDataSource } from '@angular/material/table';
@@ -21,13 +8,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TableConfig } from '../model/table-config';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -35,13 +16,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { RoleListComponent } from '../../../manage-roles/components/role-list/role-list.component';
 import { ComponentRoutes } from '../../utils/component-routes';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { Router } from '@angular/router';
 import { ProjectProgress } from '../../../enums/project-progress.enum';
-import { Project } from '../../interfaces/project/project';
 import { Role } from '../../../enums/role.enum';
-import { TokenService } from '../../services/token.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ReasonDialogComponent } from '../reason-dialog/reason-dialog.component';
+import { Router } from '@angular/router';
+import { TokenService } from '../../services/token.service';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -61,7 +41,7 @@ import { ReasonDialogComponent } from '../reason-dialog/reason-dialog.component'
     MatSlideToggleModule,
     ReactiveFormsModule,
     CommonModule,
-    MatDialogModule
+    MatDialogModule,
   ],
   templateUrl: './dynamic-table.component.html',
   styleUrls: ['./dynamic-table.component.scss'],
@@ -88,7 +68,6 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
   @Output() projectApprovalStatusChanged = new EventEmitter<{ id: string, approvalStatus: string, reason: string }>();
   @Output() projectProgressStatusChanged = new EventEmitter<{ id: string, progressStatus: string }>();
   @Output() actionClicked = new EventEmitter<{ action: string, element: any }>();
-
   @Output() pageChanged = new EventEmitter<{
     pageIndex: number;
     pageSize: number;
@@ -118,9 +97,9 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
     const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
     this.userRole = roleString as Role;
   }
-  
-  
- openImageModal(imageUrl: string) {
+
+
+  openImageModal(imageUrl: string) {
     this.selectedImage = imageUrl || 'assets/images/svg/profile.svg';
 
     const modalElement = document.getElementById('imageModal');
@@ -129,8 +108,8 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
       modal.show();
     }
   }
-  
-  
+
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['config'] && changes['config'].currentValue) {
       this.dataSource = new MatTableDataSource(this.config.data);
@@ -195,13 +174,17 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
   }
 
   changeProjectApprovalStatus(element: any, newStatus: string) {
-    console.log('IN DYNAMIC TABLE CHANGE APPROVAL STATUS ==> ', element, newStatus);
+    console.log(
+      'IN DYNAMIC TABLE CHANGE APPROVAL STATUS ==> ',
+      element,
+      newStatus
+    );
 
     if (newStatus === 'PENDING') {
       this.projectApprovalStatusChanged.emit({
         id: element.id,
         approvalStatus: newStatus,
-        reason: '' // No reason required
+        reason: '', // No reason required
       });
       return;
     }
@@ -209,7 +192,7 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
     const dialogRef = this.dialog.open(ReasonDialogComponent, {
       width: '400px',
       disableClose: true, // Prevent closing without action
-      data: { status: newStatus }
+      data: { status: newStatus },
     });
 
     dialogRef.afterClosed().subscribe((reason: string) => {
@@ -217,7 +200,7 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
         this.projectApprovalStatusChanged.emit({
           id: element.id,
           approvalStatus: newStatus,
-          reason: reason.trim()
+          reason: reason.trim(),
         });
       } else {
         console.warn('Reason is required but not provided.');
@@ -233,8 +216,6 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
       progressStatus: newStatus,
     });
   }
-
-
 
   // getSerialNumber(row: any): number {
   //   const index = this.dataSource?.data.indexOf(row);
@@ -284,12 +265,14 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
   }
 
   getStatusColor(status: string): string {
-    if (status === ProjectProgress.ON_HOLD || status === ProjectProgress.COMPLETED) {
+    if (
+      status === ProjectProgress.ON_HOLD ||
+      status === ProjectProgress.COMPLETED
+    ) {
       return '#4F46BB';
     }
     return '#000';
   }
-
 
   checkboxLabel(row?: any): string {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row`;

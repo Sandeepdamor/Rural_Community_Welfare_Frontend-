@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Role } from '../../enums/role.enum';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TokenService {
   private TOKEN_KEY = 'authToken';
@@ -32,17 +32,17 @@ export class TokenService {
 
   // Clear Tokens
   clearTokens() {
-    localStorage.removeItem('authToken');  // Remove the auth token from localStorage
-    localStorage.removeItem('accessToken');  // Remove the access token from localStorage
+    localStorage.removeItem('authToken'); // Remove the auth token from localStorage
+    localStorage.removeItem('accessToken'); // Remove the access token from localStorage
   }
-   // Clear Auth Tokens
-   clearAuthTokens() {
-    localStorage.removeItem('authToken');  // Remove the auth token from localStorage
+  // Clear Auth Tokens
+  clearAuthTokens() {
+    localStorage.removeItem('authToken'); // Remove the auth token from localStorage
   }
 
-   // Clear Access Tokens
-   clearAccessTokens() {
-    localStorage.removeItem('accessToken');  // Remove the access token from localStorage
+  // Clear Access Tokens
+  clearAccessTokens() {
+    localStorage.removeItem('accessToken'); // Remove the access token from localStorage
   }
 
   // Extract Mobile Number from Token (If stored inside JWT)
@@ -51,7 +51,7 @@ export class TokenService {
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split('.')[1])); // Decode JWT payload
-        return payload?.sub || null;  //Mobile number is stored in "sub"
+        return payload?.sub || null; //Mobile number is stored in "sub"
       } catch (e) {
         console.error('Error decoding token', e);
         return null;
@@ -59,8 +59,6 @@ export class TokenService {
     }
     return null;
   }
-
-
 
   // Extract Mobile Number from Access Token (If stored inside JWT)
   getMobileNumberFromAccessToken(): string | null {
@@ -68,7 +66,7 @@ export class TokenService {
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split('.')[1])); // Decode JWT payload
-        return payload?.sub || null;  // ✅ Mobile number is stored in "sub"
+        return payload?.sub || null; // ✅ Mobile number is stored in "sub"
       } catch (e) {
         console.error('Error decoding token', e);
         return null;
@@ -76,7 +74,6 @@ export class TokenService {
     }
     return null;
   }
-
 
   /// Extract Role from Token (JWT Decoding)
   getRoleFromToken(): Role | null {
@@ -93,13 +90,11 @@ export class TokenService {
 
       console.warn('Invalid roleType in token:', payload?.roleType);
       return null;
-
     } catch (e) {
       console.error('Error decoding token:', e);
       return null;
     }
   }
-
 
   /// Extract Role from Token (JWT Decoding)
   getRoleFromAuthToken(): Role | null {
@@ -126,24 +121,21 @@ export class TokenService {
 
 
   // TokenService.ts
-isTokenExpired(): boolean {
-  const token = this.getAccessToken();
-  if (!token) return true;
+  isTokenExpired(): boolean {
+    const token = this.getAccessToken();
+    if (!token) return true;
 
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const expiry = payload?.exp;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const expiry = payload?.exp;
 
-    if (!expiry) return true;
+      if (!expiry) return true;
 
-    const now = Math.floor(Date.now() / 1000); // current time in seconds
-    return expiry < now;
-  } catch (e) {
-    console.error('Error decoding token:', e);
-    return true;
+      const now = Math.floor(Date.now() / 1000); // current time in seconds
+      return expiry < now;
+    } catch (e) {
+      console.error('Error decoding token:', e);
+      return true;
+    }
   }
-}
-
-
-
 }

@@ -44,8 +44,8 @@
           <img src="assets/images/svg/rejected.svg" alt="Active Users" />
         </div>
         <div class="d-flex flex-column gap-1">
-          <h3 class="font-14 medium subTextColor mb-0">Rejected Residents</h3>
-          <h3 class="font-24 semibold black mb-0">{{ dashboardData.totalRejectedUsers }}</h3>
+          <h3 class="font-14 medium subTextColor mb-0">Active Residents</h3>
+          <h3 class="font-24 semibold black mb-0">{{ dashboardData.totalActiveUsers }}</h3>
         </div>
       </div>
     </a>
@@ -75,27 +75,19 @@
     <!-- Projects Section -->
     <div class="col-md-6" *ngIf="userRole === 'ADMIN' || userRole === 'SARPANCH'">
       <div class="p-3 shadow-sm bg-white rounded">
-        <h5 class="mb-3">Projects</h5>
-
-        <!-- Tab navigation for filtering project status -->
+        <h5 class="mb-3">Projects (Ongoing/Completed)</h5>
         <ul class="nav nav-tabs mb-2">
-          <li class="nav-item" *ngFor="let status of statusTabs">
-            <a class="nav-link" [class.active]="selectedStatus === status.key" (click)="onStatusChange(status.key)">
-              {{ status.label }}
+          <li class="nav-item" *ngFor="let status of ['Ongoing', 'Completed']">
+            <a class="nav-link" [class.active]="selectedStatus === status" (click)="onStatusChange(status)">
+              {{ status }}
             </a>
-
           </li>
         </ul>
-
-
-        <!-- Project list filtered by selected status -->
-        <div *ngFor="let project of filteredProjects">
-          <p>{{ project.projectName }}</p>
+        <div *ngFor="let proj of filteredProjects" class="p-2 border rounded mb-2">
+          {{ proj.name }}
         </div>
-
       </div>
     </div>
-
 
     <!-- Announcements Section -->
     <div class="col-md-12" *ngIf="userRole === 'ADMIN' || userRole === 'SARPANCH'">

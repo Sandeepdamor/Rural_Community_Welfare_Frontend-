@@ -1,56 +1,50 @@
 <div class="d-flex flex-column align-items-center justify-content-center gap-4 h-100 p-4 mx-auto"
-       style="max-width: 420px;">
-       <img src="assets/images/svg/logo.svg" alt="logo" style="height: 18%;" />
+  style="max-width: 420px;">
+  <img src="assets/images/svg/logo.svg" alt="logo" style="height: 18%;" />
 
-       <div class="d-flex flex-column gap-2 align-items-center text-center mt-4">
-              <h2 class="mb-0 font-22 semibold textColor">OTP Verification</h2>
-              <h3 class="mb-0 font-16 medium subTextColor">Please enter OTP.</h3>
-              <h3 class="mb-0 font-14 regular subTextColor">Your Otp is : {{ sendotp }}</h3>
-              <div class="d-flex gap-2">
-                     <h3 class="mb-0 font-14 regular subTextColor">Otp Send To Mobile Number: {{ mobileNumber }}</h3>
+  <div class="d-flex flex-column gap-2 align-items-center text-center mt-4">
+    <h2 class="mb-0 font-22 semibold textColor">OTP Verification</h2>
+    <h3 class="mb-0 font-16 medium subTextColor">Please enter OTP.</h3>
+    <h3 class="mb-0 font-14 regular subTextColor">Your Otp is : {{ sendotp }}</h3>
+    <div class="d-flex gap-2">
+      <h3 class="mb-0 font-14 regular subTextColor">Otp Send To Mobile Number: {{ mobileNumber }}</h3>
 
-                     <!-- <div class="d-flex gap-1 cursor-pointer" (click)="editMobileNumber()">
+      <!-- <div class="d-flex gap-1 cursor-pointer" (click)="editMobileNumber()">
             <h3 class="mb-0 font-14 medium themeColor">Edit</h3>
             <img src="assets/images/svg/edit.svg" alt="edit" style="height: 16px;" />
         </div> -->
-              </div>
+    </div>
 
-       </div>
+  </div>
 
-       <!-- OTP Input Fields -->
-       <form [formGroup]="otp">
-              <div class="otp-field d-flex gap-3">
-                     <input type="text" class="input-field" maxlength="1" formControlName="otp1"
-                            (input)="moveToNext($event, 1)" />
-                     <input type="text" class="input-field" maxlength="1" formControlName="otp2"
-                            (input)="moveToNext($event, 2)" />
-                     <input type="text" class="input-field" maxlength="1" formControlName="otp3"
-                            (input)="moveToNext($event, 3)" />
-                     <input type="text" class="input-field" maxlength="1" formControlName="otp4"
-                            (input)="moveToNext($event, 4)" />
-                     <input type="text" class="input-field" maxlength="1" formControlName="otp5"
-                            (input)="moveToNext($event, 5)" />
-                     <input type="text" class="input-field" maxlength="1" formControlName="otp6"
-                            (input)="moveToNext($event, null)" />
+  <!-- OTP Input Fields -->
+  <form [formGroup]="otp">
+    <div class="otp-field d-flex gap-3">
+      <input type="text" class="input-field" maxlength="1" formControlName="otp1" (input)="moveToNext($event, 1)" />
+      <input type="text" class="input-field" maxlength="1" formControlName="otp2" (input)="moveToNext($event, 2)" />
+      <input type="text" class="input-field" maxlength="1" formControlName="otp3" (input)="moveToNext($event, 3)" />
+      <input type="text" class="input-field" maxlength="1" formControlName="otp4" (input)="moveToNext($event, 4)" />
+      <input type="text" class="input-field" maxlength="1" formControlName="otp5" (input)="moveToNext($event, 5)" />
+      <input type="text" class="input-field" maxlength="1" formControlName="otp6" (input)="moveToNext($event, null)" />
 
 
-              </div>
+    </div>
 
-              <p class="text-danger" *ngIf="otp.invalid && otp.touched">
-                     Please enter a valid 6-digit OTP.
-                 </p>
+    <p class="text-danger" *ngIf="otp.invalid && otp.touched">
+      Please enter a valid 6-digit OTP.
+    </p>
 
-              <button (click)="verifyOtp()" [disabled]="otp.invalid" class="primary-button w-100">
-                     Verify
-              </button>
-       </form>
+    <button (click)="verifyOtp()" [disabled]="otp.invalid" class="primary-button w-100">
+      Verify
+    </button>
+  </form>
 
-       <p class="text-danger" *ngIf="isOtpExpired">OTP expired. Please request a new OTP.</p>
-       <p class="text-muted" *ngIf="!isOtpExpired">OTP expires in {{ formatTime(timer) }}</p>
+  <p class="text-danger" *ngIf="isOtpExpired">OTP expired. Please request a new OTP.</p>
+  <p class="text-muted" *ngIf="!isOtpExpired">OTP expires in {{ formatTime(timer) }}</p>
 
-       <button (click)="resendOtp()" class="secondary-button mt-2" [disabled]="!isOtpExpired">
-              Resend OTP
-       </button>
+  <button (click)="resendOtp()" class="secondary-button mt-2" [disabled]="!isOtpExpired">
+    Resend OTP
+  </button>
 </div>
 
 <!-- to load child routes like new Password -->

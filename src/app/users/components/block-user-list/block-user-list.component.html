@@ -1,83 +1,75 @@
 <div class="d-flex flex-column gap-3 h-100" (click)="closeFilterIfClickedOutside($event)">
 
-    <!-- Search & Filter -->
-    <div class="d-flex justify-content-between align-items-start flex-wrap mb-3 gap-3 position-relative">
-        <!-- Left: Search + Filter -->
-        <div class="d-flex flex-wrap gap-2 align-items-center">
-            <!-- Search -->
-            <div class="input-group" style="width: 280px;">
-                <input type="text" class="form-control" placeholder="Search by name, phone, or address"
-                    [(ngModel)]="searchTerm">
-                <button class="btn btn-outline-secondary" type="button" (click)="onSearch()">
-                    <img src="assets/images/svg/search.svg" height="12" width="12">
-                </button>
-            </div>
+  <!-- Search & Filter -->
+  <div class="d-flex justify-content-between align-items-start flex-wrap mb-3 gap-3 position-relative">
+    <!-- Left: Search + Filter -->
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+      <!-- Search -->
+      <div class="input-group" style="width: 280px;">
+        <input type="text" class="form-control" placeholder="Search by name, phone, or address"
+          [(ngModel)]="searchTerm">
+        <button class="btn btn-outline-secondary" type="button" (click)="onSearch()">
+          <img src="assets/images/svg/search.svg" height="12" width="12">
+        </button>
+      </div>
 
-            <!-- Filter Button -->
-            <div class="dropdown" [class.show]="showFilters">
-                <button class="btn btn-outline-dark d-flex align-items-center gap-1 dropdown-toggle"
-                    (click)="toggleFilter()" type="button">
-                    <strong>Filter</strong>
-                </button>
+      <!-- Filter Button -->
+      <div class="dropdown" [class.show]="showFilters">
+        <button class="btn btn-outline-dark d-flex align-items-center gap-1 dropdown-toggle" (click)="toggleFilter()"
+          type="button">
+          <strong>Filter</strong>
+        </button>
 
-                <!-- Dropdown-style Filter Panel -->
-                <div class="dropdown-menu p-3 shadow" style="min-width: 300px;" [class.show]="showFilters">
-                    <!-- Gender -->
-                    <div class="mb-2">
-                        <label>Gender</label>
-                        <select class="form-select" [(ngModel)]="filters.gender" (change)="onFilter()">
-                            <option value="">All Genders</option>
-                            <option value="MALE">Male</option>
-                            <option value="FEMALE">Female</option>
-                            <option value="OTHER">Other</option>
-                        </select>
-                    </div>
+        <!-- Dropdown-style Filter Panel -->
+        <div class="dropdown-menu p-3 shadow" style="min-width: 300px;" [class.show]="showFilters">
+          <!-- Gender -->
+          <div class="mb-2">
+            <label>Gender</label>
+            <select class="form-select" [(ngModel)]="filters.gender" (change)="onFilter()">
+              <option value="">All Genders</option>
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
 
-                    <!-- Age -->
-                    <div class="mb-2 d-flex gap-2">
-                        <input type="number" class="form-control" placeholder="Min Age" [(ngModel)]="filters.minAge"
-                            (input)="onFilter()" />
-                        <input type="number" class="form-control" placeholder="Max Age" [(ngModel)]="filters.maxAge"
-                            (input)="onFilter()" />
-                    </div>
-                    <!-- Aadhar Status -->
-                    <div>
-                        <label>Aadhar Status</label>
-                        <select class="form-select" [(ngModel)]="filters.aadharStatus" (change)="onFilter()">
-                            <option value="">All</option>
-                            <option value="PENDING">Pending</option>
-                            <option value="VERIFIED">Verified</option>
-                            <option value="REJECTED">Rejected</option>
-                        </select>
-                    </div>
+          <!-- Age -->
+          <div class="mb-2 d-flex gap-2">
+            <input type="number" class="form-control" placeholder="Min Age" [(ngModel)]="filters.minAge"
+              (input)="onFilter()" />
+            <input type="number" class="form-control" placeholder="Max Age" [(ngModel)]="filters.maxAge"
+              (input)="onFilter()" />
+          </div>
+          <!-- Aadhar Status -->
+          <div>
+            <label>Aadhar Status</label>
+            <select class="form-select" [(ngModel)]="filters.aadharStatus" (change)="onFilter()">
+              <option value="">All</option>
+              <option value="PENDING">Pending</option>
+              <option value="VERIFIED">Verified</option>
+              <option value="REJECTED">Rejected</option>
+            </select>
+          </div>
 
-                    <!-- Gram Panchayat -->
-                    <div class="mb-2" *ngIf="role === Role.ADMIN">
-                        <label>Gram Panchayat</label>
-                        <select class="form-select" [(ngModel)]="filters.gramPanchayat" (change)="onFilter()">
-                            <option [ngValue]="''">All Gram Panchayat</option>
-                            <option *ngFor="let gp of gramPanchayatList" [ngValue]="gp">{{ gp }}</option>
-                        </select>
-                    </div>
-
-                </div>
-            </div>
         </div>
+      </div>
     </div>
+  </div>
 
-    <!-- ⏳ Loader (Bonus Tip) -->
-    <div *ngIf="isLoading" class="text-center">
-        <p>Loading...</p>
-    </div>
+  <!-- ⏳ Loader (Bonus Tip) -->
+  <div *ngIf="isLoading" class="text-center">
+    <p>Loading...</p>
+  </div>
 
-    <!-- 📋 Table -->
-    <app-dynamic-table *ngIf="!isLoading && agencyTableConfig.data.length > 0" [config]="agencyTableConfig"
-        (actionClicked)="onAction($event.action, $event.element)"></app-dynamic-table>
-    <!-- (statusChanged)="updateUserStatus($event)" (statusIsDeletedChanged)="changeIsDeletedStatus($event)" -->
+  <!-- 📋 Table -->
+  <app-dynamic-table *ngIf="!isLoading && agencyTableConfig.data.length > 0" [config]="agencyTableConfig"
+    (actionClicked)="onAction($event.action, $event.element)">
+  </app-dynamic-table>
+  <!-- (statusChanged)="updateUserStatus($event)" (statusIsDeletedChanged)="changeIsDeletedStatus($event)" -->
 
-    <!-- ❌ No Data Message -->
-    <p *ngIf="!isLoading && agencyTableConfig.data.length === 0" class="text-center mt-3 text-danger">
-        No Data Found
-    </p>
+  <!-- ❌ No Data Message -->
+  <p *ngIf="!isLoading && agencyTableConfig.data.length === 0" class="text-center mt-3 text-danger">
+    No Data Found
+  </p>
 
 </div>

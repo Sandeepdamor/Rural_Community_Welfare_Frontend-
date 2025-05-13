@@ -12,14 +12,22 @@ import { UpdatePasswordRequest } from '../interfaces/admin/update-password-reque
 import { ApiResponse } from '../interfaces/api-response';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ResidentService {
   private apiUrl = 'http://localhost:9096/resident';
 
-  constructor(private http: HttpClient, private tokenService: TokenService, private errorService: ErrorService) { }
+  constructor(
+    private http: HttpClient,
+    private tokenService: TokenService,
+    private errorService: ErrorService
+  ) { }
 
-  getAllResidents(status: string, isDeleted: boolean, pagination: PaginationRequest): Observable<PageResponse<ResidentResponse>> {
+  getAllResidents(
+    status: string,
+    isDeleted: boolean,
+    pagination: PaginationRequest
+  ): Observable<PageResponse<ResidentResponse>> {
     const role = this.tokenService.getRoleFromToken();
 
     let params = new HttpParams()
@@ -55,24 +63,20 @@ export class ResidentService {
     );
   }
 
-
   updateStatus(id: string, isActive: boolean): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/change-resident-status/${id}`, null, {
-      params: {
-        isActive: isActive.toString()
+    return this.http.patch(
+      `${this.apiUrl}/change-resident-status/${id}`,
+      null,
+      {
+        params: {
+          isActive: isActive.toString(),
+        },
       }
-    });
-  }
-
-  updateIsDeletedStatus(id: string, isDeleted: boolean): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/change-isdeleted-status/${id}`, null, {
-      params: {
-        isDeleted: isDeleted.toString()
-      }
-    });
+    );
   }
 
   updatePassword(updatePasswordRequest: UpdatePasswordRequest): Observable<ApiResponse> {
+    // return this.http.post<ApiResponse>(`${this.apiUrl}/add`, sarpanchRequest).
     return this.http.patch<ApiResponse>(`${this.apiUrl}/update-password`, updatePasswordRequest).pipe(
       catchError((error) => {
         return this.errorService.handleError(error); // Use ErrorService to handle errors
@@ -83,12 +87,10 @@ export class ResidentService {
   updateAadharStatus(id: string, status: string, response: string): Observable<any> {
     const body = {
       residentId: id,
-      aadharStatus: status,
-      response: response
+      aadharStatus: status
     };
     return this.http.patch(`${this.apiUrl}/verify-aadhar`, body);
   }
-
 
   //Search Resident By Name, Address (VillageName,City,District,State) or Mobile Number
   searchResidents(search: ResidentSearch): Observable<any> {
@@ -103,7 +105,6 @@ export class ResidentService {
 
     return this.http.get(`${this.apiUrl}/resident-search-request`, { params });
   }
-
 
   filterResidents(filters: ResidentFilter): Observable<any> {
     const params: any = {
@@ -125,35 +126,25 @@ export class ResidentService {
     }
     if (filters.aadharStatus) params.aadharStatus = filters.aadharStatus;
 
-    console.log('FILTER REQUEST IN SERVICE ==>>> 3333 ', params)
+    console.log('FILTER REQUEST IN SERVICE ==>>> 3333 ', params);
     return this.http.get(`${this.apiUrl}/resident-filter-request`, { params });
   }
 
-
   getResidentById(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/getById`, {
-      params: { id }
+      params: { id },
     });
   }
 
   getResidentByMobile(mobile: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/get-by-mobile`, {
-      params: { mobile }
+      params: { mobile },
     });
   }
 
   deleteResident(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/delete`, {
-      params: { id }
+      params: { id },
     });
   }
-
-  updatePrivacySetting(data: { id: string, isPublic: boolean }): Observable<any> {
-    return this.http.patch<ApiResponse>(`${this.apiUrl}/update-privacy`, data).pipe(
-      catchError((error) => {
-        return this.errorService.handleError(error); // Use ErrorService to handle errors
-      })
-    );
-  }
-
 }

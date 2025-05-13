@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ComponentRoutes } from '../../../shared/utils/component-routes';
 import { TokenService } from '../../../shared/services/token.service';
 import { AuthService } from '../../../shared/services/auth.service';
@@ -11,19 +11,18 @@ import { AuthService } from '../../../shared/services/auth.service';
   standalone: true,
   imports: [RouterModule, ReactiveFormsModule, CommonModule],
   templateUrl: './forget-password.component.html',
-  styleUrl: './forget-password.component.scss'
+  styleUrl: './forget-password.component.scss',
 })
 export class ForgetPasswordComponent implements OnInit {
   forgotPasswordForm: FormGroup;
   isAdminOrSarpanchLogin: boolean = false; // Default value
-
   constructor(private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
     private tokenService: TokenService) {
     this.forgotPasswordForm = this.fb.group({
-      mobileNumber: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]]
+      mobileNumber: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
     });
   }
 
@@ -61,17 +60,21 @@ export class ForgetPasswordComponent implements OnInit {
             alert('Something went wrong. Please try again.');
             return;
           }
-          console.log('TOKEN IN FORGOT PASSWORD ==>> ',res.response.token);
           this.tokenService.saveAuthToken(res.response.token);
           console.log('Forgot Password Token ', res.response);
           // Check if the user is allowed to reset the password
-          const role = this.tokenService.getRoleFromAuthToken();  // Extract role from token
-          console.log('Role in Forgot Password =>', role, '| isAdminOrSarpanchLogin =>', this.isAdminOrSarpanchLogin);
-
+          const role = this.tokenService.getRoleFromAuthToken(); // Extract role from token
+          console.log(
+            'Role in Forgot Password =>',
+            role,
+            '| isAdminOrSarpanchLogin =>',
+            this.isAdminOrSarpanchLogin
+          );
           if (this.isAdminOrSarpanchLogin && role) {
             // Admin or Sarpanch flow
             if (!['ADMIN', 'SARPANCH'].includes(role)) {
               alert('Only Admin or Sarpanch can reset the password.');
+
               this.router.navigate([ComponentRoutes.USERAUTH, ComponentRoutes.LOGIN]);
               return;
             }
@@ -79,7 +82,10 @@ export class ForgetPasswordComponent implements OnInit {
             // Resident flow
             if (role !== 'RESIDENT') {
               alert('Only Resident can reset the password.');
-              this.router.navigate([ComponentRoutes.USERAUTH, ComponentRoutes.LOGIN]);
+              this.router.navigate([
+                ComponentRoutes.USERAUTH,
+                ComponentRoutes.LOGIN,
+              ]);
               return;
             }
           }
@@ -94,14 +100,11 @@ export class ForgetPasswordComponent implements OnInit {
           }
           if (res.message === 'Aadhaar verification is pending. You cannot log-in until your Aadhaar is verified by the admin.') {
             this.router.navigate(['/'], {
-              relativeTo: this.route
+              relativeTo: this.route,
             });
             return;
           }
-
-
           console.log('OTP Sent:', res);
-
           if (res.response.token) {
             console.log('Auth Token:', res.response.token);
             this.tokenService.saveAuthToken(res.response.token);
@@ -114,7 +117,8 @@ export class ForgetPasswordComponent implements OnInit {
                 otp: res.response.otp,
                 forgotPassword: 'true'
               }
-            });
+            }
+            );
           } else {
             alert('Failed to send OTP. Please try again.');
           }
@@ -127,11 +131,12 @@ export class ForgetPasswordComponent implements OnInit {
           } else if (err.status === 500) {
             alert('Server error! Please try again later.');
           } else {
-            alert(err.error?.message || 'Failed to send OTP. Please try again.');
+            alert(
+              err.error?.message || 'Failed to send OTP. Please try again.'
+            );
           }
-        }
+        },
       });
     }
   }
-
 }

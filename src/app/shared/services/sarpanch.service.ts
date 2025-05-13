@@ -7,7 +7,6 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { SarpanchResponse } from '../interfaces/sarpanch/sarpanch-response';
 import { SarpanchRequest } from '../interfaces/sarpanch/sarpanch-request';
 import { ApiResponse } from '../interfaces/api-response';
-import { ErrorResponse } from '../interfaces/error/error-response';
 import { ErrorService } from './error.service';
 import { SarpanchFilter } from '../interfaces/sarpanch/sarpanch-filter';
 import { SearchRequest } from '../interfaces/sarpanch/search-request';

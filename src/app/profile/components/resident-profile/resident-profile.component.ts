@@ -132,20 +132,19 @@ export class ResidentProfileComponent implements OnInit {
       isPublic: this.isPublic 
     };
 
-    this.residentService.updatePrivacySetting(updatedPrivacy).subscribe({
-      next: (response) => {
-        console.log('Privacy updated successfully', response.message);
-        this.toastService.showSuccess(response.message);
-      },
-      error: (error) => {
-        console.error('Error updating privacy', error);
-        // Agar error aaye toh value ko wapas palat dein
-        this.isPublic = !this.isPublic;
-        this.toastService.showError(error.message);
-      }
-    });
+    // this.residentService.updatePrivacySetting(updatedPrivacy).subscribe({
+    //   next: (response) => {
+    //     console.log('Privacy updated successfully', response.message);
+    //     this.toastService.showSuccess(response.message);
+    //   },
+    //   error: (error) => {
+    //     console.error('Error updating privacy', error);
+    //     // Agar error aaye toh value ko wapas palat dein
+    //     this.isPublic = !this.isPublic;
+    //     this.toastService.showError(error.message);
+    //   }
+    // });
   }
-
 
   get formattedAddress(): string {
     const addr = this.data.address;
@@ -168,7 +167,6 @@ export class ResidentProfileComponent implements OnInit {
       });
     }
   }
-
 
   // Method to update password
   updatePassword() {
@@ -232,7 +230,5 @@ export class ResidentProfileComponent implements OnInit {
       modal.show();
     }
   }
-
-
 
 }

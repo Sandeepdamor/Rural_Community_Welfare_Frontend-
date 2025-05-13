@@ -16,28 +16,59 @@ export class AnnouncementService {
 
   constructor(private http: HttpClient, private tokenService: TokenService) {}
 
+  // getAllAnnouncement(
+  //   status: string,
+  //   isActive: boolean,
+  //   pagination: PaginationRequest
+  // ): Observable<PageResponse<AnnouncementResponse>> {
+  //   const role = this.tokenService.getRoleFromToken();
+  //   console.log('Role...........' + role);
+  //   console.log('In Announcement Service Access Token ');
+
+  //   return this.http.get<PageResponse<AnnouncementResponse>>(
+  //     `${this.apiUrl}/get-all-announcement`,
+  //     {
+  //       params: {
+  //         status: status,
+  //         isActive: isActive.toString(),
+  //         pageNumber: pagination.pageNumber.toString(),
+  //         pageSize: pagination.pageSize.toString(),
+  //         sortBy: pagination.sortBy,
+  //       },
+  //     }
+  //   );
+  // }
+
   getAllAnnouncement(
     status: string,
     isActive: boolean,
     pagination: PaginationRequest
   ): Observable<PageResponse<AnnouncementResponse>> {
-    console.log(
-      'In Announcement Service Access Token ',
-      this.tokenService.getAccessToken()
-    );
+    const role = this.tokenService.getRoleFromToken();
+    console.log('Role..........' + role);
 
-    return this.http.get<PageResponse<AnnouncementResponse>>(
-      `${this.apiUrl}/get-all-announcement`,
-      {
-        params: {
-          status: status,
-          isActive: isActive.toString(),
-          pageNumber: pagination.pageNumber.toString(),
-          pageSize: pagination.pageSize.toString(),
-          sortBy: pagination.sortBy,
-        },
-      }
-    );
+    let params = new HttpParams()
+      .set('status', status)
+      .set('isActive', isActive.toString())
+      .set('pageNumber', pagination.pageNumber.toString())
+      .set('pageSize', pagination.pageSize.toString())
+      .set('sortBy', pagination.sortBy);
+
+    let url = '';
+    if (role === 'ADMIN') {
+      console.log('Admin: fetching all announcements');
+      url = `${this.apiUrl}/get-all-announcement`;
+    } else if (role === 'SARPANCH') {
+      console.log('Sarpanch: fetching own announcements');
+      url = `${this.apiUrl}/get-all-announcement`;
+    } else if (role === 'RESIDENT') {
+      console.log('RESIDENT: fetching own announcements');
+      url = `${this.apiUrl}/get-all-announcement`;
+    } else {
+      console.warn('Unauthorized role for fetching announcements:', role);
+    }
+
+    return this.http.get<PageResponse<AnnouncementResponse>>(url, { params });
   }
 
   filterAnnouncements(filters: AnnouncementFilter): Observable<any> {
