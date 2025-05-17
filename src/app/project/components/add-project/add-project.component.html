@@ -253,7 +253,8 @@
 
 
             <!-- Expenditure Details Section -->
-            <div class="col-12" *ngIf="mode === 'view' && projectDetails.progressStatus === 'COMPLETED' && (budget || eexpenditureAmount || expenditureDocument)">
+            <div class="col-12"
+                *ngIf="mode === 'view' && projectDetails.progressStatus === 'COMPLETED' && (budget || eexpenditureAmount || expenditureDocument)">
                 <div class="card p-3 shadow-sm rounded bg-light">
                     <h3 class="mb-3 text-dark">Expenditure Details</h3>
                     <div class="row">

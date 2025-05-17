@@ -119,11 +119,11 @@
     </div>
   </div>
 
+
+
   <!-- Resident Dashboard -->
 
-  <!-- New Section: Announcements -->
-
-  <div class="dashboard-cards d-flex justify-content-between" style="gap: 0.5rem;">
+  <div class="dashboard-cards d-flex justify-content-between" style="gap: 0.5rem;" *ngIf="userRole === 'RESIDENT'">
     <div class="dashboard-box users-icon">
       <i class="bi bi-people-fill icon"></i>
       <div>Total Users</div>
