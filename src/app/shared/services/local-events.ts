@@ -68,19 +68,18 @@ export class LocalEventsService {
 
   filterEvent(filters: EventFilter): Observable<any> {
     const payload = {
-      paginationRequest: {
-        // <-- FIXED KEY
-        pageNumber: filters.pageNumber,
-        pageSize: filters.pageSize,
-        sortBy: filters.sortBy || 'createdAt',
-      },
+      isDeleted: null, // Include this if backend expects it
       isActive: filters.isActive,
       date: {
         from: filters.date?.from ? this.formatDate(filters.date.from) : null,
         to: filters.date?.to ? this.formatDate(filters.date.to) : null,
       },
+      paginationRequest: {
+        pageNumber: filters.pageNumber || 0,
+        pageSize: filters.pageSize || 10,
+        sortBy: filters.sortBy || 'createdAt',
+      },
     };
-
     console.log('filterEvent calling with', payload);
     return this.http.post(`${this.apiUrl}/event-filter-request`, payload);
   }
