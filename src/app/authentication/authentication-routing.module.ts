@@ -29,6 +29,10 @@ const routes: Routes = [
         component: LoginComponent,
       },
       {
+        path: ComponentRoutes.ADMIN_SARPANCH_LOGIN,  // ✅ Set LoginComponent as the default child route
+        component: LoginComponent,
+      },
+      {
         path: ComponentRoutes.FORGOTPASSWORD,
         component: ForgetPasswordComponent,
       },

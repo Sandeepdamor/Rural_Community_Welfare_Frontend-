@@ -31,8 +31,7 @@ import { ProjectApprovalStatus } from '../../../enums/project-approval-status';
   styleUrl: './pending-rejected-project-list.component.scss',
 })
 export class PendingRejectedProjectListComponent
-  implements OnInit, AfterViewInit
-{
+  implements OnInit, AfterViewInit {
   Role = Role;
   role: Role;
   constructor(
@@ -139,36 +138,33 @@ export class PendingRejectedProjectListComponent
     paginationRequest: PaginationRequest
   ): void {
     this.isLoading = true;
+    this.projectService.getAllProjects(approvalStatus, paginationRequest).subscribe({
+      next: (response) => {
+        const projects = response.content;
+        console.log('PROJECT RESPONSE 111 ===> ', response.content);
+        this.mapProjectsWithCreatedByDetails(projects).subscribe(
+          (updatedProjects) => {
+            // Update table config
+            this.agencyTableConfig = {
+              ...this.agencyTableConfig,
+              data: updatedProjects,
+              totalRecords: response.totalElements,
+            };
 
-    this.projectService
-      .getAllProjects(approvalStatus, paginationRequest)
-      .subscribe({
-        next: (response) => {
-          const projects = response.content;
-          console.log('PROJECT RESPONSE 111 ===> ', response.content);
-          this.mapProjectsWithCreatedByDetails(projects).subscribe(
-            (updatedProjects) => {
-              // Update table config
-              this.agencyTableConfig = {
-                ...this.agencyTableConfig,
-                data: updatedProjects,
-                totalRecords: response.totalElements,
-              };
-
-              this.changeDetection.detectChanges();
-              this.isLoading = false;
-            }
-          );
-        },
-        error: (err) => {
-          console.error('Error fetching projects:', err.error);
-          alert(
-            err.error?.message ||
-              'Something went wrong while fetching projects.'
-          );
-          this.isLoading = false;
-        },
-      });
+            this.changeDetection.detectChanges();
+            this.isLoading = false;
+          }
+        );
+      },
+      error: (err) => {
+        console.error('Error fetching projects:', err.error);
+        alert(
+          err.error?.message ||
+          'Something went wrong while fetching projects.'
+        );
+        this.isLoading = false;
+      },
+    });
   }
 
   private mapProjectsWithCreatedByDetails(projects: any[]): Observable<any[]> {
@@ -210,7 +206,7 @@ export class PendingRejectedProjectListComponent
         console.error('Error loading Gram Panchayats', err);
         // Show error message using ToastService
         this.toastService.showError(err.message || 'Something went wrong');
-      },
+      }
     });
   }
 
@@ -225,23 +221,21 @@ export class PendingRejectedProjectListComponent
       event.approvalStatus,
       event.reason
     );
-    this.projectService
-      .updateProjectApprovalStatus(event.id, event.approvalStatus, event.reason)
-      .subscribe({
-        next: (response) => {
-          this.toastService.showSuccess(response.message);
-          this.loadPendingRejectProjects(
-            this.filters.approvalStatus,
-            this.currentPaginationRequest
-          );
-        },
-        error: (err) => {
-          this.toastService.showError(
-            err.error.message || 'Something went wrong'
-          );
-          this.isLoading = false;
-        },
-      });
+    this.projectService.updateProjectApprovalStatus(event.id, event.approvalStatus, event.reason).subscribe({
+      next: (response) => {
+        this.toastService.showSuccess(response.message);
+        this.loadPendingRejectProjects(
+          this.filters.approvalStatus,
+          this.currentPaginationRequest
+        );
+      },
+      error: (err) => {
+        this.toastService.showError(
+          err.error.message || 'Something went wrong'
+        );
+        this.isLoading = false;
+      },
+    });
   }
 
   onAction(action: string, element: any): void {

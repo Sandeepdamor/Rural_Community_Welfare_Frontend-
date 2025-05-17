@@ -4,11 +4,9 @@ import { Router } from '@angular/router';
 import { catchError, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { TokenService } from './token.service';
 import { Role } from '../../enums/role.enum';
-import { ComponentRoutes } from '../utils/component-routes';
 import { UserService } from './user.service';
 import { SarpanchService } from './sarpanch.service';
 import { ResidentService } from './resident.service';
-import { UserResponse } from '../interfaces/user/user-response';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +21,7 @@ export class AuthService {
     private userService: UserService,
     private sarpanchService: SarpanchService,
     private residentService: ResidentService
-  ) {}
+  ) { }
 
   // Login API call
   public login(user: any, useAltUrl: boolean = false): Observable<any> {
@@ -48,7 +46,7 @@ export class AuthService {
 
   // Logout method
   logout(): void {
-    this.tokenService.clearTokens(); // Use TokenService to remove token
+    this.tokenService.clearTokens();  // Use TokenService to remove token
     this.router.navigate(['/']);
   }
 

@@ -8,7 +8,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ResidentFilter } from '../../../shared/interfaces/resident/resident-filter';
 import { ResidentSearch } from '../../../shared/interfaces/resident/resident-search';
-import { GenderPipe } from '../../../shared/pipes/gender.pipe';
 import { ToastService } from '../../../shared/services/toast.service';
 import { Role } from '../../../enums/role.enum';
 import { TokenService } from '../../../shared/services/token.service';
@@ -75,6 +74,11 @@ export class PendingUserListComponent {
             { name: 'aadharNumber', displayName: 'Aadhar Number', type: 'text' },
             { name: 'address', displayName: 'Address', type: 'text' },
             { name: 'aadharVerificationStatus', displayName: 'Aadhar Verification', type: 'aadharstatus' },
+            {
+                name: 'response',
+                displayName: 'Response',
+                type: 'text'
+            },
             { name: 'action', displayName: 'Action', type: 'action' },
 
         ],
@@ -144,8 +148,8 @@ export class PendingUserListComponent {
         });
     }
 
-    updateAadharStatus(event: { id: string, aadharVerificationStatus: string }) {
-        this.residentService.updateAadharStatus(event.id, event.aadharVerificationStatus).subscribe({
+    updateAadharStatus(event: { id: string, aadharVerificationStatus: string, response: string }) {
+        this.residentService.updateAadharStatus(event.id, event.aadharVerificationStatus, event.response).subscribe({
             next: (response) => {
                 // Show success message using ToastService
                 this.toastService.showSuccess(response.message);

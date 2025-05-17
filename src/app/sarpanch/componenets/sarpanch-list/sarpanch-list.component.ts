@@ -71,6 +71,7 @@ export class SarpanchListComponent implements OnInit, AfterViewInit {
 
   agencyTableConfig: TableConfig = {
     columns: [
+      { name: 'profileImage', displayName: 'Profile Picture', type: 'image' },
       { name: 'name', displayName: 'Full Name', type: 'text' },
       { name: 'fatherOrHusbandName', displayName: 'Father/Husband Name', type: 'text' },
       { name: 'mobile', displayName: 'Phone Number', type: 'text' },

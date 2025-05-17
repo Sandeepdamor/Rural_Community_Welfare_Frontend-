@@ -18,7 +18,7 @@ export class AadhaarVerificationComponent {
   isError = false;
   errorMessage = '';
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router,private route: ActivatedRoute,private tokenService: TokenService) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private route: ActivatedRoute, private tokenService: TokenService) {
     this.aadhaarForm = this.fb.group({
       aadhaarNumber: ['', [Validators.required, Validators.pattern(/^\d{12}$/)]]
     });
@@ -52,6 +52,7 @@ export class AadhaarVerificationComponent {
         }); // Redirect to LANDING PAGE after verification
       },
       error: (err) => {
+        this.isError = true;
         this.errorMessage = err.error?.message || 'Aadhaar Verification Failed.';
       }
     });

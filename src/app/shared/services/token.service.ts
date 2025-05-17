@@ -8,7 +8,7 @@ export class TokenService {
   private TOKEN_KEY = 'authToken';
   private ACCESS_TOKEN_KEY = 'accessToken';
 
-  constructor() {}
+  constructor() { }
 
   // Save Auth token in localStorage
   saveAuthToken(token: string): void {
@@ -99,6 +99,7 @@ export class TokenService {
   /// Extract Role from Token (JWT Decoding)
   getRoleFromAuthToken(): Role | null {
     const token = this.getAuthToken(); // Get token from localStorage
+    console.log('TOKEN GET FROM LOCAL STORAGE = > ', token);
     if (!token) return null;
 
     try {
@@ -111,11 +112,13 @@ export class TokenService {
 
       console.warn('Invalid roleType in token:', payload?.roleType);
       return null;
+
     } catch (e) {
       console.error('Error decoding token:', e);
       return null;
     }
   }
+
 
   // TokenService.ts
   isTokenExpired(): boolean {

@@ -21,7 +21,7 @@ export class ResidentService {
     private http: HttpClient,
     private tokenService: TokenService,
     private errorService: ErrorService
-  ) {}
+  ) { }
 
   getAllResidents(
     status: string,
@@ -43,14 +43,24 @@ export class ResidentService {
       url = `${this.apiUrl}/getAllResident`;
     } else if (role === 'SARPANCH') {
       url = `${this.apiUrl}/get-residents`;
-    } else {
+    } else if (role === 'RESIDENT') {
+      url = `${this.apiUrl}/get-residents`;
+    }
+    else {
       console.warn('Unauthorized role for fetching residents:', role);
       return throwError(() => new Error('Unauthorized role'));
     }
 
-    return this.http
-      .get<PageResponse<ResidentResponse>>(url, { params })
-      .pipe(catchError((error) => this.errorService.handleError(error)));
+    return this.http.get<PageResponse<ResidentResponse>>(url, { params }).pipe(
+      catchError((error) => this.errorService.handleError(error))
+    );
+  }
+
+  updateDetails(id: string, payload: any): Observable<any> {
+    console.log('PAYLOAD IN UPDATE RESIDENT ===> ', payload);
+    return this.http.patch(`${this.apiUrl}/update/${id}`, payload).pipe(
+      catchError((error) => this.errorService.handleError(error))
+    );
   }
 
   updateStatus(id: string, isActive: boolean): Observable<any> {
@@ -64,41 +74,20 @@ export class ResidentService {
       }
     );
   }
-  updatePassword(
-    updatePasswordRequest: UpdatePasswordRequest
-  ): Observable<ApiResponse> {
-    return this.http
-      .patch<ApiResponse>(
-        `${this.apiUrl}/update-password`,
-        updatePasswordRequest
-      )
-      .pipe(
-        catchError((error) => {
-          return this.errorService.handleError(error); // Use ErrorService to handle errors
-        })
-      );
-  }
 
-  updateDetails(id: string, payload: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/residents/${id}`, payload);
-  }
-
-  updateIsDeletedStatus(id: string, isDeleted: boolean): Observable<any> {
-    return this.http.patch(
-      `${this.apiUrl}/change-isdeleted-status/${id}`,
-      null,
-      {
-        params: {
-          isDeleted: isDeleted.toString(),
-        },
-      }
+  updatePassword(updatePasswordRequest: UpdatePasswordRequest): Observable<ApiResponse> {
+    // return this.http.post<ApiResponse>(`${this.apiUrl}/add`, sarpanchRequest).
+    return this.http.patch<ApiResponse>(`${this.apiUrl}/update-password`, updatePasswordRequest).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
     );
   }
 
-  updateAadharStatus(id: string, status: string): Observable<any> {
+  updateAadharStatus(id: string, status: string, response: string): Observable<any> {
     const body = {
       residentId: id,
-      aadharStatus: status,
+      aadharStatus: status
     };
     return this.http.patch(`${this.apiUrl}/verify-aadhar`, body);
   }

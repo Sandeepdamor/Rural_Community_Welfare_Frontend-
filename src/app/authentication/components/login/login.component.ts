@@ -69,10 +69,7 @@ export class LoginComponent {
     console.log('CURRENT URL ====>>>> ', currentUrl);
     // Adjust this based on your route names
     this.isAdminOrSarpanchLogin = currentUrl === 'login1';
-    console.log(
-      'isAdminOrSarpanchLogin URL ====>>>> ',
-      this.isAdminOrSarpanchLogin
-    );
+    console.log('isAdminOrSarpanchLogin URL ====>>>> ', this.isAdminOrSarpanchLogin);
 
     // Optionally prevent switching to register mode if admin/sarpanch
     if (this.isAdminOrSarpanchLogin) {
@@ -169,18 +166,10 @@ export class LoginComponent {
           this.tokenService.saveAuthToken(res.response.token);
           if (res.message) {
             const role = this.tokenService.getRoleFromAuthToken();
-            console.log(
-              'LOGIN ROLE ===> ',
-              role,
-              ' : ==> ',
-              this.isAdminOrSarpanchLogin
-            );
+            console.log('LOGIN ROLE ===> ', role, ' : ==> ', this.isAdminOrSarpanchLogin);
             // Check if only Admin or Sarpanch can login when isAdminOrSarpanchLogin is true
             if (role) {
-              if (
-                this.isAdminOrSarpanchLogin &&
-                !['ADMIN', 'SARPANCH'].includes(role)
-              ) {
+              if (this.isAdminOrSarpanchLogin && !['ADMIN', 'SARPANCH'].includes(role)) {
                 alert('Only Admin or Sarpanch roles are allowed to login.');
                 return; // Prevent further navigation
               }
@@ -194,26 +183,16 @@ export class LoginComponent {
             // Show alert with success message
             alert(res.message);
           }
-          if (
-            res.message ===
-            'You have not completed Aadhaar verification. Please verify your Aadhaar to proceed with login.'
-          ) {
-            this.router.navigate([
-              ComponentRoutes.USERAUTH,
-              ComponentRoutes.VERIFY_AADHAR,
-            ]);
+          if (res.message === 'You have not completed Aadhaar verification. Please verify your Aadhaar to proceed with login.') {
+            this.router.navigate([ComponentRoutes.USERAUTH, ComponentRoutes.VERIFY_AADHAR]);
             return;
           }
-          if (
-            res.message ===
-            'Aadhaar verification is pending. You cannot log-in until your Aadhaar is verified by the admin.'
-          ) {
+          if (res.message === 'Aadhaar verification is pending. You cannot log-in until your Aadhaar is verified by the admin.') {
             this.router.navigate(['/'], {
               relativeTo: this.route,
             });
             return;
           }
-
           // Redirect to Verify OTP page
           this.router.navigate(
             [ComponentRoutes.USERAUTH, ComponentRoutes.VERIFYOTP],
@@ -262,14 +241,12 @@ export class LoginComponent {
             this.tokenService.getMobileNumberFromAuthToken()
           );
           // Redirect to Verify OTP page
-          this.router.navigate(
-            [ComponentRoutes.USERAUTH, ComponentRoutes.VERIFYOTP],
-            {
-              queryParams: {
-                mobileNumber: this.tokenService.getMobileNumberFromAuthToken(),
-                otp: res.response.otp,
-              },
-            }
+          this.router.navigate([ComponentRoutes.USERAUTH, ComponentRoutes.VERIFYOTP], {
+            queryParams: {
+              mobileNumber: this.tokenService.getMobileNumberFromAuthToken(),
+              otp: res.response.otp
+            },
+          }
           );
         } else {
           this.errorMessage = 'Registration failed. Please try again.';
@@ -294,13 +271,15 @@ export class LoginComponent {
 
   onForgotPassword() {
     // Pass isAdminOrSarpanchLogin and isRegisterMode via NavigationExtras state
-    this.router.navigate(
-      [ComponentRoutes.USERAUTH, ComponentRoutes.FORGOTPASSWORD],
-      {
-        state: {
-          isAdminOrSarpanchLogin: this.isAdminOrSarpanchLogin,
-        },
+    this.router.navigate([ComponentRoutes.USERAUTH, ComponentRoutes.FORGOTPASSWORD], {
+      state: {
+        isAdminOrSarpanchLogin: this.isAdminOrSarpanchLogin,
       }
-    );
+    });
   }
+  isFieldRequired(fieldName: string): boolean {
+    // Replace with your form control logic to check if the field is required
+    return this.formRegister.get(fieldName)?.hasValidator(Validators.required) ?? false;
+  }
+
 }

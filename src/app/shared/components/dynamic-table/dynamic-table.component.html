@@ -16,8 +16,10 @@
 
           @case ("image") {
           <!-- Image column -->
-          <img [src]="element[column.name]" alt="Logo" style="width:40px; height: auto;">
+          <img [src]="element[column.name] || 'assets/images/svg/profile.svg'" alt="Logo"
+            style="width:40px; height: auto; cursor: pointer;" (click)="openImageModal(element[column.name])">
           }
+
 
           @case ("status") {
           <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status"
@@ -64,26 +66,31 @@
 
           @case ("aadharstatus") {
           <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status" [style.backgroundColor]="
-                element[column.name] === 'VERIFIED' ? '#edecf8' :
-                element[column.name] === 'REJECTED' ? 'rgba(255, 53, 53, 0.05)' : '#F5F6FA'" [style.color]="
-                element[column.name] === 'VERIFIED' ? '#4F46BB' :
-                element[column.name] === 'REJECTED' ? '#FF3535' : '#515563'">
+      element[column.name] === 'VERIFIED' ? '#edecf8' :
+      element[column.name] === 'REJECTED' ? 'rgba(255, 53, 53, 0.05)' : '#F5F6FA'" [style.color]="
+      element[column.name] === 'VERIFIED' ? '#4F46BB' :
+      element[column.name] === 'REJECTED' ? '#FF3535' : '#515563'">
             {{ element[column.name] }}
             <img src="assets/images/svg/arrow-dropdown.svg" height="14" width="14" [ngClass]="{
-                  'filter-active': element[column.name] === 'VERIFIED',
-                  'filter-deactive': element[column.name] === 'REJECTED',
-                  'filter-temporary': element[column.name] === 'PENDING'
-                }" />
+      'filter-active': element[column.name] === 'VERIFIED',
+      'filter-deactive': element[column.name] === 'REJECTED',
+      'filter-temporary': element[column.name] === 'PENDING'
+    }" />
           </button>
 
           <mat-menu #statusMenu="matMenu">
-            <ng-container *ngIf="element[column.name] !== 'REJECTED'">
+            <ng-container *ngIf="element[column.name] !== 'PENDING'">
               <button mat-menu-item (click)="changeAadharStatus(element, 'PENDING')">Pending</button>
             </ng-container>
-            <button mat-menu-item (click)="changeAadharStatus(element, 'VERIFIED')">Verified</button>
-            <button mat-menu-item (click)="changeAadharStatus(element, 'REJECTED')">Rejected</button>
+            <ng-container *ngIf="element[column.name] !== 'VERIFIED'">
+              <button mat-menu-item (click)="changeAadharStatus(element, 'VERIFIED')">Verified</button>
+            </ng-container>
+            <ng-container *ngIf="element[column.name] !== 'REJECTED'">
+              <button mat-menu-item (click)="changeAadharStatus(element, 'REJECTED')">Rejected</button>
+            </ng-container>
           </mat-menu>
           }
+
 
           @case ("projectstatus") {
           <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status" [style.backgroundColor]="
@@ -217,6 +224,9 @@
               {{ element[column.name] | date: 'dd MMM yyyy, h:mm a' }}
             </span>
             <span *ngSwitchCase="'approvalReason'">
+              {{ element[column.name] ?? '--' }}
+            </span>
+            <span *ngSwitchCase="'response'">
               {{ element[column.name] ?? '--' }}
             </span>
             <span *ngSwitchDefault>
@@ -365,6 +375,23 @@
 
       </div>
 
+    </div>
+  </div>
+</div>
+
+<!-- Image Preview Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- Close button with a cross icon -->
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">
+        <img [src]="selectedImage || 'assets/images/svg/profile.svg'" 
+             alt="Preview" 
+             class="img-fluid w-100">
+      </div>
     </div>
   </div>
 </div>

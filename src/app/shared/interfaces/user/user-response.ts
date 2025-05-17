@@ -6,4 +6,5 @@ export interface UserResponse {
     phone: string;
     email: string;
     role: Role|null;
+    profileImage: string;
 }

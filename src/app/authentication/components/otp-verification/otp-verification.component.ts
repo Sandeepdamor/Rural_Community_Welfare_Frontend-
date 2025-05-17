@@ -116,27 +116,14 @@ export class OtpVerificationComponent {
         } else if (response.response.token) {
           // Save the token received from the response
           this.tokenService.saveAccessToken(response.response.token);
-          console.log(
-            'Access Token Saved response.rep.token:',
-            response.response.token
-          );
+          console.log('Access Token Saved response.rep.token:', response.response.token);
         } else {
           this.tokenService.clearAccessTokens();
           console.error('No token received in response.');
           alert('Something went wrong. Please try again.');
           return;
         }
-        //Handling different scenarios based on the response message
-        // if (response.message === 'User Verified Successfully, Please Enter Otp to Login') {
-        //   this.tokenService.clearAuthTokens();
-        //   // User has verified OTP for login → Redirect to Dashboard
-        //   this.redirectToDashboard(this.tokenService.getRoleFromToken());
-
-        // } else
-        if (
-          response.message ===
-          'OTP verified successfully. Please set your new password.'
-        ) {
+        if (response.message === 'OTP verified successfully. Please set your new password.' ) {
           // OTP verified for Forgot Password → Redirect to New Password page
           this.router.navigate(
             [ComponentRoutes.USERAUTH, ComponentRoutes.NEWPASSWORD],
@@ -156,7 +143,7 @@ export class OtpVerificationComponent {
         }
       },
       (error) => {
-        this.tokenService.clearTokens();
+        // this.tokenService.clearTokens();
         console.error('Error verifying OTP:', error);
         alert(error.error?.message || 'OTP verification failed.');
       }

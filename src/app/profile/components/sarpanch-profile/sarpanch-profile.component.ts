@@ -1,11 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, signal } from '@angular/core';
 import { SarpanchResponse } from '../../../shared/interfaces/sarpanch/sarpanch-response';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GenderPipe } from '../../../shared/pipes/gender.pipe';
 import { Address } from '../../../shared/interfaces/address/address';
 import { AddressService } from '../../../shared/services/address.service';
+import { UserService } from '../../../shared/services/user.service';
+import { ToastService } from '../../../shared/services/toast.service';
 
+declare var bootstrap: any;
 @Component({
   selector: 'app-sarpanch-profile',
   standalone: true,
@@ -13,10 +16,19 @@ import { AddressService } from '../../../shared/services/address.service';
   templateUrl: './sarpanch-profile.component.html',
   styleUrl: './sarpanch-profile.component.scss'
 })
-export class SarpanchProfileComponent {
+export class SarpanchProfileComponent implements OnInit {
   @Input() data!: SarpanchResponse;
   @Input() isViewOnly: boolean = true;
   @Input() isDeleted: boolean = true;
+
+  profileImage = signal<string>('assets/images/svg/profile.svg');
+  selectedImage: string | null = null;
+
+  constructor(
+    public userService: UserService,
+    private toastService: ToastService
+  ){}
+
 
   // 🛠 String ko Address object mein convert karne ka method
   parseAddressString(addressString: string): Address {
@@ -37,6 +49,12 @@ export class SarpanchProfileComponent {
     });
 
     return address as Address;
+  }
+
+  ngOnInit(): void {
+     if (this.data?.profileImage) {
+      this.userService.updateImage(this.data.profileImage);
+    }
   }
 
   // 📍 Sarpanch ke main address ka format
@@ -81,5 +99,43 @@ export class SarpanchProfileComponent {
       return this.formatAddress(addr);
     });
   }
+
+  onFileSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      // Optional preview while uploading
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.userService.updateImage(reader.result as string); // Temporary preview
+      };
+      reader.readAsDataURL(file);
+
+      // Upload to Cloudinary via your backend API
+      this.userService.uploadProfileImage(file).subscribe({
+        next: (response) => {
+          console.log('Upload Success:', response.response);
+
+          // 👇 Set final Cloudinary image URL from backend response
+          this.profileImage.set(response.response.response); // assume `imageUrl` is returned
+          this.userService.updateImage(response.response.response);
+          // this.toastService.showSuccess(response.response.message || 'Profile image updated successfully!');
+        },
+        error: (error) => {
+          console.error('Upload Error:', error);
+          this.toastService.showError(error.message || 'Failed to upload profile image.');
+        }
+      });
+    }
+  }
+
+  openImage(): void {
+    this.selectedImage = this.userService.profileImage(); // or the updated image URL
+    const modalElement = document.getElementById('imageModal');
+    if (modalElement) {
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }
+
 
 }

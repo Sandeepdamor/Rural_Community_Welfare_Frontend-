@@ -1,9 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router, RouterLink } from '@angular/router';
 import { ToastService } from '../../../shared/services/toast.service';
@@ -13,10 +8,8 @@ import { DynamicTableComponent } from '../../../shared/components/dynamic-table/
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../../shared/services/project.service';
-import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { SearchRequest } from '../../../shared/interfaces/sarpanch/search-request';
 import { AddressService } from '../../../shared/services/address.service';
-import { SarpanchFilter } from '../../../shared/interfaces/sarpanch/sarpanch-filter';
 import { ProjectFilter } from '../../../shared/interfaces/project/project-filter-request';
 import { ProjectProgress } from '../../../enums/project-progress.enum';
 import { Role } from '../../../enums/role.enum';
@@ -73,8 +66,7 @@ export class ProjectListComponent implements OnInit, AfterViewInit {
     pageNumber: 1,
     pageSize: 5,
     sortBy: 'createdAt',
-    approvalStatus: null as any, // Or a valid enum like ProjectApprovalStatus.APPROVED
-    // ✅ Add this line
+    approvalStatus: null as any,
   };
 
   ngOnInit(): void {

@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit, signal } from '@angular/core';
 import { catchError, Observable } from 'rxjs';
 import { ErrorService } from './error.service';
+import { ApiResponse } from '../interfaces/api-response';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +10,14 @@ import { ErrorService } from './error.service';
 export class UserService {
   private apiUrl = 'http://localhost:9096/user';
 
-  constructor(private http: HttpClient, private errorService: ErrorService) {}
+  // private signal
+  private _profileImage = signal<string>('assets/images/svg/profile.svg');
+
+  // read-only signal for components
+  profileImage = this._profileImage.asReadonly();
+
+  constructor(private http: HttpClient, private errorService: ErrorService) { }
+
 
   getUserByMobile(mobile: string): Observable<any> {
     console.log(mobile);
@@ -35,4 +43,20 @@ export class UserService {
         })
       );
   }
+
+  // method to update image
+  updateImage(url: string) {
+    this._profileImage.set(url);
+  }
+
+  uploadProfileImage(file: File): Observable<ApiResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.patch<ApiResponse>(`${this.apiUrl}/update-profile-image`, formData).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+    );
+  }
+
 }
