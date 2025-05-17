@@ -41,7 +41,8 @@ export class AddProjectComponent implements OnInit {
   budget!: number;
 
   isViewerOpen = false;
-  currentImageIndex = 0;
+ viewerImagePath: string = '';
+
 
   projectDetails: Partial<ProjectResponse> = {
     progressStatus: '' as ProjectProgress, // or better, set a default like ProjectProgress.NOT_STARTED
@@ -444,29 +445,14 @@ export class AddProjectComponent implements OnInit {
     console.log('Assigned Sarpanches for view:', this.assignedSarpanchesDetails);
   }
 
+openImageViewer(imagePath: string): void {
+  this.viewerImagePath = imagePath;
+  this.isViewerOpen = true;
+}
 
-
-
-
-  openImageViewer(index: number): void {
-    this.currentImageIndex = index;
-    this.isViewerOpen = true;
-  }
 
   closeImageViewer(): void {
     this.isViewerOpen = false;
-  }
-
-  prevImage(): void {
-    if (this.currentImageIndex > 0) {
-      this.currentImageIndex--;
-    }
-  }
-
-  nextImage(): void {
-    if (this.currentImageIndex < this.attachmentUrls.length - 1) {
-      this.currentImageIndex++;
-    }
   }
 
   // Check if the file is an image

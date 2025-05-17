@@ -216,24 +216,25 @@
           }
 
           @case("announcementStatus") {
-          <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status" [style.backgroundColor]="
-                element[column.name] === 'PUBLISHED' ? '#edecf8' :
-                element[column.name] === 'DRAFT' ? 'rgba(255, 53, 53, 0.05)' : '#F5F6FA'" [style.color]="'#515563'">
-            {{ element[column.name] }}
-            <img src="assets/images/svg/arrow-dropdown.svg" height="14" width="14" [ngClass]="{
-                  'filter-active': element[column.name] === 'PUBLISHED',
-                  'filter-deactive': element[column.name] === 'DRAFT'
-                }" />
-          </button>
+          <ng-container *ngIf="element[column.name] === 'DRAFT'; else publishedStatus">
+            <!-- DRAFT: show button with dropdown -->
+            <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status"
+              [style.backgroundColor]="'rgba(255, 53, 53, 0.05)'" [style.color]="'#515563'">
+              {{ element[column.name] }}
+              <img src="assets/images/svg/arrow-dropdown.svg" height="14" width="14" class="filter-deactive" />
+            </button>
 
-          <mat-menu #statusMenu="matMenu">
-            <ng-container *ngIf="element[column.name] === 'DRAFT'">
+            <mat-menu #statusMenu="matMenu">
               <button mat-menu-item (click)="changeAnnouncementsStatus(element, 'PUBLISHED')">PUBLISHED</button>
-            </ng-container>
-            <ng-container *ngIf="element[column.name] === 'PUBLISHED'">
-              <button mat-menu-item (click)="changeAnnouncementsStatus(element, 'DRAFT')">DRAFT</button>
-            </ng-container>
-          </mat-menu>
+            </mat-menu>
+          </ng-container>
+
+          <!-- PUBLISHED: show static label only, no dropdown -->
+          <ng-template #publishedStatus>
+            <div class="table_status" [style.backgroundColor]="'#edecf8'" [style.color]="'#515563'">
+              {{ element[column.name] }}
+            </div>
+          </ng-template>
           }
 
 

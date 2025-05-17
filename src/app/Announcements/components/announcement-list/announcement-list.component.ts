@@ -72,9 +72,17 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
           console.log('Content length:', response.content.length);
           console.log('Total elements:', response.totalElements);
 
+          // this.agencyTableConfig = {
+          //   ...this.agencyTableConfig,
+          //   data: response.content,
+          //   totalRecords: response.totalElements,
+          // };
           this.agencyTableConfig = {
             ...this.agencyTableConfig,
-            data: response.content,
+            data: response.content.map((item:any) => ({
+              ...item,
+              authorName: item.authorName.name || 'N/A',
+            })),
             totalRecords: response.totalElements,
           };
           this.changeDetection.detectChanges();
@@ -141,11 +149,19 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
     this.announcementService.filterAnnouncements(params).subscribe({
       next: (response) => {
         console.log('Search RESULT => ', response);
-        this.agencyTableConfig = {
-          ...this.agencyTableConfig,
-          data: response.content,
-          totalRecords: response.totalElements,
-        };
+        // this.agencyTableConfig = {
+        //   ...this.agencyTableConfig,
+        //   data: response.content,
+        //   totalRecords: response.totalElements,
+        // };
+         this.agencyTableConfig = {
+            ...this.agencyTableConfig,
+            data: response.content.map((item:any) => ({
+              ...item,
+              authorName: item.authorName.name || 'N/A',
+            })),
+            totalRecords: response.totalElements,
+          };
         this.changeDetection.detectChanges();
         this.isLoading = false;
       },
