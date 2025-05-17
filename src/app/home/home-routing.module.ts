@@ -1,5 +1,4 @@
-import { GrievanceRoutingModule } from './../Grievance/components/grievance-routing.module';
-
+import { LocalEventsModule } from './../Local-Events/components/local-events-module';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ComponentRoutes } from '../shared/utils/component-routes';
@@ -65,6 +64,13 @@ const routes: Routes = [
         path: ComponentRoutes.CATEGORY,
         loadChildren: () =>
           import('../category/category.module').then((m) => m.CategoryModule),
+      },
+      {
+        path: ComponentRoutes.LOCAL_EVENTS,
+        loadChildren: () =>
+          import('../Local-Events/components/local-events-module').then(
+            (m) => m.LocalEventsModule
+          ),
       },
       {
         path: ComponentRoutes.CUSTOMER,
