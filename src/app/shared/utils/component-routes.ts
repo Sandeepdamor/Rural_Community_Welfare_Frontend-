@@ -39,11 +39,16 @@ export class ComponentRoutes {
   static readonly DELETEANNOUNCEMENTS = 'delete';
 
   //Grievance
-  static GRIEVANCELIST = 'grievance-list';
-  static GRIEVANCEDELETE = 'grievance-delete';
-  static GRIEVANCES = 'grievance';
-  static GRIEVANCEUPDATE = 'grievance-update';
-  static GRIEVANCEADD = 'grievance-add';
+  static readonly GRIEVANCELIST = 'grievance-list';
+  static readonly GRIEVANCEDELETE = 'grievance-delete';
+  static readonly GRIEVANCES = 'grievance';
+  static readonly GRIEVANCEUPDATE = 'grievance-update';
+  static readonly GRIEVANCEADD = 'grievance-add';
+
+  //Local Events
+  static readonly LOCAL_EVENTS_LIST = 'Local-Events-list';
+  static readonly LOCAL_EVENTS = 'local-Events';
+  static readonly LOCAL_EVENTS_ADD = 'local-Events-add';
 
   //Schemes
   static readonly SCHEMES = 'schemes';

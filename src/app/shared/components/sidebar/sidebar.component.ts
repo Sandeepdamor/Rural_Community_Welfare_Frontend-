@@ -28,16 +28,21 @@ export class SidebarComponent implements OnInit {
   isSchemeMenuOpen = false;
   isAnnouncementMenuOpen = false;
   isGrievanceMenuOpen = false;
+  isLocalEventsMenuOpen = false;
   Role = Role;
   role: Role;
   sarpanchId = null;
-  constructor(private router: Router, private route: ActivatedRoute, private tokenService: TokenService,
-    private toastService: ToastService, private residentService: ResidentService
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private tokenService: TokenService,
+    private toastService: ToastService,
+    private residentService: ResidentService
   ) {
     const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
     this.role = roleString as Role; // ✅ safely assign enum
   }
-
 
   toggleUserMenu() {
     this.isUserMenuOpen = !this.isUserMenuOpen;
@@ -57,6 +62,9 @@ export class SidebarComponent implements OnInit {
   toggleGrievanceMenu() {
     this.isGrievanceMenuOpen = !this.isGrievanceMenuOpen;
   }
+  toggleLocalEventsMenu() {
+    this.isLocalEventsMenuOpen = !this.isLocalEventsMenuOpen;
+  }
 
   ngOnInit(): void {
     // Set current route on component initialization
@@ -73,15 +81,17 @@ export class SidebarComponent implements OnInit {
     if (this.role === 'RESIDENT') {
       const mobile = this.tokenService.getMobileNumberFromAccessToken();
       if (mobile) {
-        this.residentService.getResidentByMobile(mobile).subscribe(response => {
-          console.log('RESPONSE FOR SARPANCH ID ==> ', response.response.sarpanch.id);
-          this.sarpanchId = response.response.sarpanch.id;
-        });
+        this.residentService
+          .getResidentByMobile(mobile)
+          .subscribe((response) => {
+            console.log(
+              'RESPONSE FOR SARPANCH ID ==> ',
+              response.response.sarpanch.id
+            );
+            this.sarpanchId = response.response.sarpanch.id;
+          });
       }
     }
-
-
-
   }
 
   isActiveRoute(route: string): boolean {
@@ -92,7 +102,7 @@ export class SidebarComponent implements OnInit {
     if (this.sarpanchId) {
       this.router.navigate(['/sarpanch/profile', 'sarpanch', this.sarpanchId]);
     } else {
-      this.toastService.showError("No Sarpanch assigned to your village yet.");
+      this.toastService.showError('No Sarpanch assigned to your village yet.');
     }
   }
 

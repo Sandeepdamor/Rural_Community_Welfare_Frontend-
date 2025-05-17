@@ -172,5 +172,23 @@
         Grievance
       </li>
     </ul>
+
+    <!-- Local Events -->
+    <!-- Parent item -->
+    <li class="cursor-pointer dropdown-toggle" (click)="toggleLocalEventsMenu()" [class.active]="isLocalEventsMenuOpen">
+      <img src="assets/images/svg/calendar2-event.svg">
+      <span class="menu-text singleLine">Local Events</span>
+    </li>
+
+    <!-- Submenu -->
+    <ul *ngIf="isLocalEventsMenuOpen" class="sub-menu">
+      <li [routerLink]="'local-Events/Local-Events-list'" routerLinkActive="active"><img
+          src="assets/images/svg/user-list-icon.svg" alt="user-list-icon" class="white-icon" />Local Events List
+      </li>
+      <li [routerLink]="'local-Events/grievance-delete'" routerLinkActive="active" *ngIf="role === Role.SARPANCH">
+        <img src="assets/images/svg/delete-user-icon.svg" alt="delete-user-icon" class="white-icon" />Deleted
+        Local Events
+      </li>
+    </ul>
   </div>
 </div>
