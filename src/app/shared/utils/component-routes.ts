@@ -1,6 +1,6 @@
 export class ComponentRoutes {
   // General
-  static readonly LANDING_PAGE = 'landing-page';
+  static readonly LANDING_PAGE = '';
   static readonly NOTFOUND = 'not-found';
   static readonly DASHBOARD = 'dashboard';
   static readonly USERAUTH = 'auth';
@@ -56,6 +56,7 @@ export class ComponentRoutes {
   static readonly SCHEMESLIST = 'list';
   static readonly SCHEMEADD = 'add';
   static readonly DELETESCHEMESLIST = 'delete-list';
+  static readonly APPLY_SCHEME_REQUEST = 'apply-request';
 
   //Category
   static readonly CATEGORY = 'category';

@@ -3,7 +3,7 @@
     <img src="assets/images/png/profile-background.png" alt="profile-background"
         class="img-fluid w-100 profileEdit-img">
     <!-- Profile Image (Dropdown Toggle) -->
-    <img [src]="userService.profileImage() || 'assets/images/svg/profile.svg'" alt="profile"
+    <img [src]="profileUrl || 'assets/images/svg/profile.svg'" alt="profile"
         class="choose-File object-fit-cover rounded-circle img-fluid dropdown-toggle" data-bs-toggle="dropdown"
         aria-expanded="false" style="cursor: pointer;" />
     <!-- Dropdown Menu -->

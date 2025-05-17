@@ -12,9 +12,11 @@ export class UserService {
 
   // private signal
   private _profileImage = signal<string>('assets/images/svg/profile.svg');
+  private _showProfileImage = signal<string>('assets/images/svg/profile.svg');
 
   // read-only signal for components
   profileImage = this._profileImage.asReadonly();
+  showProfileImage = this._showProfileImage.asReadonly();
 
   constructor(private http: HttpClient, private errorService: ErrorService) { }
 
@@ -47,6 +49,18 @@ export class UserService {
   // method to update image
   updateImage(url: string) {
     this._profileImage.set(url);
+  }
+
+  showImage(url: string) {
+    this._showProfileImage.set(url);
+  }
+
+  getProfileImageUrl(): string {
+    return this._profileImage();
+  }
+
+  getViewedProfileImageUrl(): string {
+    return this._showProfileImage();
   }
 
   uploadProfileImage(file: File): Observable<ApiResponse> {

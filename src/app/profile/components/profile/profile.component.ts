@@ -34,6 +34,7 @@ export class ProfileComponent implements OnInit {
   resident!: ResidentResponse;
   sarpanch!: SarpanchResponse;
   admin!: UserResponse;
+  profileUrl: string = '';
 
   constructor(
     private residentService: ResidentService,
@@ -45,7 +46,6 @@ export class ProfileComponent implements OnInit {
     private tokenService: TokenService,
     private userService: UserService
   ) {
-
     console.log('PROFILE');
   }
 
@@ -79,7 +79,7 @@ export class ProfileComponent implements OnInit {
               console.log('SARPACH PROFILE ==> ',res);
               this.sarpanch = res.response;
               this.userType = 'sarpanch';
-              this.isViewOnly = true;
+              this.isViewOnly = false;
               this.isDataLoaded = true;
             },
             error: (err) => {
@@ -110,6 +110,7 @@ export class ProfileComponent implements OnInit {
       if (this.userType === 'resident') {
         this.residentService.getResidentById(userId).subscribe(response => {
           this.resident = response.response;
+          this.profileUrl = this.resident.profileImage;
           console.log('RESIDENT PROFILE => ', this.resident);
 
           this.isDataLoaded = true;
@@ -137,6 +138,7 @@ export class ProfileComponent implements OnInit {
           this.sarpanch = response.response;
           console.log('SARPANCH PROFILE => ', this.sarpanch);
           this.isDataLoaded = true;
+          this.profileUrl = this.sarpanch.profileImage;
           // For sarpanch profiles, set view-only mode.
           this.isViewOnly = true;
         });

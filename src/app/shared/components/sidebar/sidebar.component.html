@@ -12,14 +12,14 @@
   <div class="menu">
     <ul class="d-flex flex-column p-0  gap-3 mb-0">
 
-      <li class="cursor-pointer" [routerLink]="'/dashboard'" [ngClass]="{ 'active': isActiveRoute('/') }"
-        id="dashboard">
+      <li class="cursor-pointer" [routerLink]="'/dashboard'" routerLinkActive="active"
+        [ngClass]="{ 'active': isActiveRoute('/') }" id="dashboard">
         <img src="assets/images/svg/Dashboard.svg"><span class="menu-text singleLine">Dashboard</span>
       </li>
       <!-- Resident Dropdown -->
       <!-- Parent item -->
-      <li *ngIf="role === Role.ADMIN || role === Role.SARPANCH" class="cursor-pointer dropdown-toggle"
-        (click)="toggleUserMenu()" [class.active]="isUserMenuOpen">
+      <li *ngIf="role === Role.ADMIN" class="cursor-pointer dropdown-toggle" (click)="toggleUserMenu()"
+        [class.active]="isUserMenuOpen">
         <img src="assets/images/svg/user.svg">
         <span class="menu-text singleLine">Resident</span>
       </li>
@@ -34,20 +34,21 @@
         <img src="assets/images/svg/delete-user-icon.svg" alt="delete-user-icon" class="white-icon" />
         Deleted Residents List
       </li>
-      <li *ngIf="role === Role.ADMIN" [routerLink]="'/user/aadhar-pending-list'" routerLinkActive="active">
+      <li [routerLink]="'/user/aadhar-pending-list'" routerLinkActive="active">
         <img src="assets/images/svg/pending-user-icon.svg" alt="pending-user-icon" class="white-icon" />
         Pending Residents List
       </li>
     </ul>
 
     <!-- Resident Menu For Resident only -->
-    <li *ngIf="role === Role.RESIDENT" [class.active]="isUserMenuOpen" class="cursor-pointer" [routerLink]="'/user/list'">
+    <li *ngIf="role === Role.RESIDENT || role === Role.SARPANCH" class="cursor-pointer" [routerLink]="'/user/list'"
+      routerLinkActive="active">
       <img src="assets/images/svg/user.svg" style="width: 23px; height: 23px;">
       <span class="menu-text singleLine">Users</span>
     </li>
 
     <!-- Sarpanch Menu For Resident only -->
-    <li *ngIf="role === Role.RESIDENT" class="cursor-pointer" (click)="navigateToSarpanch()">
+    <li *ngIf="role === Role.RESIDENT" class="cursor-pointer" (click)="navigateToSarpanch()" routerLinkActive="active">
       <img src="assets/images/svg/user.svg" style="width: 23px; height: 23px;">
       <span class="menu-text singleLine">Sarpanh Details</span>
     </li>
@@ -97,7 +98,7 @@
                         class="white-icon" />Pending Users List</li> -->
     </ul>
     <!-- Project Menu For Resident only -->
-    <li *ngIf="role === Role.RESIDENT" class="cursor-pointer" [routerLink]="'/project/list'">
+    <li *ngIf="role === Role.RESIDENT" class="cursor-pointer" [routerLink]="'/project/list'" routerLinkActive="active">
       <img src="assets/images/svg/project.svg" class="white-icon" style="width: 23px; height: 23px;">
       <span class="menu-text singleLine">Projects</span>
     </li>
@@ -129,33 +130,39 @@
 
     <!-- Schemes Dropdown -->
     <!-- Parent item -->
-    <li *ngIf="role === Role.ADMIN" class="cursor-pointer dropdown-toggle" (click)="toggleSchemesMenu()"
-      [class.active]="isSchemeMenuOpen">
+    <li class="cursor-pointer dropdown-toggle"
+      (click)="toggleSchemesMenu()" [class.active]="isSchemeMenuOpen">
       <img src="assets/images/svg/scheme-icon.svg" class="white-icon" style="width: 20px; height: 20px;">
       <span class="menu-text singleLine">Schemes</span>
     </li>
 
     <!-- Submenu -->
     <ul *ngIf="isSchemeMenuOpen" class="sub-menu">
-      <li *ngIf="role === Role.ADMIN" [routerLink]="'/schemes/list'" routerLinkActive="active">
+      <li [routerLink]="'/schemes/list'"
+        routerLinkActive="active">
         <img src="assets/images/svg/project-list-icon.svg" alt="project-list-icon" class="white-icon" />
         <!-- <i class="bi bi-card-list white-icon"></i> -->
         Schemes List
       </li>
-      <li *ngIf="role === Role.ADMIN" [routerLink]="'/schemes/delete-list'" routerLinkActive="active">
+      <!-- <li *ngIf="role === Role.ADMIN" [routerLink]="'/schemes/delete-list'" routerLinkActive="active">
         <img src="assets/images/svg/delete-icon.svg" alt="pending-project-icon" class="white-icon" />
         Deleted Schemes
+      </li> -->
+      <li [routerLink]="'/schemes/apply-request'" routerLinkActive="active">
+        <img src="assets/images/svg/apply-requst.svg" alt="pending-project-icon" class="white-icon" />
+        Apply Scheme Requests
       </li>
+
     </ul>
 
     <!-- SCHEME Menu For Resident only -->
-    <li *ngIf="role === Role.RESIDENT || role === Role.SARPANCH" class="cursor-pointer" [routerLink]="'/schemes/list'">
+    <!-- <li *ngIf="role === Role.RESIDENT" class="cursor-pointer" [routerLink]="'/schemes/list'" routerLinkActive="active">
       <img src="assets/images/svg/scheme-icon.svg" class="white-icon" style="width: 20px; height: 20px;">
       <span class="menu-text singleLine">Schemes</span>
-    </li>
+    </li> -->
 
     <!-- Category Menu For Admin only -->
-    <li *ngIf="role === Role.ADMIN" class="cursor-pointer" [routerLink]="'/category/list'">
+    <li *ngIf="role === Role.ADMIN" class="cursor-pointer" [routerLink]="'/category/list'" routerLinkActive="active">
       <img src="assets/images/svg/category.svg" class="white-icon" style="width: 23px; height: 23px;">
       <span class="menu-text singleLine">Category</span>
     </li>

@@ -97,7 +97,7 @@
 
   <!-- 📋 Table -->
   <app-dynamic-table *ngIf="!isLoading && agencyTableConfig.data.length > 0" [config]="agencyTableConfig"
-    (projectApprovalStatusChanged)="changeProjectApprovalStatus($event)"
+    (approvalStatusChanged)="changeProjectApprovalStatus($event)"
     (actionClicked)="onAction($event.action, $event.element)">
   </app-dynamic-table>
 

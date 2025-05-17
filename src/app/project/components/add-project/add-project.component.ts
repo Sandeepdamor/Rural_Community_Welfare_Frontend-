@@ -36,6 +36,9 @@ export class AddProjectComponent implements OnInit {
   selectedFiles: File[] = [];
   isSubmitting: boolean = false;
   attachmentUrls: string[] = [];
+  expenditureDocument!: string;
+  eexpenditureAmount!: number;
+  budget!: number;
 
   isViewerOpen = false;
   currentImageIndex = 0;
@@ -54,6 +57,9 @@ export class AddProjectComponent implements OnInit {
 
   mode: 'add' | 'edit' | 'view' = 'add';
   projectId!: string;
+  gramPanchayatName !: string;
+  tomorrow: string = '';
+  today: string = '';
 
   assignedSarpanchesDetails: {
     sarpanchName: string;
@@ -76,12 +82,13 @@ export class AddProjectComponent implements OnInit {
     private authService: AuthService,
     private tokenService: TokenService
 
-  ) { 
+  ) {
     const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
-        this.role = roleString as Role; // ✅ safely assign enum
+    this.role = roleString as Role; // ✅ safely assign enum
   }
 
   ngOnInit(): void {
+    this.initializeDateLimits();
     this.detectMode();
     this.initializeForm();
     // Fetch the logged-in user and then call fetchLocations()
@@ -101,6 +108,16 @@ export class AddProjectComponent implements OnInit {
     }
   }
 
+  initializeDateLimits(): void {
+    const today = new Date();
+    const tomorrowDate = new Date(today);
+    tomorrowDate.setDate(today.getDate() + 1);
+    // Format to yyyy-MM-dd
+    this.tomorrow = tomorrowDate.toISOString().split('T')[0];
+
+    this.today = today.toISOString().split('T')[0];
+  }
+
   detectMode(): void {
     const segments = this.router.url.split('/');
     const lastSegment = segments[segments.length - 1];
@@ -114,6 +131,14 @@ export class AddProjectComponent implements OnInit {
 
     if (this.mode !== 'add') {
       this.projectId = this.route.snapshot.paramMap.get('id')!;
+      // Get gramPanchayatName from navigation state
+      const state = history.state;
+
+      console.log('Navigation state in view page:', state); // Check the full state object
+      this.gramPanchayatName = state?.gramPanchayatName;
+
+      console.log('Gram Panchayat IN VIEW PAGE ==>>', this.gramPanchayatName);
+
     }
   }
 
@@ -137,6 +162,7 @@ export class AddProjectComponent implements OnInit {
     });
   }
 
+
   fetchLocations(): void {
     if (this.currentUser.role === 'ADMIN') {
       // Show all addresses
@@ -152,8 +178,8 @@ export class AddProjectComponent implements OnInit {
       });
 
     } else if (this.currentUser.role === 'SARPANCH') {
-       // Show Sarpancch addresses
-       this.addressService.getAddressesBySarpanchId(this.currentUser.id).subscribe({
+      // Show Sarpancch addresses
+      this.addressService.getAddressesBySarpanchId(this.currentUser.id).subscribe({
         next: (data) => {
           this.locations = data;
           console.log('All addresses:', this.locations);
@@ -172,18 +198,6 @@ export class AddProjectComponent implements OnInit {
     return address ? address.formattedAddress : 'Address not found'; // Return formatted address
   }
 
-  // getFormattedLocations(location: any): string {
-  //   if (this.currentUser.role === 'ADMIN') {
-  //     const address = this.locations.find((loc: any) => loc.id === location.id);
-  //     return address ? address.formattedAddress : 'Address not found';
-  //   } else if (this.currentUser.role === 'SARPANCH') {
-  //     console.log('LOCATION ===>> 123',location);
-  //     const address = this.locations.find((loc: any) => loc.id === location.id || loc.id === location);
-  //   return address ? address.formatAddress : 'Address not found';
-  //   }
-  //   return 'Invalid user role';
-  // }
-  
 
   get locationIds(): FormArray {
     return this.projectForm.get('locationIds') as FormArray;
@@ -241,6 +255,11 @@ export class AddProjectComponent implements OnInit {
     const control = this.projectForm.get(fieldName);
     // Ensure the control exists and is valid
     return control ? control.invalid && control.touched : false;
+  }
+
+  isFieldRequired(fieldName: string): boolean {
+    // Replace with your form control logic to check if the field is required
+    return this.projectForm.get(fieldName)?.hasValidator(Validators.required) ?? false;
   }
 
 
@@ -311,12 +330,16 @@ export class AddProjectComponent implements OnInit {
     return date + ' 00:00:00';
   }
 
+
   loadProjectById(): void {
-    this.projectService.getProjectById(this.projectId).subscribe({
+    console.log('BEFORE COLL GETPROJECT BY GPN ===>> ', this.gramPanchayatName, ' : id ==> ', this.projectId);
+    this.projectService.getProjectByIdAndGramPanchayar(this.projectId, this.gramPanchayatName).subscribe({
       next: (res) => {
         console.log('GET PROJECT BY ID ===> ', res);
         const project = res.response;
-
+        this.budget = project.budget;
+        this.expenditureDocument = project.document;
+        this.eexpenditureAmount = project.expenditureAmount;
         // Patch basic project fields
         this.projectForm.patchValue({
           name: project.projectName,
@@ -413,12 +436,14 @@ export class AddProjectComponent implements OnInit {
       return {
         sarpanchName: s.sarpanchName,
         gramPanchaytName: s.gramPanchayatName ?? 'N/A',
-        assignedVillages: formattedVillages
+        assignedVillages: formattedVillages,
+
       };
     });
 
     console.log('Assigned Sarpanches for view:', this.assignedSarpanchesDetails);
   }
+
 
 
 

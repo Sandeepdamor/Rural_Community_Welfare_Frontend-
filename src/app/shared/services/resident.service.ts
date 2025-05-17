@@ -53,6 +53,10 @@ export class ResidentService {
 
     return this.http.get<PageResponse<ResidentResponse>>(url, { params }).pipe(
       catchError((error) => this.errorService.handleError(error))
+    ).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
     );
   }
 
@@ -60,8 +64,13 @@ export class ResidentService {
     console.log('PAYLOAD IN UPDATE RESIDENT ===> ', payload);
     return this.http.patch(`${this.apiUrl}/update/${id}`, payload).pipe(
       catchError((error) => this.errorService.handleError(error))
+    ).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
     );
   }
+
 
   updateStatus(id: string, isActive: boolean): Observable<any> {
     return this.http.patch(
@@ -72,6 +81,10 @@ export class ResidentService {
           isActive: isActive.toString(),
         },
       }
+    ).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
     );
   }
 
@@ -81,15 +94,25 @@ export class ResidentService {
       catchError((error) => {
         return this.errorService.handleError(error); // Use ErrorService to handle errors
       })
+    ).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
     );
   }
+
 
   updateAadharStatus(id: string, status: string, response: string): Observable<any> {
     const body = {
       residentId: id,
-      aadharStatus: status
+      aadharStatus: status,
+      response: response
     };
-    return this.http.patch(`${this.apiUrl}/verify-aadhar`, body);
+    return this.http.patch(`${this.apiUrl}/verify-aadhar`, body).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+    );
   }
 
   //Search Resident By Name, Address (VillageName,City,District,State) or Mobile Number
@@ -103,7 +126,11 @@ export class ResidentService {
       sortBy: search.sortBy || 'createdAt',
     };
 
-    return this.http.get(`${this.apiUrl}/resident-search-request`, { params });
+    return this.http.get(`${this.apiUrl}/resident-search-request`, { params }).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+    );
   }
 
   filterResidents(filters: ResidentFilter): Observable<any> {
@@ -127,24 +154,49 @@ export class ResidentService {
     if (filters.aadharStatus) params.aadharStatus = filters.aadharStatus;
 
     console.log('FILTER REQUEST IN SERVICE ==>>> 3333 ', params);
-    return this.http.get(`${this.apiUrl}/resident-filter-request`, { params });
+    return this.http.get(`${this.apiUrl}/resident-filter-request`, { params }).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+    );
   }
 
   getResidentById(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/getById`, {
       params: { id },
-    });
+    }).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+    );
   }
 
   getResidentByMobile(mobile: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/get-by-mobile`, {
       params: { mobile },
-    });
+    }).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+    );
   }
 
   deleteResident(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/delete`, {
       params: { id },
-    });
+    }).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+
+    );
+  }
+
+  updatePrivacySetting(request: { id: string, isPublic: boolean }): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/update-privacy`, request).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+    );
   }
 }

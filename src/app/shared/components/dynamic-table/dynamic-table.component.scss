@@ -268,3 +268,7 @@ input:checked + .slider:before {
   color: #2c3e50;
 }
 
+.disabled-img {
+  opacity: 0.5;
+  pointer-events: none;
+}

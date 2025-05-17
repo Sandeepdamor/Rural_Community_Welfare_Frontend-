@@ -25,13 +25,17 @@ export class AddSarpanchComponent implements OnInit {
   addresses: any[] = [];
   selectedVillages: Village[] = [];
   isSubmitting: boolean = false;
-
   // ✅ Step 1: Add required variables in your component
   villagesDisabled: boolean = false;
 
   cities: string[] = [];
 
 
+  yesterday: string = '';
+  minStartDate: string = '';
+  maxStartDate: string = '';
+  minEndDate: string = '';
+  maxEndDate: string = '';
   constructor(
     private fb: FormBuilder,
     private addressService: AddressService,
@@ -43,9 +47,53 @@ export class AddSarpanchComponent implements OnInit {
     private dialog: MatDialog
   ) { }
 
+  initializeDateLimits(): void {
+    const today = new Date();
+
+    // DOB restriction (only past, not today)
+    const yesterdayDate = new Date(today);
+    yesterdayDate.setDate(today.getDate() - 1);
+    this.yesterday = yesterdayDate.toISOString().split('T')[0];
+
+    // Term Start Date: allow from 5 years ago (including today)
+    const fiveYearsAgo = new Date(today);
+    fiveYearsAgo.setFullYear(today.getFullYear() - 5);
+    this.minStartDate = fiveYearsAgo.toISOString().split('T')[0];
+
+    this.maxStartDate = ''; // allow future dates for term start
+    this.setDefaultEndDateLimits(); // setup initial end date limits
+  }
+
+  setDefaultEndDateLimits(): void {
+    const today = new Date();
+    // When start date is not selected, end date should allow future only
+    this.minEndDate = today.toISOString().split('T')[0];
+    this.maxEndDate = ''; // optional: set future limit if needed
+  }
+
+  onStartDateChange(): void {
+    const startDateValue = this.sarpanchForm.get('termStartDate')?.value;
+
+    if (startDateValue) {
+      const startDate = new Date(startDateValue);
+
+      // Set minEndDate = termStartDate
+      this.minEndDate = startDate.toISOString().split('T')[0];
+
+      // Set maxEndDate = termStartDate + 5 years
+      const endLimit = new Date(startDate);
+      endLimit.setFullYear(startDate.getFullYear() + 5);
+      this.maxEndDate = endLimit.toISOString().split('T')[0];
+    } else {
+      this.setDefaultEndDateLimits();
+    }
+  }
+
+
   ngOnInit(): void {
     this.initializeForm();
     this.loadAddresses();
+    this.initializeDateLimits();
     this.setupGramPanchayatWatcher(); // 👈 Add this line
   }
 
@@ -70,16 +118,7 @@ export class AddSarpanchComponent implements OnInit {
           wardNumber: res.response.wardNumber,
           villageIds: res.response.villageSummaries
         });
-        // Disable inputs
-        // this.sarpanchForm.get('wardNumber')?.disable();
         this.villagesDisabled = true;
-
-        // Fill selected villages for display
-        // this.selectedVillages = res.villageIds.map((id: string) => {
-        //   const village = this.addresses.find(addr => addr.id === id);
-        //   return village ? { id: village.id, formattedAddress: village.formattedAddress } : null;
-        // }).filter(v => v !== null) as Village[];
-
         console.log('=====>>>> ', res.response.villageSummaries);
         this.selectedVillages = (res.response.villageSummaries ?? []).map((id: string) => {
           const village = this.addresses.find(addr => addr.id === id);
@@ -112,13 +151,13 @@ export class AddSarpanchComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50), Validators.pattern(/^[A-Za-z\s]+$/)]],
       fatherOrHusbandName: ['', Validators.required],
       dateOfBirth: ['', Validators.required],
-      age: [null, [Validators.required, Validators.min(22), Validators.max(100)]],
+      age: [null],
       gender: ['', Validators.required],
       phone: ['', [Validators.required, Validators.pattern(/^[6789]\d{9}$/)]],
       email: ['', [Validators.required, Validators.email]],
       aadharNumber: ['', [Validators.required, Validators.pattern(/^\d{12}$/)]],
       addressId: ['', Validators.required],
-      houseNumber: ['', [Validators.pattern(/^[0-9]+$/), Validators.minLength(1), Validators.maxLength(50)]],
+      houseNumber: ['', [Validators.required, Validators.pattern(/^[0-9]+$/), Validators.minLength(1), Validators.maxLength(50)]],
       gramPanchayatName: ['', Validators.required],
       wardNumber: ['', [Validators.pattern(/^[0-9]+$/)]],
       electionYear: [new Date().getFullYear(), [Validators.required, Validators.min(2000), Validators.max(2100)]],
@@ -234,6 +273,12 @@ export class AddSarpanchComponent implements OnInit {
 
   submit(): void {
     if (this.sarpanchForm.valid) {
+      // Manually calculate age before submission
+      const dob = this.sarpanchForm.get('dateOfBirth')?.value;
+      if (dob) {
+        const age = this.sarpanchService.calculateAge(new Date(dob));
+        this.sarpanchForm.get('age')?.setValue(age, { emitEvent: false }); // prevent infinite loop
+      }
       const sarpanchData: SarpanchRequest = this.sarpanchForm.value;
       console.log("SARPANCH WHEN ADD => ", this.sarpanchForm.value);
       console.log("SARPANCH WHEN ADD => ", sarpanchData.villageIds);
@@ -281,5 +326,10 @@ export class AddSarpanchComponent implements OnInit {
 
   goBack(): void {
     this.location.back();
+  }
+
+  isFieldRequired(fieldName: string): boolean {
+    // Replace with your form control logic to check if the field is required
+    return this.sarpanchForm.get(fieldName)?.hasValidator(Validators.required) ?? false;
   }
 }

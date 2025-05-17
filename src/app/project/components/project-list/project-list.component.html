@@ -42,13 +42,13 @@
             </label>
             <select class="form-select form-select-sm" [(ngModel)]="filters.progressStatus" (change)="onFilter()">
               <option [ngValue]="null">All Status</option>
-              <option *ngFor="let status of projectProgressOptions" [ngValue]="status">{{ status }}
+              <option *ngFor="let status of filteredProgressOptions" [ngValue]="status">{{ status }}
               </option>
             </select>
           </div>
 
           <!-- Created By -->
-          <div class="mb-3">
+          <div class="mb-3" *ngIf="role!=='RESIDENT'">
             <label class="form-label fw-semibold text-primary">
               <i class="fa fa-user me-2"></i> Created By
             </label>

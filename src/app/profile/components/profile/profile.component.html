@@ -9,13 +9,13 @@
 
       <!-- Resident Profile -->
       <ng-container *ngSwitchCase="'resident'">
-        <app-resident-profile [data]="resident" [isViewOnly]="isViewOnly">
+        <app-resident-profile [data]="resident" [profileUrl]="profileUrl" [isViewOnly]="isViewOnly">
         </app-resident-profile>
       </ng-container>
 
       <!-- Sarpanch Profile -->
       <ng-container *ngSwitchCase="'sarpanch'">
-        <app-sarpanch-profile [data]="sarpanch" [isViewOnly]="isViewOnly" [isDeleted]="isDeleted">
+        <app-sarpanch-profile [data]="sarpanch" [profileUrl]="profileUrl" [isViewOnly]="isViewOnly" [isDeleted]="isDeleted">
         </app-sarpanch-profile>
       </ng-container>
 

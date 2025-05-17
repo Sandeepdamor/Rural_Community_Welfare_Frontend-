@@ -39,8 +39,20 @@
                         </select>
                     </div>
 
+                    <!-- Gram Panchayat -->
+                    <div class="mb-3" *ngIf="role==='ADMIN'">
+                        <label class="form-label fw-semibold text-primary">
+                            <i class="fa fa-building me-2"></i> Gram Panchayat
+                        </label>
+                        <select class="form-select form-select-sm" [(ngModel)]="filters.gramPanchayatName"
+                            (change)="onFilter()">
+                            <option [ngValue]="''">All Gram Panchayats</option>
+                            <option *ngFor="let gp of gramPanchayatList" [ngValue]="gp">{{ gp }}</option>
+                        </select>
+                    </div>
+
                     <!-- IsActive Status -->
-                    <div class="mb-3" *ngIf="role !== 'RESIDENT'">
+                    <!-- <div class="mb-3" *ngIf="role !== 'RESIDENT'">
                         <label class="form-label fw-semibold" style="color: #333;">
                             <i class="fa fa-check-circle me-2" style="color: #007bff;"></i> IsActive Status
                         </label>
@@ -50,23 +62,28 @@
                             <option [ngValue]="true">Active</option>
                             <option [ngValue]="false">Inactive</option>
                         </select>
-                    </div>
+                    </div> -->
 
                     <!-- Status -->
-                    <div class="mb-3" *ngIf="role !== 'RESIDENT'">
+                    <div class="mb-3" *ngIf="role !== 'ADMIN'">
                         <label class="form-label fw-semibold" style="color: #333;">
                             <i class="fa fa-check-circle me-2" style="color: #007bff;"></i>Status
                         </label>
                         <select class="form-select form-select-sm" [(ngModel)]="filters.status" (change)="onFilter()"
                             style="background-color: #e9ecef;">
-                            <option [ngValue]="''">All Status</option>
-                            <option [ngValue]="'DRAFT'">DRAFT</option>
-                            <option [ngValue]="'PUBLISHED'">PUBLISHED</option>
+
+                            <!-- Show 'All Status' only if role is RESIDENT -->
+                            <option *ngIf="role === 'RESIDENT'" [ngValue]="''">All Status</option>
+
+                            <option [ngValue]="'PENDING'">PENDING</option>
+                            <option [ngValue]="'APPROVED'">APPROVED</option>
+                            <option [ngValue]="'REJECTED'">REJECTED</option>
                         </select>
                     </div>
 
+
                     <!-- Status -->
-                    <div class="mb-3" *ngIf="role === 'ADMIN'">
+                    <!-- <div class="mb-3" *ngIf="role !== 'RESIDENT'">
                         <label class="form-label fw-semibold" style="color: #333;">
                             <i class="fa fa-user me-2" style="color: #007bff;"></i>Created By
                         </label>
@@ -76,7 +93,7 @@
                             <option [ngValue]="'ADMIN'">ADMIN</option>
                             <option [ngValue]="'SARPANCH'">SARPANCH</option>
                         </select>
-                    </div>
+                    </div> -->
                 </div>
 
             </div>
@@ -85,14 +102,14 @@
 
 
         <!-- Button -->
-        <div class="d-flex justify-content-end" *ngIf="role !== 'RESIDENT'">
+        <!-- <div class="d-flex justify-content-end" *ngIf="role !== 'RESIDENT'">
             <button class="primary-button p-8-12  d-flex align-items-center gap-2" [routerLink]="'/schemes/add'">
                 <div class="plus_icon">
                     <img src="assets/images/svg/plus-icon.svg" height="12" width="12">
                 </div>
                 Add Scheme
             </button>
-        </div>
+        </div> -->
     </div>
 
     <!-- ⏳ Loader (Bonus Tip) -->
@@ -102,9 +119,7 @@
 
     <!-- 📋 Table -->
     <app-dynamic-table *ngIf="!isLoading && agencyTableConfig.data.length > 0" [config]="agencyTableConfig"
-        (schemeStatusChanged)="updateSchemeStatus($event)" (statusChanged)="updateIsActiveStatus($event)"
-        [isSchemeListView]="isSchemeListView"
-        (actionClicked)="onAction($event.action, $event.element)"></app-dynamic-table>
+        (approvalStatusChanged)="changeApprovalStatus($event)"></app-dynamic-table>
     <!-- (statusChanged)="updateIsActiveStatus($event)" (actionClicked)="onAction($event.action, $event.element)"> -->
 
     <!-- ❌ No Data Message -->

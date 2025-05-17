@@ -19,6 +19,8 @@ import { CategoryResponse } from '../../../shared/interfaces/category/category-r
 import { Role } from '../../../enums/role.enum';
 import { TokenService } from '../../../shared/services/token.service';
 import { AuthService } from '../../../shared/services/auth.service';
+import { ApplySchemeService } from '../../../shared/services/apply-scheme.service';
+import { ResidentService } from '../../../shared/services/resident.service';
 
 @Component({
   selector: 'app-schemes-list',
@@ -35,11 +37,13 @@ export class SchemesListComponent implements OnInit, AfterViewInit {
     private dialog: MatDialog,
     private toastService: ToastService,
     private schemeService: SchemeService,
+    private applySchemeService: ApplySchemeService,
     private userService: UserService,
     private sarpanchService: SarpanchService,
     private categoryService: CategoryService,
     private tokenService: TokenService,
-    private authService: AuthService
+    private authService: AuthService,
+    private residentService: ResidentService
   ) {
     const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
     this.role = roleString as Role; // ✅ safely assign enum
@@ -71,6 +75,7 @@ export class SchemesListComponent implements OnInit, AfterViewInit {
     pageSize: 10,
     sortBy: 'createdAt'
   };
+  isSchemeListView:boolean = false;
 
   categoryList: CategoryResponse[] = [];
 
@@ -118,7 +123,7 @@ export class SchemesListComponent implements OnInit, AfterViewInit {
       { name: 'process', displayName: 'Apply Process', type: 'text' },
       {
         name: 'createdByDetails',
-        displayName: 'Project Request By',
+        displayName: 'Scheme Created By',
         type: 'customText',
         customTextFn: (row) => {
           const u = row.createdByDetails;
@@ -146,6 +151,8 @@ export class SchemesListComponent implements OnInit, AfterViewInit {
     this.schemeService.getAllSchemes(null, null, paginationRequest).subscribe({
       next: (response) => {
         const schemes = response.content;
+        this.isSchemeListView = true;
+        console.log('GET ALL SCHEMES 111111111 ===> ',response.content);
         this.mapSchemesWithCreatedByDetails(schemes).subscribe(updatedSchemes => {
           // Adjust the table columns and actions based on the logged-in user's role
           if (this.role === Role.RESIDENT) {
@@ -158,9 +165,10 @@ export class SchemesListComponent implements OnInit, AfterViewInit {
                 col.name === 'name' ||
                 col.name === 'category' ||
                 col.name === 'criteria' ||
-                col.name === 'process'
+                col.name === 'process' ||
+                col.name === 'action'
               ), // Only show relevant columns for Residents
-              actions: ['view profile'] // Only 'view' action for Resident
+              actions: ['view profile', 'apply'] // Only 'view' action for Resident
             };
             console.log('CONFIG TABLE IN RESIDENT ===> ', this.agencyTableConfig.actions);
           } else if (this.role === Role.SARPANCH) {
@@ -177,7 +185,7 @@ export class SchemesListComponent implements OnInit, AfterViewInit {
               ...this.agencyTableConfig,
               data: updatedSchemes,
               totalRecords: response.totalElements,
-              actions: ['edit', 'view profile', 'delete'],
+              actions: ['edit', 'view profile'],
             };
           }
 
@@ -294,6 +302,14 @@ export class SchemesListComponent implements OnInit, AfterViewInit {
 
         break;
 
+      case 'apply':
+        // this.router.navigate(['projects', element.id, 'view']);
+        // this.router.navigate([`schemes/view/${element.id}`]);
+
+        this.applyForScheme(element.id);
+
+        break;
+
       case 'delete':
         // Confirm deletion and proceed if confirmed
         // Open the confirmation dialog
@@ -330,6 +346,45 @@ export class SchemesListComponent implements OnInit, AfterViewInit {
         this.toastService.showError(error.message || 'Something went wrong');
       }
     });
+  }
+
+  applyForScheme(schemeId: string): void {
+    const mobile = this.tokenService.getMobileNumberFromAccessToken();
+    const loggedInRole = this.authService.getLoggedInUserRole();
+    if (mobile) {
+      if (loggedInRole === 'RESIDENT') {
+        this.residentService.getResidentByMobile(mobile).subscribe({
+          next: (res) => {
+            console.log('RESIDENT FOR APPLY SCHEME ==>>', res.response);
+            const resident = res.response;
+            const data = {
+              schemeId: schemeId,
+              userId: resident.id
+            }
+
+            this.applySchemeService.applyScheme(data).subscribe({
+              next: (response) => {
+                // Show success message using ToastService
+                this.toastService.showSuccess(response.message);
+                // Refresh the table data after successful deletion
+                this.loadSchemes(this.currentPaginationRequest);
+              },
+              error: (error) => {
+                console.error('Error In Apply Scheme:', error);
+                // Show error message using ToastService
+                this.toastService.showError(error.message || 'Something went wrong');
+              }
+            });
+          },
+          error: (err) => {
+            console.error('Error loading resident profile', err);
+          }
+        });
+      }
+      else {
+        this.toastService.showError("You Are Not Resident So, You Can't Apply In Scheme");
+      }
+    }
   }
 
   onSearch() {

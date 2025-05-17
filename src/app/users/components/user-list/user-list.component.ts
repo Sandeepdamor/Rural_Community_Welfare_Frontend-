@@ -31,6 +31,7 @@ import { TableColumn } from '../../../shared/components/model/table-column';
 export class UserListComponent implements OnInit, AfterViewInit {
     Role = Role;
     role: Role;
+    isResidentListView:boolean = false;
     constructor(
         private changeDetection: ChangeDetectorRef,
         private residentService: ResidentService,
@@ -164,6 +165,8 @@ export class UserListComponent implements OnInit, AfterViewInit {
                 console.log('Content length:', response.content.length);
                 console.log('Total elements:', response.totalElements);
 
+                if(this.role === 'RESIDENT')
+                    this.isResidentListView = true;
                 this.agencyTableConfig = {
                     ...this.agencyTableConfig,
                     data: response.content,

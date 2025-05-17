@@ -73,7 +73,7 @@
     </div>
 
     <!-- Projects Section -->
-    <div class="col-md-6" *ngIf="userRole === 'ADMIN' || userRole === 'SARPANCH'">
+    <!-- <div class="col-md-6" *ngIf="userRole === 'ADMIN' || userRole === 'SARPANCH'">
       <div class="p-3 shadow-sm bg-white rounded">
         <h5 class="mb-3">Projects (Ongoing/Completed)</h5>
         <ul class="nav nav-tabs mb-2">
@@ -87,7 +87,7 @@
           {{ proj.name }}
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- Announcements Section -->
     <div class="col-md-12" *ngIf="userRole === 'ADMIN' || userRole === 'SARPANCH'">
@@ -99,19 +99,6 @@
             <p class="mb-0">{{ ann.message }}</p>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Schemes Section for Admin, Sarpanch, and Resident -->
-    <div class="col-md-6" *ngIf="userRole === 'ADMIN' || userRole === 'SARPANCH' || userRole === 'RESIDENT'">
-      <div class="p-3 shadow-sm bg-white rounded">
-        <h5 class="mb-3">Schemes</h5>
-        <ul class="list-group">
-          <li *ngFor="let scheme of schemes" class="list-group-item d-flex justify-content-between align-items-center">
-            {{ scheme.title }}
-            <span *ngIf="scheme.isNew" class="badge bg-primary">New</span>
-          </li>
-        </ul>
       </div>
     </div>
 
@@ -133,49 +120,114 @@
   </div>
 
   <!-- Resident Dashboard -->
-  <div *ngIf="userRole === 'RESIDENT'">
-    <div class="resident-profile p-3 shadow-sm bg-white rounded">
-      <h5 class="mb-3">Personal Profile</h5>
-      <p>Name: {{ resident.name }}</p>
-      <p>Status: {{ resident.status }}</p>
-      <p>Contact: {{ resident.contactInfo }}</p>
-    </div>
 
-    <!-- Announcements for Resident -->
-    <div class="p-3 shadow-sm bg-white rounded">
-      <h5 class="mb-3">Announcements for Your Village</h5>
-      <div *ngFor="let ann of residentAnnouncements" class="card p-3">
-        <small>{{ ann.date }}</small>
-        <p class="mb-0">{{ ann.message }}</p>
-      </div>
-    </div>
+  <!-- New Section: Announcements -->
 
-    <!-- Schemes Applicable to Resident -->
-    <div class="p-3 shadow-sm bg-white rounded">
-      <h5 class="mb-3">Applicable Schemes</h5>
-      <ul class="list-group">
-        <li *ngFor="let scheme of residentSchemes" class="list-group-item">
-          {{ scheme.title }}
-        </li>
-      </ul>
+  <div class="dashboard-cards d-flex justify-content-between" style="gap: 0.5rem;">
+    <div class="dashboard-box users-icon">
+      <i class="bi bi-people-fill icon"></i>
+      <div>Total Users</div>
+      <div class="count">{{ dashboardData.totalUsers }}</div>
     </div>
-
-    <!-- Ongoing Projects for Resident -->
-    <div class="p-3 shadow-sm bg-white rounded">
-      <h5 class="mb-3">Ongoing Projects in Your Area</h5>
-      <ul class="list-group">
-        <li *ngFor="let project of ongoingProjects" class="list-group-item">
-          {{ project.name }}
-        </li>
-      </ul>
+    <div class="dashboard-box schemes-icon">
+      <i class="bi bi-file-earmark-text icon"></i>
+      <div>Applied Schemes</div>
+      <div class="count">{{ dashboardData.totalSchemes }}</div>
     </div>
-
-    <!-- Sarpanch Contact Information (Optional) -->
-    <div class="p-3 shadow-sm bg-white rounded">
-      <h5 class="mb-3">Sarpanch Contact Information</h5>
-      <p>Name: {{ sarpanch.name }}</p>
-      <p>Phone: {{ sarpanch.phone }}</p>
-      <p>Email: {{ sarpanch.email }}</p>
+    <div class="dashboard-box projects-icon">
+      <i class="bi bi-kanban-fill icon"></i>
+      <div>Total Projects</div>
+      <div class="count">{{ dashboardData.totalProjects}}</div>
+    </div>
+    <div class="dashboard-box grievances-icon">
+      <i class="bi bi-exclamation-triangle-fill icon"></i>
+      <div>Grievances</div>
+      <div class="count">{{ dashboardData.totalGrivences}}</div>
     </div>
   </div>
+
+
+
+
+  <section class="announcements" *ngIf="userRole === 'RESIDENT'">
+    <div class="container">
+      <div class="announcements-inner">
+        <div class="explore_head text-center">
+          <span class="rounded-pill">Latest Announcement</span><br>
+          <h3>Important Announcements</h3>
+        </div>
+
+        <div class="announcement-container">
+          <div class="announcement-slider">
+            <div class="announcement-item">
+              <h4>New Ration Card Rules</h4>
+              <p><strong>Name:</strong> Government of India</p>
+              <p><strong>Date:</strong> March 25, 2025</p>
+              <p><strong>Description:</strong> The government has updated the eligibility criteria for ration cards.</p>
+              <a href="#">Read More</a>
+            </div>
+
+            <div class="announcement-item">
+              <h4>Farmer Subsidy</h4>
+              <p><strong>Name:</strong> Agricultural Department</p>
+              <p><strong>Date:</strong> March 20, 2025</p>
+              <p><strong>Description:</strong> New financial aid announced for small-scale farmers.</p>
+              <a href="#">Read More</a>
+            </div>
+
+            <div class="announcement-item">
+              <h4>Election Dates</h4>
+              <p><strong>Name:</strong> Election Commission</p>
+              <p><strong>Date:</strong> March 15, 2025</p>
+              <p><strong>Description:</strong> Panchayat elections are scheduled for next month.</p>
+              <a href="#">Read More</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <hr>
+
+
+  <section class="announcements" *ngIf="userRole === 'RESIDENT'">
+    <div class="container">
+      <h2>📌 Latest Government Schemes</h2>
+
+      <!-- If there are no schemes -->
+      <div *ngIf="schemes.length === 0">
+        <p>No schemes available at the moment. Please check back later.</p>
+      </div>
+
+      <!-- If there is at least one scheme -->
+      <div class="notes-container" *ngIf="schemes.length > 0">
+        <div class="notes-slider" [ngClass]="{ 'slider-enabled': schemes.length > 1 }">
+          <div class="note-item" *ngFor="let scheme of schemes">
+            <h3>📢 {{ scheme.name }}</h3>
+            <p><strong>Scheme Category:</strong> {{ scheme.category }}</p>
+            <p><strong>Eligibility Criteria:</strong> {{ scheme.criteria }}</p>
+            <p><strong>Application Process:</strong> {{ scheme.process }}</p>
+            <p><strong>Benefits:</strong> {{ scheme.benefits }}</p>
+            <a [routerLink]="['/schemes/view', scheme.id]">Read More</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <hr>
+
+  <section class="project-cards d-flex flex-wrap justify-content-center">
+    <div *ngFor="let project of projects; let i = index" class="project-card">
+      <div class="project-image">
+        <img [src]="getImage(i)" alt="Project Image" />
+      </div>
+      <h3 class="project-title">{{ project.projectName }}</h3>
+      <!-- View More Details button -->
+      <!-- <a [routerLink]="['/project/${project.id}/view']" class="view-more-link">
+        View More Details
+      </a> -->
+    </div>
+  </section>
+
+
 </div>

@@ -10,6 +10,7 @@ import { ApiResponse } from '../interfaces/api-response';
 import { ErrorService } from './error.service';
 import { SarpanchFilter } from '../interfaces/sarpanch/sarpanch-filter';
 import { SearchRequest } from '../interfaces/sarpanch/search-request';
+import { UpdatePasswordRequest } from '../interfaces/admin/update-password-request';
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +50,19 @@ export class SarpanchService {
 
     );
   }
+
+  calculateAge(dob: Date): number {
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    const dayDiff = today.getDate() - dob.getDate();
+
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+      age--; // If birthday hasn't occurred yet this year
+    }
+    return age;
+  }
+
 
   getSarpanchById(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/get-sarpanch`, {
@@ -142,6 +156,31 @@ export class SarpanchService {
       })
     );
   }
+
+  updateDetails(id: string, payload: any): Observable<any> {
+    console.log('PAYLOAD IN UPDATE RESIDENT ===> ', payload);
+    return this.http.patch(`${this.apiUrl}/update/${id}`, payload).pipe(
+      catchError((error) => this.errorService.handleError(error))
+    ).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+    );
+  }
+
+
+  updatePassword(updatePasswordRequest: UpdatePasswordRequest): Observable<ApiResponse> {
+      // return this.http.post<ApiResponse>(`${this.apiUrl}/add`, sarpanchRequest).
+      return this.http.patch<ApiResponse>(`${this.apiUrl}/update-password`, updatePasswordRequest).pipe(
+        catchError((error) => {
+          return this.errorService.handleError(error); // Use ErrorService to handle errors
+        })
+      ).pipe(
+        catchError((error) => {
+          return this.errorService.handleError(error); // Use ErrorService to handle errors
+        })
+      );
+    }
 
 
 }

@@ -74,15 +74,16 @@
 
       <!-- Password (For Both Login & Register) -->
       <div class="d-flex flex-column gap-1 w-100">
-        <h4 class="mb-0 font-14 regular subTextColor">Password <span class="text-danger"
-            *ngIf="isFieldRequired('houseNumber')">*</span></h4>
+        <h4 class="mb-0 font-14 regular subTextColor">Password
+          <span class="text-danger" *ngIf="isFieldRequired('houseNumber')">*</span>
+        </h4>
         <input type="password" class="input-field" placeholder="Password" formControlName="password" name="formRegister"
           [ngClass]="{'is-invalid': isFieldInvalid('password')}" />
         <!-- Eye Icon -->
-        <i class="fa" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"
+        <!-- <i class="fa" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"
           (click)="toggleConfirmPasswordVisibility()"
           style="position: absolute; top: 38px; right: 10px; cursor: pointer;">
-        </i>
+        </i> -->
         <div *ngIf="isFieldInvalid('password')" class="invalid-feedback">
           <small *ngIf="formRegister.controls['password'].errors?.['required']">Password is required.</small>
           <small *ngIf="formRegister.controls['password'].errors?.['minlength']">Password must be at least 6
@@ -96,10 +97,10 @@
         <input type="password" formControlName="confirmPsw" name="formRegister" class="input-field"
           placeholder="Confirm Password" />
         <!-- Eye Icon -->
-        <i class="fa" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"
+        <!-- <i class="fa" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"
           (click)="toggleConfirmPasswordVisibility()"
           style="position: absolute; top: 38px; right: 10px; cursor: pointer;">
-        </i>
+        </i> -->
         <small *ngIf="formRegister.errors?.['passwordMismatch']">
           Password and Confirm Password do not match.
         </small>

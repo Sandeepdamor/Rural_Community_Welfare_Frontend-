@@ -19,4 +19,5 @@ export interface ResidentResponse {
   response:string;
   profileImage:string;
   isPublic:boolean;
+  role:string;
 }

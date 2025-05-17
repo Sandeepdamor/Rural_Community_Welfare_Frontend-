@@ -1,3 +1,6 @@
+import { Project } from "./project/project";
+import { SchemeResponse } from "./scheme/scheme-response";
+
 export interface DashboardData {
   totalUsers: number;
   totalVerifiedUsers: number;
@@ -5,8 +8,11 @@ export interface DashboardData {
   totalActiveUsers: number; // 👈 Add this
   totalRejectedUsers: number;
   totalInActiveUsers: number;
+  totalProjects: number;
+  totalGrivences: number;
+  totalSchemes: number;
   genderDistribution: { [key: string]: number };
-  projects: string[];
+  projects: Project[];
   announcements: string[];
-  schemes: string[];
+  schemes: SchemeResponse[];
 }

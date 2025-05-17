@@ -7,11 +7,14 @@ import { Role } from '../../../enums/role.enum';
 import { TokenService } from '../../../shared/services/token.service';
 import { DashboardData } from '../../../shared/interfaces/dashboard-data';
 import { DashboardService } from '../../../shared/services/dashboard.service';
+import { SchemeResponse } from '../../../shared/interfaces/scheme/scheme-response';
+import { RouterLink } from '@angular/router';
+import { Project } from '../../../shared/interfaces/project/project';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, NgChartsModule],
+  imports: [CommonModule, NgChartsModule, RouterLink],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
@@ -20,6 +23,8 @@ export class DashboardComponent implements OnInit {
   Role = Role;
   userRole: Role;
   dashboardData: DashboardData = {} as DashboardData;
+  projects: Project[] = [];
+  currentIndexes: number[] = [];
   constructor(
     private tokenService: TokenService,
     private dashboardService: DashboardService
@@ -42,13 +47,6 @@ export class DashboardComponent implements OnInit {
 
   // 🏗️ Projects Section
   selectedStatus = 'Ongoing';
-  projects = [
-    { name: 'Water Supply Project', status: 'Ongoing' },
-    { name: 'School Renovation', status: 'Ongoing' },
-    { name: 'Panchayat Office Setup', status: 'Completed' },
-    { name: 'Road Construction', status: 'Completed' },
-  ];
-  filteredProjects: any[] = [];
 
   // 📢 Announcements Section
   announcements = [
@@ -56,12 +54,6 @@ export class DashboardComponent implements OnInit {
     { message: 'Rainwater harvesting awareness.', date: '2025-04-26' },
   ];
 
-  // 📋 Schemes
-  schemes = [
-    { title: 'Pension Yojana', isNew: true },
-    { title: 'PM Awas Yojana', isNew: false },
-    { title: 'Digital Gram Panchayat', isNew: true },
-  ];
 
   // 📈 Village/District-wise Summary Chart (Admin)
   villageDistrictChartData: ChartConfiguration<'bar'>['data'] = {
@@ -97,14 +89,22 @@ export class DashboardComponent implements OnInit {
     { name: 'Community Center Setup' },
   ];
 
-  sarpanch = {
-    name: 'Smt. Rekha Devi',
-    phone: '+91 9123456780',
-    email: 'rekha.sarpanch@gram.org',
-  };
+
+
+  //📋 Schemes
+  schemes: SchemeResponse[] = [];
+
+
+
 
   ngOnInit(): void {
-    this.filterProjects();
+
+    this.loadDashboardData();
+
+
+
+    // setInterval(() => this.autoSlideImages(), 4000); // Auto-slide every 4 sec
+    // this.filterProjects();
     // Fetch the dashboard data when the component initializes
     if (this.userRole !== Role.RESIDENT) {
       this.dashboardService.getDashboardData()
@@ -129,14 +129,10 @@ export class DashboardComponent implements OnInit {
   // 🔁 Project Filter based on status tab
   onStatusChange(status: string) {
     this.selectedStatus = status;
-    this.filterProjects();
+    // this.filterProjects();
   }
 
-  filterProjects() {
-    this.filteredProjects = this.projects.filter(
-      (p) => p.status === this.selectedStatus
-    );
-  }
+
 
   // ➕ Sarpanch buttons
   addAnnouncement() {
@@ -146,4 +142,41 @@ export class DashboardComponent implements OnInit {
   createScheme() {
     alert('Redirect to Create Scheme Form');
   }
+
+
+
+
+
+  loadDashboardData(): void {
+    this.dashboardService.getDashboardData().subscribe({
+      next: (data: DashboardData) => {
+        console.log('DASHBOARD DATA RESPONSE ===> ', data);
+        this.schemes = data.schemes;
+        this.projects = data.projects;
+        this.dashboardData = data;
+        // Initialize currentIndexes for each project
+        this.currentIndexes = this.projects.map(() => 0);
+        this.startImageRotation(); // ✅ start image rotation
+        console.log('PROJECTS ======>>> ', this.projects);
+      },
+      error: (err) => {
+        console.error('Error fetching schemes:', err);
+        alert(err?.error?.message || 'Something went wrong while fetching schemes.');
+      }
+    });
+  }
+
+  startImageRotation(): void {
+  setInterval(() => {
+    this.projects.forEach((project, i) => {
+      if (project.attachmenets.length > 1) {
+        this.currentIndexes[i] = (this.currentIndexes[i] + 1) % project.attachmenets.length;
+      }
+    });
+  }, 3000); // change image every 3 seconds
+}
+
+getImage(projectIndex: number): string {
+  return this.projects[projectIndex].attachmenets[this.currentIndexes[projectIndex]];
+}
 }

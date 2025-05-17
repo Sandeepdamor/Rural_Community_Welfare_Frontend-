@@ -14,12 +14,19 @@
           <!-- Render based on column type -->
           @switch (column.type) {
 
-          @case ("image") {
           <!-- Image column -->
+          <!-- @case ("image") {
           <img [src]="element[column.name] || 'assets/images/svg/profile.svg'" alt="Logo"
-            style="width:40px; height: auto; cursor: pointer;" (click)="openImageModal(element[column.name])">
+            [class.disabled-img]="!element.isPublic" [style.cursor]="element.isPublic ? 'pointer' : 'not-allowed'"
+            (click)="element.isPublic && openImageModal(element[column.name])" style="width:40px; height: auto;">
+          } -->
+          @case ("image") {
+          <img [src]="element[column.name] || 'assets/images/svg/profile.svg'" alt="Logo"
+            [class.disabled-img]="userRole === 'RESIDENT' && !element.isPublic"
+            [style.cursor]="(userRole === 'RESIDENT' && !element.isPublic) ? 'not-allowed' : 'pointer'"
+            (click)="(userRole !== 'RESIDENT' || element.isPublic) && openImageModal(element[column.name])"
+            style="width:40px; height: auto;">
           }
-
 
           @case ("status") {
           <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status"
@@ -43,7 +50,8 @@
             [style.backgroundColor]="element[column.name] === 'PUBLISHED' ? '#edecf8' : 'rgba(255, 53, 53, 0.05)'"
             [style.color]="element[column.name] === 'PUBLISHED' ? '#4F46BB' : '#FF3535'">
             {{ element[column.name] }}
-            <img src="assets/images/svg/arrow-dropdown.svg" height="14" width="14"
+            <img *ngIf="element[column.name] !== 'PUBLISHED'" src="assets/images/svg/arrow-dropdown.svg" height="14"
+              width="14"
               [ngClass]="{ 'filter-active': element[column.name] === 'PUBLISHED', 'filter-deactive': element[column.name] !== 'PUBLISHED' }" />
           </button>
 
@@ -110,16 +118,49 @@
 
           <mat-menu #statusMenu="matMenu">
             <button *ngIf="element[column.name] !== 'APPROVED' && userRole === 'ADMIN'" mat-menu-item
-              (click)="changeProjectApprovalStatus(element, 'APPROVED')">
+              (click)="changeApprovalStatus(element, 'APPROVED')">
               Approved
             </button>
 
             <button *ngIf="element[column.name] !== 'REJECTED' && userRole === 'ADMIN'" mat-menu-item
-              (click)="changeProjectApprovalStatus(element, 'REJECTED')">
+              (click)="changeApprovalStatus(element, 'REJECTED')">
               Rejected
             </button>
           </mat-menu>
           }
+
+
+          @case ("applySchemeStatus") {
+          <button mat-button [matMenuTriggerFor]="statusMenu" class="table_status" [style.backgroundColor]="
+      element[column.name] === 'APPROVED' ? '#edecf8' :
+      element[column.name] === 'PENDING' ? 'rgba(255, 53, 53, 0.05)' : '#F5F6FA'" [style.color]="
+      element[column.name] === 'REJECTED' ? '#4F46BB' :
+      element[column.name] === 'APPROVED' ? '#515563' : '#515563'">
+
+            {{ element[column.name] }}
+
+            <!-- Show dropdown icon only if status is PENDING and role is SARPANCH -->
+            <img *ngIf="element[column.name] === 'PENDING' && userRole === 'SARPANCH'"
+              src="assets/images/svg/arrow-dropdown.svg" height="14" width="14" [ngClass]="{
+           'filter-temporary': element[column.name] === 'PENDING',
+           'filter-active': element[column.name] === 'APPROVED',
+           'filter-deactive': element[column.name] === 'REJECTED'
+         }" />
+          </button>
+
+          <!-- Status Change Menu - Only for PENDING status -->
+          <mat-menu #statusMenu="matMenu">
+            <ng-container *ngIf="element[column.name] === 'PENDING' && userRole === 'SARPANCH'">
+              <button mat-menu-item (click)="changeApprovalStatus(element, 'APPROVED')">
+                Approved
+              </button>
+              <button mat-menu-item (click)="changeApprovalStatus(element, 'REJECTED')">
+                Rejected
+              </button>
+            </ng-container>
+          </mat-menu>
+          }
+
 
 
 
@@ -249,7 +290,25 @@
 
           <!-- Toggle Column for isActive -->
           @case ("toggle") {
-          @if(userRole === 'ADMIN' || userRole === 'SARPANCH'){
+          @if(isSchemeListView){
+          @if((userRole.toLowerCase() === element.createdByDetails.role.toLowerCase()))
+          {
+          <div>
+            <label class="switch">
+              <input type="checkbox" [checked]="element[column.name]"
+                (change)="changeStatus(element, !element[column.name])">
+              <span class="slider round"></span>
+            </label>
+          </div>
+          }
+          @else{
+          <label class="switch">
+            <input type="checkbox" [checked]="element[column.name]" disabled>
+            <span class="slider round"></span>
+          </label>
+          }
+          }
+          @else if((userRole === 'ADMIN' || userRole === 'SARPANCH')){
           <div>
             <label class="switch">
               <input type="checkbox" [checked]="element[column.name]"
@@ -262,7 +321,6 @@
 
           @case ("action") {
           <div class="d-flex gap-3 align-items-center">
-
             @if (config.actions.includes('edit')) {
             <button *ngIf="config.actions?.includes('edit')" type="button" class="table_action_icon bgPrimaryLight"
               (click)="onAction('edit', element)">
@@ -277,13 +335,42 @@
             </button>
             }
 
-            @if (config.actions.includes('view profile')) {
             <!-- View Profile Button -->
-            <button *ngIf="config.actions?.includes('view profile')" type="button"
+            <!-- @if (config.actions.includes('view profile')) {
+            <button *ngIf="config.actions?.includes('view profile') && element.isPublic" type="button"
+              class="table_action_icon bgPrimaryLight" (click)="onAction('view profile', element)">
+              <img src="assets/images/svg/eye.svg" alt="View" />
+            </button>
+            } -->
+            @if (config.actions.includes('view profile') && isResidentListView) {
+            <button *ngIf="userRole !== 'RESIDENT' || element.isPublic" type="button"
               class="table_action_icon bgPrimaryLight" (click)="onAction('view profile', element)">
               <img src="assets/images/svg/eye.svg" alt="View" />
             </button>
             }
+
+            @else if (config.actions.includes('view profile')) {
+            <button type="button" class="table_action_icon bgPrimaryLight" (click)="onAction('view profile', element)">
+              <img src="assets/images/svg/eye.svg" alt="View" />
+            </button>
+            }
+
+            <!-- @if (config.actions.includes('apply')) {
+            <p>{{element.isApply}}</p>
+            <button *ngIf="config.actions?.includes('apply')" type="button" class="btn btn-primary"
+              (click)="onAction('apply', element)">
+              Apply
+            </button>
+            } -->
+            @if (config.actions.includes('apply')) {
+            <button *ngIf="config.actions?.includes('apply')" type="button" class="btn btn-primary"
+              [disabled]="element.isApply" (click)="onAction('apply', element)">
+              {{ element.isApply ? 'Applied' : 'Apply' }}
+            </button>
+            }
+
+
+
 
           </div>
           }
@@ -388,9 +475,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-0">
-        <img [src]="selectedImage || 'assets/images/svg/profile.svg'" 
-             alt="Preview" 
-             class="img-fluid w-100">
+        <img [src]="selectedImage || 'assets/images/svg/profile.svg'" alt="Preview" class="img-fluid w-100">
       </div>
     </div>
   </div>

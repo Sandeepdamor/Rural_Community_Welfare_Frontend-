@@ -24,12 +24,10 @@ export class DashboardService {
   }
 
   getLatestProjects(): Observable<{ [key: string]: Project[] }> {
-  return this.http.get<ApiResponse>(`${this.apiUrl}/projects`)
-    .pipe(
-      map(res => res.response),
-      catchError(error => this.errorService.handleError(error))
-    );
-}
-
-
+    return this.http.get<ApiResponse>(`${this.apiUrl}/projects`)
+      .pipe(
+        map(res => res.response),
+        catchError(error => this.errorService.handleError(error))
+      );
+  }
 }
