@@ -99,6 +99,16 @@ export class ProjectService {
     );
   }
 
+  getProjectByIdAndGramPanchayar(id: string, gramPanchayatName: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/get-project-for-view`, {
+      params: { id, gramPanchayatName }
+    }).pipe(
+      catchError((error) => {
+        return this.errorService.handleError(error); // Use ErrorService to handle errors
+      })
+    );
+  }
+
   updateProject(projectId: string, formData: FormData) {
     return this.http.put<ApiResponse>(`${this.apiUrl}/projects/${projectId}`, formData);
   }
@@ -172,21 +182,21 @@ export class ProjectService {
     );
   }
 
-  updateProjectProgressStatus(id: string, progressStatus: string): Observable<any> {
-    const body = {
-      requestId: id,
-      status: progressStatus
-    };
-    return this.http.patch(`${this.apiUrl}/update-progress-status`, body).pipe(
+  // updateProjectProgressStatus(data: { projectId: string, progressStatus: string }): Observable<any> {
+  //   return this.http.patch(`${this.apiUrl}/update-progress-status`, data).pipe(
+  //     catchError((error) => {
+  //       return this.errorService.handleError(error);
+  //     })
+  //   );
+  // }
+
+  updateProjectProgressStatus(data: FormData): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/update-progress-status`, data).pipe(
       catchError((error) => {
         return this.errorService.handleError(error);
       })
     );
-}
-
-
-
-
+  }
 
 
   // updateIsActuveStatus(id: string, isActive: boolean): Observable<any> {
@@ -200,4 +210,12 @@ export class ProjectService {
   //     })
   //   );
   // }
+
+
+  getAllProjectsForPublic(): Observable<ProjectResponse[]> {
+  
+      return this.http.get<ProjectResponse[]>(`${this.apiUrl}/get-projects`).pipe(
+        catchError((error) => this.errorService.handleError(error))
+      );
+    }
 }

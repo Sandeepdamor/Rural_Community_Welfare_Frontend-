@@ -51,74 +51,19 @@
 
   <div class="explore_head text-center">
     <a routerLink="/auth/login1" class="login-pill">Login (Only Admin And Sarpanch)</a><br>
-    <h3>Explore Services by Category</h3>
+    <h3>Explore Government Schemes by Category</h3>
   </div>
 
   <section class="features d-flex flex-wrap align-items-center justify-content-center">
-    <a href="" class="feature-card d-flex align-items-center">
-      <i class="icon_1 rounded-circle d-flex align-items-center justify-content-center">
+    <a *ngFor="let category of categories; let i = index" href="" class="feature-card d-flex align-items-center">
+      <i class="rounded-circle d-flex align-items-center justify-content-center" [ngClass]="'icon_' + (i + 1)">
         <span class="material-symbols-outlined"></span>
       </i>
-      <strong>Government Schemes</strong>
-      <span class="material-symbols-outlined"></span>
-    </a>
-
-    <a href="" class="feature-card d-flex align-items-center">
-      <i class="icon_2 rounded-circle d-flex align-items-center justify-content-center">
-        <span class="material-symbols-outlined"></span>
-      </i>
-      <strong>Online Services</strong>
-      <span class="material-symbols-outlined"></span>
-    </a>
-
-    <a href="" class="feature-card d-flex align-items-center">
-      <i class="icon_3 rounded-circle d-flex align-items-center justify-content-center">
-        <span class="material-symbols-outlined"></span>
-      </i>
-      <strong>Community Support</strong>
-      <span class="material-symbols-outlined"></span>
-    </a>
-
-    <a href="" class="feature-card d-flex align-items-center">
-      <i class="icon_4 rounded-circle d-flex align-items-center justify-content-center">
-        <span class="material-symbols-outlined"></span>
-      </i>
-      <strong>Grievance Redressal</strong>
-      <span class="material-symbols-outlined"></span>
-    </a>
-
-    <a href="" class="feature-card d-flex align-items-center">
-      <i class="icon_5 rounded-circle d-flex align-items-center justify-content-center">
-        <span class="material-symbols-outlined"></span>
-      </i>
-      <strong>Employment Opportunities</strong>
-      <span class="material-symbols-outlined"></span>
-    </a>
-
-    <a href="" class="feature-card d-flex align-items-center">
-      <i class="icon_6 rounded-circle d-flex align-items-center justify-content-center">
-        <span class="material-symbols-outlined"></span>
-      </i>
-      <strong>Health & Education</strong>
-      <span class="material-symbols-outlined"></span>
-    </a>
-
-    <a href="" class="feature-card d-flex align-items-center">
-      <i class="icon_7 rounded-circle d-flex align-items-center justify-content-center">
-        <span class="material-symbols-outlined"></span>
-      </i>
-      <strong>Village Directory</strong>
-      <span class="material-symbols-outlined"></span>
-    </a>
-
-    <a href="" class="feature-card d-flex align-items-center">
-      <i class="icon_8 rounded-circle d-flex align-items-center justify-content-center">
-        <span class="material-symbols-outlined"></span>
-      </i>
-      <strong>Emergency Contacts</strong>
+      <strong>{{ category.name }}</strong>
       <span class="material-symbols-outlined"></span>
     </a>
   </section>
+
   <hr>
 
   <!-- New Section: Announcements -->
@@ -162,51 +107,70 @@
   </section>
   <hr>
 
-  <section class="notes">
-    <h2>📌 Important Notes</h2>
+  <!-- <section class="notes">
+    <h2>📌 Latest Government Schemes</h2>
     <div class="notes-container">
-      <div class="notes-slider">
-
-        <div class="note-item">
-          <h3>🔹 Digital Registration</h3>
-          <p><strong>Name:</strong> Government of India</p>
-          <p><strong>Date:</strong> March 27, 2025</p>
-          <p><strong>Subject:</strong> Digital Service Enrollment</p>
-          <p><strong>Description:</strong> Citizens are encouraged to register for digital services before the deadline.
-          </p>
-          <a href="#">Read More</a>
+      <div class="notes-slider" [ngClass]="{ 'slider-enabled': schemes.length > 1 }">
+        <div class="note-item" *ngFor="let scheme of schemes">
+          <h3>📢 {{ scheme.name }}</h3>
+          <p><strong>Scheme Category:</strong> {{ scheme.category }}</p>
+          <p><strong>Eligibility Criteria:</strong> {{ scheme.criteria }}</p>
+          <p><strong>Application Process:</strong> {{ scheme.process }}</p>
+          <p><strong>Benefits:</strong> {{ scheme.benefits }}</p>
+          <a [routerLink]="['/auth/login']">Apply For Scheme</a>
         </div>
+      </div>
+    </div>
+  </section> -->
 
-        <div class="note-item">
-          <h3>💉 COVID-19 Vaccination</h3>
-          <p><strong>Name:</strong> Health Ministry</p>
-          <p><strong>Date:</strong> March 25, 2025</p>
-          <p><strong>Subject:</strong> Free Vaccination Drive</p>
-          <p><strong>Description:</strong> COVID-19 vaccination camps are available in selected Gram Panchayats.</p>
-          <a href="#">Read More</a>
+
+  <section class="announcements">
+    <h2>Latest Government Schemes</h2>
+    <div class="gallery-container">
+      <div class="gallery-item" *ngFor="let scheme of schemes">
+        <!-- Image Carousel -->
+        <div class="image-carousel">
+          <div class="carousel-wrapper">
+            <!-- <img [src]="scheme.attachments[currentImageIndex[scheme.id] || 0]" alt="{{ scheme.name }}" /> -->
+            <a [href]="scheme.attachments[currentImageIndex[scheme.id] || 0]" target="_blank">
+              <img [src]="scheme.attachments[currentImageIndex[scheme.id] || 0]" alt="{{ scheme.name }}" />
+            </a>
+
+            <button class="nav left" (click)="prevImage(scheme.id, scheme.attachments.length)">&#10094;</button>
+            <button class="nav right" (click)="nextImage(scheme.id, scheme.attachments.length)">&#10095;</button>
+          </div>
         </div>
-
         <div class="note-item">
-          <h3>🌾 Farmer Subsidy</h3>
-          <p><strong>Name:</strong> Agricultural Department</p>
-          <p><strong>Date:</strong> March 22, 2025</p>
-          <p><strong>Subject:</strong> Financial Aid for Farmers</p>
-          <p><strong>Description:</strong> New financial aid announced for small-scale farmers.</p>
-          <a href="#">Read More</a>
+          <h3>📢 {{ scheme.name }}</h3>
+          <p><strong>Scheme Category:</strong> {{ scheme.category }}</p>
+          <p><strong>Eligibility Criteria:</strong> {{ scheme.criteria }}</p>
+          <p><strong>Application Process:</strong> {{ scheme.process }}</p>
+          <p><strong>Benefits:</strong> {{ scheme.benefits }}</p>
+          <a [routerLink]="['/auth/login']">Apply For Scheme</a>
         </div>
-
-        <div class="note-item">
-          <h3>⚡ Power Maintenance</h3>
-          <p><strong>Name:</strong> Electricity Board</p>
-          <p><strong>Date:</strong> March 20, 2025</p>
-          <p><strong>Subject:</strong> Scheduled Power Outage</p>
-          <p><strong>Description:</strong> Power outage scheduled for maintenance in rural areas.</p>
-          <a href="#">Read More</a>
-        </div>
-
       </div>
     </div>
   </section>
+
+
+  <section class="project-cards d-flex flex-wrap justify-content-center">
+    <!-- If projects list is empty -->
+    <div *ngIf="projects?.length === 0" class="no-projects-message">
+      No projects available.
+    </div>
+
+    <!-- If projects list has items -->
+    <div *ngFor="let project of projects; let i = index" class="project-card">
+      <div class="project-image">
+        <img [src]="getImage(i)" alt="Project Image" />
+      </div>
+      <h3 class="project-title">{{ project.projectName }}</h3>
+    </div>
+  </section>
+
+
+
+
   <hr>
 
   <section class="about">

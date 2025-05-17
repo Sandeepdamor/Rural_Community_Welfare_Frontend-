@@ -13,5 +13,6 @@ export interface SchemeResponse {
     updatedAt: string;
     attachments: string[];
     existingAttachmentUrls: string[];
+    isApply:boolean;
   }
   

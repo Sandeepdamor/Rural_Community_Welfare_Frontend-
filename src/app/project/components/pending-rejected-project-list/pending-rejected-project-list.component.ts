@@ -247,11 +247,16 @@ export class PendingRejectedProjectListComponent
       //     this.router.navigate(['/user/edit', element.id]);
       //     break;
 
-      case 'view profile':
-        // this.router.navigate(['projects', element.id, 'view']);
-        this.router.navigate([`project/${element.id}/view`]);
+      case 'view profile': {
+        // this.router.navigate([`project/${element.id}/view`]);
+        this.router.navigate([`project/${element.id}/view`], {
+          state: {
+            gramPanchayatName: element.assignedSarpanches[0]?.gramPanchayatName
+          }
+        });
 
         break;
+      }
 
       default:
         console.warn('Unknown action:', action);

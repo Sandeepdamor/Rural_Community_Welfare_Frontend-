@@ -4,6 +4,7 @@ import { ComponentRoutes } from "../shared/utils/component-routes";
 import { SchemesListComponent } from "./components/schemes-list/schemes-list.component";
 import { AddSchemeComponent } from "./components/add-scheme/add-scheme.component";
 import { DeleteListComponent } from "./components/delete-list/delete-list.component";
+import { ApplySchemeRequestComponent } from "./components/apply-scheme-request/apply-scheme-request.component";
 
 const routes: Routes = [
     {
@@ -21,6 +22,10 @@ const routes: Routes = [
     {
         path: ComponentRoutes.DELETESCHEMESLIST,
         component: DeleteListComponent,
+    },
+     {
+        path: ComponentRoutes.APPLY_SCHEME_REQUEST,
+        component: ApplySchemeRequestComponent,
     },
    {
   path: 'edit/:id',

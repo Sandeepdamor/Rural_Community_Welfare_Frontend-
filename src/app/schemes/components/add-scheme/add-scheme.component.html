@@ -13,7 +13,9 @@
         <div class="row g-4">
             <!-- Scheme Name -->
             <div class="col-md-6">
-                <label class="form-label">Scheme Name</label>
+                <label class="form-label">Scheme Name
+                    <span class="text-danger" *ngIf="isFieldRequired('name') && mode === 'add'">*</span>
+                </label>
                 <input type="text" formControlName="name" class="input-field" placeholder="Enter Scheme Name"
                     [readonly]="mode === 'view'" />
                 <div *ngIf="schemeForm.get('name')?.invalid && schemeForm.get('name')?.touched && mode !== 'view'"
@@ -22,7 +24,9 @@
 
             <!-- Category -->
             <div class="col-md-6">
-                <label class="form-label">Category</label>
+                <label class="form-label">Category
+                    <span class="text-danger" *ngIf="isFieldRequired('categoryId') && mode === 'add'">*</span>
+                </label>
                 <ng-container *ngIf="mode !== 'view' && mode !== 'edit'; else viewCategory">
                     <select formControlName="categoryId" class="input-field">
                         <option value="">Select Category</option>
@@ -43,7 +47,9 @@
 
             <!-- Criteria -->
             <div class="col-md-6">
-                <label class="form-label">Criteria</label>
+                <label class="form-label">Criteria
+                    <span class="text-danger" *ngIf="(isFieldRequired('criteria') && mode === 'add') || (isFieldRequired('criteria') && mode === 'edit')">*</span>
+                </label>
                 <input type="text" formControlName="criteria" class="input-field" placeholder="Enter Criteria"
                     [readonly]="mode === 'view'" />
                 <div *ngIf="schemeForm.get('criteria')?.invalid && schemeForm.get('criteria')?.touched && mode !== 'view'"
@@ -52,7 +58,9 @@
 
             <!-- Process -->
             <div class="col-md-6">
-                <label class="form-label">Process</label>
+                <label class="form-label">Process
+                     <span class="text-danger" *ngIf="(isFieldRequired('criteria') && mode === 'add') || (isFieldRequired('criteria') && mode === 'edit')">*</span>
+                </label>
                 <input type="text" formControlName="process" class="input-field" placeholder="Enter Process"
                     [readonly]="mode === 'view'" />
                 <div *ngIf="schemeForm.get('process')?.invalid && schemeForm.get('process')?.touched && mode !== 'view'"
@@ -61,7 +69,9 @@
 
             <!-- Benefits -->
             <div class="col-md-6">
-                <label class="form-label">Benefits</label>
+                <label class="form-label">Benefits
+                     <span class="text-danger" *ngIf="(isFieldRequired('criteria') && mode === 'add') || (isFieldRequired('criteria') && mode === 'edit')">*</span>
+                </label>
                 <input type="text" formControlName="benefits" class="input-field" placeholder="Enter Benefits"
                     [readonly]="mode === 'view'" />
                 <div *ngIf="schemeForm.get('benefits')?.invalid && schemeForm.get('benefits')?.touched && mode !== 'view'"
@@ -70,7 +80,9 @@
 
             <!-- Status -->
             <div class="col-md-6" *ngIf="mode === 'add'">
-                <label class="form-label">Status</label>
+                <label class="form-label">status
+                    <span class="text-danger" *ngIf="isFieldRequired('name') && mode === 'add'">*</span>
+                </label>
                 <select formControlName="status" class="input-field">
                     <option value="">Select Status</option>
                     <option value="DRAFT">DRAFT</option>

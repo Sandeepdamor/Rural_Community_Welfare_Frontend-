@@ -2,7 +2,7 @@
 <div class="position-relative d-inline-block">
   <img src="assets/images/png/profile-background.png" alt="profile-background" class="img-fluid w-100 profileEdit-img">
   <!-- Profile Image (Dropdown Toggle) -->
-  <img [src]="userService.profileImage() || 'assets/images/svg/profile.svg'" alt="profile"
+  <img [src]="profileUrl || 'assets/images/svg/profile.svg'" alt="profile"
     class="choose-File object-fit-cover rounded-circle img-fluid dropdown-toggle" data-bs-toggle="dropdown"
     aria-expanded="false" style="cursor: pointer;" />
   <!-- Dropdown Menu -->
@@ -20,141 +20,237 @@
       </label>
     </li>
   </ul>
+</div>
 
-  <div class="profile-container d-flex flex-column">
-    <!-- profile Details -->
-    <div class="d-flex flex-column gap-2">
-      <h3>
-        {{ data.name | gender: data.gender }}
-        <span class="role-label">SARPANCH</span>
-      </h3>
-      <!-- <h4 class="font-14 regular black mb-0">{{ resident.phone }}</h4> -->
+<div class="profile-container d-flex flex-column">
+  <!-- profile Details -->
+  <div class="d-flex flex-column gap-2">
+    <h3>
+      {{ data.name | gender: data.gender }}
+      <span class="role-label">SARPANCH</span>
+    </h3>
+  </div>
+
+  <!-- Tabs -->
+  <ul class="nav nav-pills scalable-gap-24-16" id="pills-tab" role="tablist" *ngIf="!isViewOnly">
+    <li class="nav-item" role="presentation">
+      <button class="active profile-tabs font-14 medium" id="pills-EditProfile-tab" data-bs-toggle="pill"
+        data-bs-target="#pills-EditProfile" type="button" role="tab" aria-controls="pills-EditProfile"
+        aria-selected="true">Edit Profile</button>
+    </li>
+    <li class="nav-item" role="presentation" *ngIf="!isViewOnly">
+      <button class="profile-tabs font-14 medium" id="pills-ChangePassword-tab" data-bs-toggle="pill"
+        data-bs-target="#pills-ChangePassword" type="button" role="tab" aria-controls="pills-ChangePassword"
+        aria-selected="false">Change Password</button>
+    </li>
+  </ul>
+
+  <!-- Tabs Content -->
+  <div class="tab-content" id="pills-tabContent">
+    <!-- Edit Profile Content -->
+    <div class="tab-pane fade show active" id="pills-EditProfile" role="tabpanel"
+      aria-labelledby="pills-EditProfile-tab" tabindex="0">
+      <!-- <div class="d-flex flex-column scalable-gap-24-16"> -->
+      <!-- Edit Profile Tab Content -->
+      <form [formGroup]="profileForm" class="d-flex flex-column scalable-gap-24-16 mt-3">
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Name
+            <span class="text-danger" *ngIf="!isViewOnly">*</span>
+          </h4>
+          <input type="text" class="input-field" placeholder="Enter Name" formControlName="name"
+            [disabled]="!isViewOnly" />
+          <p class="text-danger font-12 mt-1"
+            *ngIf="profileForm.get('name')?.touched && profileForm.get('name')?.invalid">
+            Name is required and must be at least 3 characters.
+          </p>
+        </div>
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Father/Husband Name
+            <span class="text-danger" *ngIf="!isViewOnly">*</span>
+          </h4>
+          <input type="text" class="input-field" placeholder="Enter Father Or Husband Name"
+            formControlName="fatherOrHusbandName" [disabled]="!isViewOnly" />
+          <p class="text-danger font-12 mt-1"
+            *ngIf="profileForm.get('fatherOrHusbandName')?.touched && profileForm.get('fatherOrHusbandName')?.invalid">
+            fatherOrHusband Name is required and must be at least 3 characters.
+          </p>
+        </div>
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Mobile no.</h4>
+          <input type="text" class="input-field" placeholder="Enter Mobile Number" formControlName="phone"
+            [disabled]="isViewOnly" readonly />
+        </div>
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Email.</h4>
+          <input type="text" class="input-field" formControlName="email" [disabled]="isViewOnly" readonly />
+        </div>
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Aadhar Number</h4>
+          <input type="text" class="input-field" formControlName="aadharNumber" [disabled]="isViewOnly" readonly />
+        </div>
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Age
+          </h4>
+          <input type="number" class="input-field" formControlName="age" [disabled]="isViewOnly" readonly />
+        </div>
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Date of Birth
+            <span class="text-danger" *ngIf="!isViewOnly">*</span>
+          </h4>
+          <input type="date" class="input-field" formControlName="dateOfBirth" [max]="yesterday"
+            (change)="onDateOfBirthChange($event)" [disabled]="!isViewOnly" />
+
+          <p class="text-danger font-12 mt-1"
+            *ngIf="profileForm.get('dateOfBirth')?.touched && profileForm.get('dateOfBirth')?.invalid">
+            Date of Birth is Required.
+          </p>
+        </div>
+
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Gender
+            <span class="text-danger" *ngIf="!isViewOnly">*</span>
+          </h4>
+          <select class="input-field" formControlName="gender" [disabled]="isViewOnly">
+            <option value="" disabled>Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+          <p class="text-danger font-12 mt-1"
+            *ngIf="profileForm.get('gender')?.touched && profileForm.get('gender')?.hasError('required')">
+            Gender is required.
+          </p>
+        </div>
+
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">House Number</h4>
+          <input type="text" class="input-field" formControlName="houseNumber" [disabled]="isViewOnly" readonly />
+        </div>
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Personal Address</h4>
+          <input type="text" class="input-field" [value]="formattedAddress" [disabled]="isViewOnly" readonly />
+        </div>
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Ward Number</h4>
+          <input type="text" class="input-field" formControlName="wardNumber" [disabled]="isViewOnly" readonly />
+        </div>
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Gram Panchayat Name</h4>
+          <input type="text" class="input-field" formControlName="gramPanchayatName" [disabled]="isViewOnly" readonly />
+        </div>
+        <div class="d-flex flex-column gap-1 w-100" *ngIf="formattedAssignedVillages.length > 0">
+          <h4 class="mb-0 font-14 regular subTextColor">Assigned Villages</h4>
+          <div class="scrollable-box" *ngIf="formattedAssignedVillages.length">
+            <div *ngFor="let village of formattedAssignedVillages" class="village-item">
+              <input type="text" class="input-field" [value]="village" [disabled]="isViewOnly" readonly />
+            </div>
+          </div>
+        </div>
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Election Year</h4>
+          <input type="text" class="input-field" formControlName="electionYear" [disabled]="isViewOnly" readonly />
+        </div>
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Term Start Date</h4>
+          <input type="text" class="input-field" placeholder="Enter Term Start Date" formControlName="termStartDate"
+            [disabled]="isViewOnly" readonly />
+        </div>
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Term End Date</h4>
+          <input type="text" class="input-field" placeholder="Enter Term End Date" formControlName="termEndDate"
+            [disabled]="isViewOnly" readonly />
+        </div>
+        <div class="d-flex flex-column gap-1 w-100" *ngIf="data.createdAt">
+          <h4 class="mb-0 font-14 regular subTextColor">Create Date</h4>
+          <input type="text" class="input-field" [value]="data.createdAt | date: 'dd MMM yyyy, h:mm a'"
+            [disabled]="isViewOnly" readonly />
+        </div>
+
+        <div class="d-flex flex-column gap-1 w-100" *ngIf="data.updatedAt">
+          <h4 class="mb-0 font-14 regular subTextColor">Last Updated Date</h4>
+          <input type="text" class="input-field" [value]="data.updatedAt | date: 'dd MMM yyyy, h:mm a'"
+            [disabled]="isViewOnly" readonly />
+        </div>
+
+        <div class="d-flex flex-column gap-1 w-100" *ngIf="data.deletedAt">
+          <h4 class="mb-0 font-14 regular subTextColor">Delete Date</h4>
+          <input type="text" class="input-field" [value]="data.deletedAt | date: 'dd MMM yyyy, h:mm a'"
+            [disabled]="isViewOnly" readonly />
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex justify-content-end align-items-center mt-4" *ngIf="!isViewOnly">
+          <!-- <button type="button" class="secondary-button py-2 scalable-p-48-24"
+                        (click)="cancelEdit('name')">Cancel</button> -->
+          <button type="button" class="primary-button py-2 scalable-p-48-24 ms-3" [disabled]="profileForm.invalid"
+            (click)="onSubmit()">Update</button>
+        </div>
+      </form>
+      <!-- </div> -->
     </div>
 
-    <!-- Tabs Content -->
-    <div class="tab-content" id="pills-tabContent">
-      <!-- Edit Profile Content -->
-      <div class="tab-pane fade show active" id="pills-EditProfile" role="tabpanel"
-        aria-labelledby="pills-EditProfile-tab" tabindex="0">
-        <div class="d-flex flex-column scalable-gap-24-16">
-          <div class="d-flex flex-column gap-1 w-100">
-            <!-- <h4 class="mb-0 font-14 regular subTextColor" >Id</h4> -->
-            <input type="text" class="input-field" [(ngModel)]="data.id" [disabled]="isViewOnly" hidden />
-          </div>
-          <div class="d-flex flex-column gap-1 w-100">
-            <h4 class="mb-0 font-14 regular subTextColor">Name</h4>
-            <input type="text" class="input-field" placeholder="Enter Resident Name" [(ngModel)]="data.name"
-              [disabled]="isViewOnly" />
-          </div>
-          <div class="d-flex flex-column gap-1 w-100">
-            <h4 class="mb-0 font-14 regular subTextColor">Father/Husband Name</h4>
-            <input type="text" class="input-field" placeholder="Enter Resident Father/Husband Name"
-              [(ngModel)]="data.fatherOrHusbandName" [disabled]="isViewOnly" />
-          </div>
-          <div class="d-flex flex-column gap-1 w-100">
-            <h4 class="mb-0 font-14 regular subTextColor">Mobile no.</h4>
-            <input type="text" class="input-field" placeholder="Enter phone no." [(ngModel)]="data.phone"
-              [disabled]="isViewOnly" readonly />
-          </div>
-          <div class="d-flex flex-column gap-1 w-100">
-            <h4 class="mb-0 font-14 regular subTextColor">Email.</h4>
-            <input type="email" class="input-field" placeholder="Enter Email" [(ngModel)]="data.email"
-              [disabled]="isViewOnly" readonly />
-          </div>
-          <div class="d-flex flex-column gap-1 w-100">
-            <h4 class="mb-0 font-14 regular subTextColor">Aadhar Number</h4>
-            <input type="text" class="input-field" placeholder="Enter Aadhar Number" [(ngModel)]="data.aadharNumber"
-              [disabled]="isViewOnly" />
-          </div>
-          <div class="d-flex flex-column gap-1 w-100" *ngIf="!isViewOnly || data.age">
-            <h4 class="mb-0 font-14 regular subTextColor">Age</h4>
-            <input type="number" class="input-field" placeholder="Enter Age" [(ngModel)]="data.age"
-              [disabled]="isViewOnly" />
-          </div>
-          <div class="d-flex flex-column gap-1 w-100" *ngIf="!isViewOnly || data.dateOfBirth">
-            <h4 class="mb-0 font-14 regular subTextColor">Date of Birth</h4>
-            <input type="date" class="input-field" placeholder="Enter Date of Birth" [(ngModel)]="data.dateOfBirth"
-              [disabled]="isViewOnly" />
-          </div>
-
-          <div class="d-flex flex-column gap-1 w-100">
-            <h4 class="mb-0 font-14 regular subTextColor">Gender</h4>
-            <input type="text" class="input-field" placeholder="Enter Age" [(ngModel)]="data.gender"
-              [disabled]="isViewOnly" />
-          </div>
-
-          <div class="d-flex flex-column gap-1 w-100" *ngIf="!isViewOnly || data.houseNumber">
-            <h4 class="mb-0 font-14 regular subTextColor">House Number</h4>
-            <input type="text" class="input-field" placeholder="Enter House Number" [(ngModel)]="data.houseNumber"
-              [disabled]="isViewOnly" />
-          </div>
-          <div class="d-flex flex-column gap-1 w-100">
-            <h4 class="mb-0 font-14 regular subTextColor">Personal Address</h4>
-            <input type="text" class="input-field" placeholder="Enter Address"
-              [value]="isDeleted ? data.address : formattedAddress" [disabled]="isViewOnly" />
-          </div>
-          <div class="d-flex flex-column gap-1 w-100">
-            <h4 class="mb-0 font-14 regular subTextColor">Gram Panchayat Namer</h4>
-            <input type="text" class="input-field" placeholder="Enter Gram Panchayat Name"
-              [(ngModel)]="data.gramPanchayatName" [disabled]="isViewOnly" readonly />
-          </div>
-          <!-- <div>{{data.Villages}}</div> -->
-          <div class="d-flex flex-column gap-1 w-100" *ngIf="formattedAssignedVillages.length > 0">
-            <h4 class="mb-0 font-14 regular subTextColor">Assigned Villages</h4>
-            <div class="scrollable-box" *ngIf="formattedAssignedVillages.length">
-              <div *ngFor="let village of formattedAssignedVillages" class="village-item">
-                <input type="text" class="input-field" [value]="village" [disabled]="isViewOnly" readonly />
-              </div>
-            </div>
-          </div>
+    <!-- Change Password -->
+    <div class="tab-pane fade" id="pills-ChangePassword" role="tabpanel" tabindex="0">
+      <form [formGroup]="passwordForm" class="d-flex flex-column scalable-gap-24-16 mt-3">
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Old Password</h4>
+          <input type="password" class="input-field" formControlName="oldPassword" placeholder="Enter Old Password" />
+          <p class="text-danger font-12 mt-1"
+            *ngIf="passwordForm.get('oldPassword')?.touched && passwordForm.get('oldPassword')?.invalid">
+            Old password is required.
+          </p>
         </div>
-      </div>
 
-      <!-- Image Preview Modal -->
-      <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header border-0">
-              <h5 class="modal-title">Profile Image</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-0">
-              <img [src]="selectedImage || 'assets/images/svg/default-image.svg'" alt="Preview"
-                class="img-fluid w-100 rounded">
-            </div>
-          </div>
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">New Password</h4>
+          <input type="password" class="input-field" formControlName="newPassword" placeholder="Enter New Password" />
+          <p class="text-danger font-12 mt-1"
+            *ngIf="passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.hasError('pattern')">
+            Password must be 8+ characters, include uppercase, lowercase, number, and special character.
+          </p>
+          <p class="text-danger font-12 mt-1"
+            *ngIf="passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.hasError('sameAsOld')">
+            New password should not be same as old password.
+          </p>
+
         </div>
-      </div>
 
-      <div class="d-flex flex-column gap-1 w-100">
-        <h4 class="mb-0 font-14 regular subTextColor">Election Year</h4>
-        <input type="text" class="input-field" placeholder="Enter Election Year" [(ngModel)]="data.electionYear"
-          [disabled]="isViewOnly" readonly />
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Confirm Password</h4>
+          <input type="password" class="input-field" formControlName="confirmPassword" placeholder="Confirm Password" />
+          <p class="text-danger font-12 mt-1"
+            *ngIf="passwordForm.get('confirmPassword')?.touched && passwordForm.get('confirmPassword')?.hasError('mismatch')">
+            Passwords do not match.
+          </p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex justify-content-end align-items-center mt-4" *ngIf="!isViewOnly">
+          <!-- <button type="button" class="secondary-button py-2 scalable-p-48-24"
+                        (click)="cancelEdit('password')">Cancel</button> -->
+          <button type="button" class="primary-button py-2 scalable-p-48-24 ms-3" [disabled]="passwordForm.invalid"
+            (click)="updatePassword()">Update</button>
+        </div>
+      </form>
+    </div>
+
+
+  </div>
+
+</div>
+
+
+<!-- Image Preview Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Profile Image</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <div class="d-flex flex-column gap-1 w-100">
-        <h4 class="mb-0 font-14 regular subTextColor">Term Start Date</h4>
-        <input type="text" class="input-field" placeholder="Enter Term Start Date" [(ngModel)]="data.termStartDate"
-          [disabled]="isViewOnly" readonly />
-      </div>
-      <div class="d-flex flex-column gap-1 w-100">
-        <h4 class="mb-0 font-14 regular subTextColor">Term End Date</h4>
-        <input type="text" class="input-field" placeholder="Enter Term End Date" [(ngModel)]="data.termEndDate"
-          [disabled]="isViewOnly" readonly />
-      </div>
-      <div class="d-flex flex-column gap-1 w-100" *ngIf="data.createdAt">
-        <h4 class="mb-0 font-14 regular subTextColor">Create Date</h4>
-        <input type="text" class="input-field" [value]="data.createdAt | date: 'dd MMM yyyy, h:mm a'"
-          [disabled]="isViewOnly" readonly />
-      </div>
-      <div class="d-flex flex-column gap-1 w-100" *ngIf="data.updatedAt">
-        <h4 class="mb-0 font-14 regular subTextColor">Last Updated Date</h4>
-        <input type="text" class="input-field" [value]="data.updatedAt | date: 'dd MMM yyyy, h:mm a'"
-          [disabled]="isViewOnly" readonly />
-      </div>
-      <div class="d-flex flex-column gap-1 w-100" *ngIf="data.deletedAt">
-        <h4 class="mb-0 font-14 regular subTextColor">Delete Date</h4>
-        <input type="text" class="input-field" [value]="data.deletedAt | date: 'dd MMM yyyy, h:mm a'"
-          [disabled]="isViewOnly" readonly />
+      <div class="modal-body p-0">
+        <img [src]="selectedImage || 'assets/images/svg/default-image.svg'" alt="Preview"
+          class="img-fluid w-100 rounded">
       </div>
     </div>
   </div>

@@ -22,6 +22,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ReasonDialogComponent } from '../reason-dialog/reason-dialog.component';
 import { Router } from '@angular/router';
 import { TokenService } from '../../services/token.service';
+import { ProjectCompletionDialogComponent } from '../project-completion-dialog/project-completion-dialog.component';
 
 @Component({
   selector: 'app-dynamic-table',
@@ -53,6 +54,9 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
     throw new Error('Method not implemented.');
   }
   @Input() config!: TableConfig;
+  @Input() isResidentListView: boolean = false;
+  @Input() isSchemeListView: boolean = false;
+
   @Input() isRoleTable!: RoleListComponent;
   dataSource!: MatTableDataSource<any>;
   selection = new SelectionModel<any>(true, []);
@@ -65,13 +69,19 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
   defaultPageSize = 10; // Default items per page
   // @Output() statusIsDeletedChanged = new EventEmitter<{ id: string, isActive: boolean }>();
   @Output() aadharStatusChanged = new EventEmitter<{ id: string, aadharVerificationStatus: string, response: string }>();
-  @Output() projectApprovalStatusChanged = new EventEmitter<{ id: string, approvalStatus: string, reason: string }>();
-  @Output() projectProgressStatusChanged = new EventEmitter<{ id: string, progressStatus: string }>();
+  @Output() approvalStatusChanged = new EventEmitter<{ id: string, approvalStatus: string, reason: string }>();
   @Output() actionClicked = new EventEmitter<{ action: string, element: any }>();
   @Output() pageChanged = new EventEmitter<{
     pageIndex: number;
     pageSize: number;
   }>();
+  @Output() projectProgressStatusChanged = new EventEmitter<{
+    projectId: string,
+    progressStatus: string,
+    expenditureAmount?: number,
+    file?: File
+  }>();
+
   @Output() statusChanged = new EventEmitter<{
     id: string;
     isActive: boolean;
@@ -126,6 +136,16 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
     console.log('Initial Data:', this.config.data);
     console.log('Total Records:', this.config.totalRecords);
     console.log('Displayed Columns:', this.displayedColumns);
+
+    // Extract gramPanchayatName from first project's first assigned Sarpanch
+    const firstProject = this.config.data[0];
+    let gramPanchayatName = '';
+
+    if (firstProject && firstProject.assignedSarpanches?.length > 0) {
+      gramPanchayatName = firstProject.assignedSarpanches[0].gramPanchayatName;
+    }
+
+    console.log('Gram Panchayat Name 123 ==>:', gramPanchayatName);
   }
 
   changeStatus(element: any, newStatus: boolean) {
@@ -144,7 +164,7 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
   }
 
   changeAadharStatus(element: any, newStatus: string) {
-    if (newStatus === 'PENDING') {
+    if (newStatus !== 'REJECTED') {
       this.aadharStatusChanged.emit({
         id: element.id,
         aadharVerificationStatus: newStatus,
@@ -173,15 +193,15 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
     });
   }
 
-  changeProjectApprovalStatus(element: any, newStatus: string) {
+  changeApprovalStatus(element: any, newStatus: string) {
     console.log(
       'IN DYNAMIC TABLE CHANGE APPROVAL STATUS ==> ',
       element,
       newStatus
     );
 
-    if (newStatus === 'PENDING') {
-      this.projectApprovalStatusChanged.emit({
+    if (newStatus !== 'REJECTED') {
+      this.approvalStatusChanged.emit({
         id: element.id,
         approvalStatus: newStatus,
         reason: '', // No reason required
@@ -197,7 +217,7 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
 
     dialogRef.afterClosed().subscribe((reason: string) => {
       if (reason && reason.trim().length > 0) {
-        this.projectApprovalStatusChanged.emit({
+        this.approvalStatusChanged.emit({
           id: element.id,
           approvalStatus: newStatus,
           reason: reason.trim(),
@@ -211,10 +231,41 @@ export class DynamicTableComponent implements AfterViewInit, OnChanges {
 
   changeProjectProgressStatus(element: any, newStatus: any): void {
     console.log(`Changing status of project to: ${newStatus}`, element);
-    this.projectProgressStatusChanged.emit({
-      id: element.id,
-      progressStatus: newStatus,
-    });
+    if (newStatus === 'COMPLETED' && this.userRole === 'SARPANCH') {
+      const dialogRef = this.dialog.open(ProjectCompletionDialogComponent, {
+        width: '400px',
+        data: { budget: element.budget },
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          // You now have expenditureAmount and file
+          const formData = new FormData();
+          formData.append('status', newStatus);
+          formData.append('expenditure', result.expenditureAmount);
+          if (result.file) {
+            formData.append('document', result.file);
+          }
+          // Emit the event with all required info
+          this.projectProgressStatusChanged.emit({
+            projectId: element.id,
+            progressStatus: newStatus,
+            expenditureAmount: result.expenditureAmount,  // include this if needed downstream
+            file: result.file                                // optional, only if file present
+          });
+
+          // Call API with formData here
+          console.log('Submit progress:', formData);
+          // Example: this.projectService.updateProgress(element.id, formData).subscribe(...)
+        }
+      });
+    } else {
+      // Normal status update for other statuses
+      this.projectProgressStatusChanged.emit({
+        projectId: element.id,
+        progressStatus: newStatus,
+      });
+    }
   }
 
   // getSerialNumber(row: any): number {

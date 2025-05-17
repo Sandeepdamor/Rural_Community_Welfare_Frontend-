@@ -4,7 +4,6 @@ import { AuthService } from '../../services/auth.service';
 import { TokenService } from '../../services/token.service';
 import { UserService } from '../../services/user.service';
 import { UserResponse } from '../../interfaces/user/user-response';
-import { Role } from '../../../enums/role.enum';
 declare var bootstrap: any;
 @Component({
   selector: 'app-navbar',
@@ -26,7 +25,7 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit() {
     const mobile = this.tokenService.getMobileNumberFromAccessToken();
-    console.log('mobile....' + mobile);
+    console.log('mobile.... 1234 ' + mobile);
     if (mobile) {
       this.userService.getUserByMobile(mobile).subscribe({
         next: (res) => {

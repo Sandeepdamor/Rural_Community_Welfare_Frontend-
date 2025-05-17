@@ -166,6 +166,10 @@ export class AddSchemeComponent implements OnInit {
     });
   }
 
+   isFieldRequired(fieldName: string): boolean {
+      // Replace with your form control logic to check if the field is required
+      return this.schemeForm.get(fieldName)?.hasValidator(Validators.required) ?? false;
+    }
 
   onFileSelected(event: any): void {
     const files: FileList = event.target.files;

@@ -16,6 +16,7 @@ export interface SarpanchResponse {
   fatherOrHusbandName: string;
   dateOfBirth: string; // Use string for LocalDate in TypeScript
   houseNumber: string;
+  wardNumber:string;
   termEndDate: string;
   termStartDate: string;
   electionYear: number | null;
@@ -23,4 +24,5 @@ export interface SarpanchResponse {
   villages: Address[];
   deletedAt: string;
   profileImage: string;
+  role:string;
 }

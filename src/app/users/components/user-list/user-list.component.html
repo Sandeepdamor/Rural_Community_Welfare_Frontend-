@@ -34,7 +34,7 @@
                     </div>
 
                     <!-- Age -->
-                    <div class="mb-2 d-flex gap-2">
+                    <div class="mb-2 d-flex gap-2" *ngIf="role !== 'RESIDENT'">
                         <input type="number" class="form-control" placeholder="Min Age" [(ngModel)]="filters.minAge"
                             (input)="onFilter()" />
                         <input type="number" class="form-control" placeholder="Max Age" [(ngModel)]="filters.maxAge"
@@ -42,7 +42,7 @@
                     </div>
 
                     <!-- Status -->
-                    <div>
+                    <div *ngIf="role !== 'RESIDENT'">
                         <label>Status</label>
                         <select class="form-select" [(ngModel)]="filters.isActive" (change)="onFilter()">
                             <option value="null">All Status</option>
@@ -80,7 +80,7 @@
 
     <!-- 📋 Table -->
     <app-dynamic-table *ngIf="!isLoading && agencyTableConfig.data.length > 0" [config]="agencyTableConfig"
-        (pageChanged)="handlePageChange($event)" (statusChanged)="updateUserStatus($event)"
+        (pageChanged)="handlePageChange($event)" (statusChanged)="updateUserStatus($event)" [isResidentListView]="isResidentListView"
         (actionClicked)="onAction($event.action, $event.element)">
     </app-dynamic-table>
 

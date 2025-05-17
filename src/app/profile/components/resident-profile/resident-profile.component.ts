@@ -9,6 +9,8 @@ import { ToastService } from '../../../shared/services/toast.service';
 import { UpdatePasswordRequest } from '../../../shared/interfaces/admin/update-password-request';
 import { ApiResponse } from '../../../shared/interfaces/api-response';
 import { UserService } from '../../../shared/services/user.service';
+import { Role } from '../../../enums/role.enum';
+import { TokenService } from '../../../shared/services/token.service';
 declare var bootstrap: any;
 @Component({
   selector: 'app-resident-profile',
@@ -24,22 +26,35 @@ export class ResidentProfileComponent implements OnInit {
   profileImage = signal<string>('assets/images/svg/profile.svg');
   selectedImage: string | null = null;
   isPublic: boolean = true;
+  @Input() profileUrl!: string;
 
+  Role = Role;
+  role: Role;
   constructor(
     private fb: FormBuilder,
     private addressService: AddressService,
     private residentService: ResidentService,
     private toastService: ToastService,
-    public userService: UserService
-  ) { }
+    public userService: UserService,
+    private tokenService: TokenService
+  ) {
+    const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
+    this.role = roleString as Role;
+  }
 
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
 
   addresses: any[] = [];
   ngOnInit(): void {
-    if (this.data?.profileImage) {
-      this.userService.updateImage(this.data.profileImage);
+    if (this.role === this.data?.role) {
+      if (this.data?.profileImage) {
+        this.userService.updateImage(this.data.profileImage);
+        this.profileUrl = this.data.profileImage;
+      }
+    } else if (this.data?.profileImage) {
+      this.profileUrl = this.data.profileImage;
+      this.userService.showImage(this.profileUrl);
     }
     if (this.data) {
       this.isPublic = this.data.isPublic;
@@ -132,18 +147,18 @@ export class ResidentProfileComponent implements OnInit {
       isPublic: this.isPublic
     };
 
-    // this.residentService.updatePrivacySetting(updatedPrivacy).subscribe({
-    //   next: (response) => {
-    //     console.log('Privacy updated successfully', response.message);
-    //     this.toastService.showSuccess(response.message);
-    //   },
-    //   error: (error) => {
-    //     console.error('Error updating privacy', error);
-    //     // Agar error aaye toh value ko wapas palat dein
-    //     this.isPublic = !this.isPublic;
-    //     this.toastService.showError(error.message);
-    //   }
-    // });
+    this.residentService.updatePrivacySetting(updatedPrivacy).subscribe({
+      next: (response) => {
+        console.log('Privacy updated successfully', response.message);
+        this.toastService.showSuccess(response.message);
+      },
+      error: (error) => {
+        console.error('Error updating privacy', error);
+        // Agar error aaye toh value ko wapas palat dein
+        this.isPublic = !this.isPublic;
+        this.toastService.showError(error.message);
+      }
+    });
   }
 
   get formattedAddress(): string {
@@ -158,6 +173,7 @@ export class ResidentProfileComponent implements OnInit {
 
       this.residentService.updateDetails(this.data.id, payload).subscribe({
         next: (response) => {
+           this.data = response.response;
           this.toastService.showSuccess(response.message || 'Profile updated successfully');
         },
         error: (err) => {
@@ -223,7 +239,11 @@ export class ResidentProfileComponent implements OnInit {
   }
 
   openImage(): void {
-    this.selectedImage = this.userService.profileImage(); // or the updated image URL
+    if (this.role === this.data?.role) {
+      this.selectedImage = this.userService.getProfileImageUrl();
+    } else {
+      this.selectedImage = this.userService.getViewedProfileImageUrl();
+    }
     const modalElement = document.getElementById('imageModal');
     if (modalElement) {
       const modal = new bootstrap.Modal(modalElement);

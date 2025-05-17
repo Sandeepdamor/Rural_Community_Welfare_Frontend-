@@ -24,7 +24,6 @@ export class SchemeService {
       catchError((error) => {
         return this.errorService.handleError(error); // Use ErrorService to handle errors
       })
-
     );
   }
 
@@ -47,6 +46,14 @@ export class SchemeService {
     }
 
     return this.http.get<PageResponse<SchemeResponse>>(`${this.apiUrl}/get-all-schemes`, { params }).pipe(
+      catchError((error) => this.errorService.handleError(error))
+    );
+  }
+
+
+  getAllSchemesForPublic(): Observable<SchemeResponse[]> {
+
+    return this.http.get<SchemeResponse[]>(`${this.apiUrl}/get-all`).pipe(
       catchError((error) => this.errorService.handleError(error))
     );
   }
@@ -123,7 +130,7 @@ export class SchemeService {
       sortBy: search.sortBy,
     };
 
-    console.log('SEARCH ===>> ',search);
+    console.log('SEARCH ===>> ', search);
 
     return this.http.get(`${this.apiUrl}/scheme-search-request`, { params }).pipe(
       catchError((error) => {
@@ -141,7 +148,7 @@ export class SchemeService {
       sortBy: search.sortBy,
     };
 
-    console.log('SEARCH ===>> ',search);
+    console.log('SEARCH ===>> ', search);
 
     return this.http.get(`${this.apiUrl}/deleted-search-request`, { params }).pipe(
       catchError((error) => {
@@ -167,7 +174,7 @@ export class SchemeService {
       params.isDeleted = filters.isDeleted;
     }
 
-    console.log('FILTERS ====> ',filters);
+    console.log('FILTERS ====> ', filters);
 
     return this.http.get(`${this.apiUrl}/scheme-filter-request`, { params }).pipe(
       catchError((error) => this.errorService.handleError(error))
@@ -189,7 +196,7 @@ export class SchemeService {
       params.isActive = filters.isActive;
     }
 
-    console.log('FILTERS ====> ',filters);
+    console.log('FILTERS ====> ', filters);
 
     return this.http.get(`${this.apiUrl}/delete-filter-request`, { params }).pipe(
       catchError((error) => this.errorService.handleError(error))

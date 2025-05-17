@@ -72,7 +72,7 @@ export class PendingUserListComponent {
             { name: 'name', displayName: 'Full Name', type: 'text' },
             { name: 'mobile', displayName: 'Phone Number', type: 'text' },
             { name: 'aadharNumber', displayName: 'Aadhar Number', type: 'text' },
-            { name: 'address', displayName: 'Address', type: 'text' },
+            { name: 'address', displayName: 'Resident Personal Address', type: 'text' },
             { name: 'aadharVerificationStatus', displayName: 'Aadhar Verification', type: 'aadharstatus' },
             {
                 name: 'response',
@@ -149,6 +149,7 @@ export class PendingUserListComponent {
     }
 
     updateAadharStatus(event: { id: string, aadharVerificationStatus: string, response: string }) {
+        console.log('RESPONSE WHEN AADHAR STATUS (REASON)  ===> ',event.response);
         this.residentService.updateAadharStatus(event.id, event.aadharVerificationStatus, event.response).subscribe({
             next: (response) => {
                 // Show success message using ToastService
@@ -158,10 +159,10 @@ export class PendingUserListComponent {
                 // this.isLoading = false;
             },
             error: (err) => {
-                console.error('Status Updation Faild:', err.error.message);
+                console.error('Status Updation Faild:', err);
 
                 // Show error message using ToastService
-                this.toastService.showError(err.error.message || 'Something went wrong');
+                this.toastService.showError(err.details || 'Something went wrong');
                 this.isLoading = false;
             }
         });

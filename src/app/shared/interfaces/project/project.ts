@@ -3,4 +3,5 @@ export interface Project {
   name: string;
   progressStatus: string;
   projectName: string;
+  attachmenets: string[];
 }
