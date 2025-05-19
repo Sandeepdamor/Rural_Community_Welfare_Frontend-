@@ -11,6 +11,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-resident-grievance-add',
@@ -29,7 +30,8 @@ export class ResidentGrievanceAddComponent {
     private fb: FormBuilder,
     private residentgrievanceservice: ResidentGrievanceService,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -132,5 +134,9 @@ export class ResidentGrievanceAddComponent {
     console.log('Removing file at index:------', index); // Debug the index being removed
     this.selectedFiles.splice(index, 1);
     console.log('Updated Files List:-----', this.selectedFiles); // Check the updated list
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

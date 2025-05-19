@@ -79,7 +79,7 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
           // };
           this.agencyTableConfig = {
             ...this.agencyTableConfig,
-            data: response.content.map((item:any) => ({
+            data: response.content.map((item: any) => ({
               ...item,
               authorName: item.authorName.name || 'N/A',
             })),
@@ -105,7 +105,7 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
       { name: 'status', displayName: 'Status', type: 'announcementStatus' },
       { name: 'authorName', displayName: 'Author Name', type: 'text' },
       // { name: 'isDeleted', displayName: 'Deleted', type: 'boolean' },
-      { name: 'isActive', displayName: 'Active', type: 'status' },
+      //{ name: 'isActive', displayName: 'Active', type: 'status' },
       //  { name: 'createdAt', displayName: 'Created At', type: 'datetime' },
       // { name: 'updatedAt', displayName: 'Updated At', type: 'datetime' },
       //  { name: 'attachments', displayName: 'Attachments', type: 'list' },
@@ -154,14 +154,14 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
         //   data: response.content,
         //   totalRecords: response.totalElements,
         // };
-         this.agencyTableConfig = {
-            ...this.agencyTableConfig,
-            data: response.content.map((item:any) => ({
-              ...item,
-              authorName: item.authorName.name || 'N/A',
-            })),
-            totalRecords: response.totalElements,
-          };
+        this.agencyTableConfig = {
+          ...this.agencyTableConfig,
+          data: response.content.map((item: any) => ({
+            ...item,
+            authorName: item.authorName.name || 'N/A',
+          })),
+          totalRecords: response.totalElements,
+        };
         this.changeDetection.detectChanges();
         this.isLoading = false;
       },

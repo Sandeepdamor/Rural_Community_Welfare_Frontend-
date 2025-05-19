@@ -76,10 +76,10 @@ export class LocalEventsComponent {
       // { name: 'response', displayName: 'Response', type: 'text' },
       //  { name: 'updatedAt', displayName: 'Updated At', type: 'text' },
       //    { name: 'attachments', displayName: 'Attachments', type: 'text' },
-      // { name: 'action', displayName: 'Update', type: 'action' },
+      { name: 'action', displayName: 'Update', type: 'action' },
     ],
     data: [],
-    actions: ['edit'],
+    actions: ['delete'],
   };
 
   ngOnInit(): void {

@@ -1,330 +1,324 @@
 <div class="scalable-gap-24-16 scalable-p-16-8 cardBackground d-flex flex-column">
-    <form [formGroup]="projectForm" enctype="multipart/form-data"
-        class="scalable-gap-24-16 scalable-p-16-8 cardBackground d-flex flex-column">
+  <form [formGroup]="projectForm" enctype="multipart/form-data"
+    class="scalable-gap-24-16 scalable-p-16-8 cardBackground d-flex flex-column">
 
-        <!-- Back Arrow -->
-        <div class="d-flex gap-2 align-items-center">
-            <img src="assets/images/svg/Back-Icon.svg" class="cursor-pointer" height="30" width="30"
-                (click)="goBack()" />
-            <h2 class="font-18 medium black mb-0">{{ mode === 'add' ? 'Add New Project' : mode === 'edit' ? 'Update
-                Project' : 'Project Details' }}</h2>
+    <!-- Back Arrow -->
+    <div class="d-flex gap-2 align-items-center">
+      <img src="assets/images/svg/Back-Icon.svg" class="cursor-pointer" height="30" width="30" (click)="goBack()" />
+      <h2 class="font-18 medium black mb-0">{{ mode === 'add' ? 'Add New Project' : mode === 'edit' ? 'Update
+        Project' : 'Project Details' }}</h2>
+    </div>
+
+    <!-- Form Inputs -->
+    <div class="row g-4">
+      <!-- Name -->
+      <div class="col-md-6">
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Name
+            <span class="text-danger" *ngIf="isFieldRequired('name') && mode !== 'view'">*</span>
+          </h4>
+          <input type="text" class="input-field" placeholder="Enter Project Name" formControlName="name"
+            [readonly]="mode === 'view'" />
+          <div *ngIf="isFieldInvalid('name')" class="text-danger">Project name is required.</div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="col-md-6">
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Description
+            <span class="text-danger" *ngIf="isFieldRequired('description') && mode !== 'view'">*</span>
+          </h4>
+          <input type="text" class="input-field" placeholder="Enter Project Description" formControlName="description"
+            [readonly]="mode === 'view'" />
+          <div *ngIf="isFieldInvalid('description')" class="text-danger">Description is required.</div>
+        </div>
+      </div>
+
+      <!-- Budget -->
+      <div class="col-md-6">
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Budget
+            <span class="text-danger" *ngIf="isFieldRequired('budget') && mode !== 'view'">*</span>
+          </h4>
+          <input type="number" class="input-field" placeholder="Enter Project Budget" formControlName="budget"
+            [readonly]="mode === 'view'" />
+          <div *ngIf="isFieldInvalid('budget')" class="text-danger">Budget is required.</div>
+        </div>
+      </div>
+
+      <!-- Start Date -->
+      <div class="col-md-6">
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Start Date
+            <span class="text-danger" *ngIf="isFieldRequired('startDate') && mode !== 'view'">*</span>
+          </h4>
+          <input type="date" class="input-field" formControlName="startDate" [min]="today"
+            [readonly]="mode === 'view'" />
+          <div *ngIf="isFieldInvalid('startDate')" class="text-danger">
+            <div *ngIf="projectForm.get('startDate')?.errors?.['required']">Start date is required.</div>
+            <div *ngIf="projectForm.get('startDate')?.errors?.['dateInPast']">Start date cannot be in the
+              past.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- End Date -->
+      <div class="col-md-6">
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">End Date
+            <span class="text-danger" *ngIf="isFieldRequired('endDate') && mode !== 'view'">*</span>
+          </h4>
+          <input type="date" class="input-field" formControlName="endDate" [min]="tomorrow"
+            [readonly]="mode === 'view'" />
+          <div *ngIf="isFieldInvalid('endDate')" class="text-danger">
+            <div *ngIf="projectForm.get('endDate')?.errors?.['required']">End date is required.</div>
+            <div *ngIf="projectForm.get('endDate')?.errors?.['dateInPast']">End date cannot be in the past.
+            </div>
+            <div *ngIf="projectForm.get('endDate')?.errors?.['endBeforeStart']">End date cannot be before
+              Start date.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Progress, Requested By, Approved By, Approved Date, Created At, Updated At (Only for View Mode) -->
+      <!-- Project Progress -->
+      <div class="col-md-6" *ngIf="mode === 'view'">
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Project Progress</h4>
+          <div class="input-field">{{ projectDetails.progressStatus }}</div>
+        </div>
+      </div>
+
+      <!-- Created By -->
+      <div class="col-md-6" *ngIf="mode === 'view' && role !== 'RESIDENT'">
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Created By</h4>
+          <div class="input-field">{{ projectDetails.createdBy }}</div>
+        </div>
+      </div>
+
+      <!-- Project Progress -->
+      <div class="col-md-6" *ngIf="mode === 'view'  && role !== 'RESIDENT'">
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Approval Status</h4>
+          <div class="input-field">{{ projectDetails.approvalStatus }}</div>
+          <div *ngIf="isFieldInvalid('name')" class="text-danger">Project name is required.</div>
+        </div>
+      </div>
+
+      <!-- Approved By By -->
+      <div class="col-md-6" *ngIf="mode === 'view' && projectDetails.approvedBy  && role !== 'RESIDENT'">
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Approved By</h4>
+          <div class="input-field">{{ projectDetails.approvedBy }}</div>
+        </div>
+      </div>
+
+      <!-- Approved Date -->
+      <div class="col-md-6" *ngIf="mode === 'view' && projectDetails.approvedDate  && role !== 'RESIDENT'">
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">{{projectDetails.approvalStatus !== 'REJECTED' ?
+            'Approved Date' : 'Rejected Date'}}</h4>
+          <div class="input-field">{{ projectDetails.approvedDate | date: 'dd MMM yyyy, h:mm a' }}</div>
+        </div>
+      </div>
+
+      <!-- Created At -->
+      <div class="col-md-6" *ngIf="mode === 'view'  && role !== 'RESIDENT'">
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Created At</h4>
+          <div class="input-field">{{ projectDetails.createdAt | date: 'dd MMM yyyy, h:mm a' }}</div>
+        </div>
+      </div>
+
+      <!-- Updated At -->
+      <div class="col-md-6" *ngIf="mode === 'view'  && role !== 'RESIDENT'">
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Updated At</h4>
+          <div class="input-field">{{ projectDetails.updatedAt | date: 'dd MMM yyyy, h:mm a' }}</div>
+        </div>
+      </div>
+
+
+      <!-- Attachments -->
+      <div class="col-md-6" *ngIf="mode !== 'view'">
+        <div class="d-flex flex-column gap-1 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Attachments</h4>
+          <input type="file" class="input-field" (change)="onFileSelected($event)" multiple />
         </div>
 
-        <!-- Form Inputs -->
-        <div class="row g-4">
-            <!-- Name -->
-            <div class="col-md-6">
-                <div class="d-flex flex-column gap-1 w-100">
-                    <h4 class="mb-0 font-14 regular subTextColor">Name
-                        <span class="text-danger" *ngIf="isFieldRequired('name') && mode !== 'view'">*</span>
-                    </h4>
-                    <input type="text" class="input-field" placeholder="Enter Project Name" formControlName="name"
-                        [readonly]="mode === 'view'" />
-                    <div *ngIf="isFieldInvalid('name')" class="text-danger">Project name is required.</div>
-                </div>
-            </div>
+        <!-- Show Selected File Names -->
+        <ul class="mt-2">
+          <li *ngFor="let file of selectedFiles; let i = index">
+            {{ file.name }}
+            <i class="bi bi-x-circle-fill ms-2 text-danger cursor-pointer" (click)="removeAttachment(i)"></i>
+          </li>
+        </ul>
+      </div>
 
-            <!-- Description -->
-            <div class="col-md-6">
-                <div class="d-flex flex-column gap-1 w-100">
-                    <h4 class="mb-0 font-14 regular subTextColor">Description
-                        <span class="text-danger" *ngIf="isFieldRequired('description') && mode !== 'view'">*</span>
-                    </h4>
-                    <input type="text" class="input-field" placeholder="Enter Project Description"
-                        formControlName="description" [readonly]="mode === 'view'" />
-                    <div *ngIf="isFieldInvalid('description')" class="text-danger">Description is required.</div>
-                </div>
-            </div>
-
-            <!-- Budget -->
-            <div class="col-md-6">
-                <div class="d-flex flex-column gap-1 w-100">
-                    <h4 class="mb-0 font-14 regular subTextColor">Budget
-                        <span class="text-danger" *ngIf="isFieldRequired('budget') && mode !== 'view'">*</span>
-                    </h4>
-                    <input type="number" class="input-field" placeholder="Enter Project Budget" formControlName="budget"
-                        [readonly]="mode === 'view'" />
-                    <div *ngIf="isFieldInvalid('budget')" class="text-danger">Budget is required.</div>
-                </div>
-            </div>
-
-            <!-- Start Date -->
-            <div class="col-md-6">
-                <div class="d-flex flex-column gap-1 w-100">
-                    <h4 class="mb-0 font-14 regular subTextColor">Start Date
-                        <span class="text-danger" *ngIf="isFieldRequired('startDate') && mode !== 'view'">*</span>
-                    </h4>
-                    <input type="date" class="input-field" formControlName="startDate" [min]="today"
-                        [readonly]="mode === 'view'" />
-                    <div *ngIf="isFieldInvalid('startDate')" class="text-danger">
-                        <div *ngIf="projectForm.get('startDate')?.errors?.['required']">Start date is required.</div>
-                        <div *ngIf="projectForm.get('startDate')?.errors?.['dateInPast']">Start date cannot be in the
-                            past.</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- End Date -->
-            <div class="col-md-6">
-                <div class="d-flex flex-column gap-1 w-100">
-                    <h4 class="mb-0 font-14 regular subTextColor">End Date
-                        <span class="text-danger" *ngIf="isFieldRequired('endDate') && mode !== 'view'">*</span>
-                    </h4>
-                    <input type="date" class="input-field" formControlName="endDate" [min]="tomorrow"
-                        [readonly]="mode === 'view'" />
-                    <div *ngIf="isFieldInvalid('endDate')" class="text-danger">
-                        <div *ngIf="projectForm.get('endDate')?.errors?.['required']">End date is required.</div>
-                        <div *ngIf="projectForm.get('endDate')?.errors?.['dateInPast']">End date cannot be in the past.
-                        </div>
-                        <div *ngIf="projectForm.get('endDate')?.errors?.['endBeforeStart']">End date cannot be before
-                            Start date.</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Project Progress, Requested By, Approved By, Approved Date, Created At, Updated At (Only for View Mode) -->
-            <!-- Project Progress -->
-            <div class="col-md-6" *ngIf="mode === 'view'">
-                <div class="d-flex flex-column gap-1 w-100">
-                    <h4 class="mb-0 font-14 regular subTextColor">Project Progress</h4>
-                    <div class="input-field">{{ projectDetails.progressStatus }}</div>
-                </div>
-            </div>
-
-            <!-- Created By -->
-            <div class="col-md-6" *ngIf="mode === 'view' && role !== 'RESIDENT'">
-                <div class="d-flex flex-column gap-1 w-100">
-                    <h4 class="mb-0 font-14 regular subTextColor">Created By</h4>
-                    <div class="input-field">{{ projectDetails.createdBy }}</div>
-                </div>
-            </div>
-
-            <!-- Project Progress -->
-            <div class="col-md-6" *ngIf="mode === 'view'  && role !== 'RESIDENT'">
-                <div class="d-flex flex-column gap-1 w-100">
-                    <h4 class="mb-0 font-14 regular subTextColor">Approval Status</h4>
-                    <div class="input-field">{{ projectDetails.approvalStatus }}</div>
-                    <div *ngIf="isFieldInvalid('name')" class="text-danger">Project name is required.</div>
-                </div>
-            </div>
-
-            <!-- Approved By By -->
-            <div class="col-md-6" *ngIf="mode === 'view' && projectDetails.approvedBy  && role !== 'RESIDENT'">
-                <div class="d-flex flex-column gap-1 w-100">
-                    <h4 class="mb-0 font-14 regular subTextColor">Approved By</h4>
-                    <div class="input-field">{{ projectDetails.approvedBy }}</div>
-                </div>
-            </div>
-
-            <!-- Approved Date -->
-            <div class="col-md-6" *ngIf="mode === 'view' && projectDetails.approvedDate  && role !== 'RESIDENT'">
-                <div class="d-flex flex-column gap-1 w-100">
-                    <h4 class="mb-0 font-14 regular subTextColor">{{projectDetails.approvalStatus !== 'REJECTED' ?
-                        'Approved Date' : 'Rejected Date'}}</h4>
-                    <div class="input-field">{{ projectDetails.approvedDate | date: 'dd MMM yyyy, h:mm a' }}</div>
-                </div>
-            </div>
-
-            <!-- Created At -->
-            <div class="col-md-6" *ngIf="mode === 'view'  && role !== 'RESIDENT'">
-                <div class="d-flex flex-column gap-1 w-100">
-                    <h4 class="mb-0 font-14 regular subTextColor">Created At</h4>
-                    <div class="input-field">{{ projectDetails.createdAt | date: 'dd MMM yyyy, h:mm a' }}</div>
-                </div>
-            </div>
-
-            <!-- Updated At -->
-            <div class="col-md-6" *ngIf="mode === 'view'  && role !== 'RESIDENT'">
-                <div class="d-flex flex-column gap-1 w-100">
-                    <h4 class="mb-0 font-14 regular subTextColor">Updated At</h4>
-                    <div class="input-field">{{ projectDetails.updatedAt | date: 'dd MMM yyyy, h:mm a' }}</div>
-                </div>
-            </div>
-
-
-            <!-- Attachments -->
-            <div class="col-md-6" *ngIf="mode !== 'view'">
-                <div class="d-flex flex-column gap-1 w-100">
-                    <h4 class="mb-0 font-14 regular subTextColor">Attachments</h4>
-                    <input type="file" class="input-field" (change)="onFileSelected($event)" multiple />
-                </div>
-
-                <!-- Show Selected File Names -->
-                <ul class="mt-2">
-                    <li *ngFor="let file of selectedFiles; let i = index">
-                        {{ file.name }}
-                        <i class="bi bi-x-circle-fill ms-2 text-danger cursor-pointer"
-                            (click)="removeAttachment(i)"></i>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Locations (Multi-select) -->
-            <div class="col-md-6" *ngIf="mode !== 'view'">
-                <h4 class="mb-0 font-14 regular subTextColor">Project Locations
-                    <span class="text-danger" *ngIf="isFieldRequired('locationIds')">*</span>
-                </h4>
-                <select class="village-select" (change)="addLocation($event)"
-                    [ngClass]="{ 'is-invalid': isFieldInvalid('locationIds') }" multiple>
-                    <option *ngFor="let loc of locations" [value]="loc.id">{{ loc.formattedAddress }}</option>
-                </select>
-                <div *ngIf="isFieldInvalid('locationIds')" class="invalid-feedback">
-                    At least one Location must be selected.
-                </div>
-
-                <!-- Selected Village Chips -->
-                <div class="d-flex flex-wrap gap-2 mt-2" *ngIf="selectedLocations.length > 0">
-                    <div class="selected-chip" *ngFor="let loc of selectedLocations">
-                        {{ getFormattedLocations(loc.id) }}
-                        <i class="bi bi-x-circle-fill ms-2 text-danger cursor-pointer"
-                            (click)="removeLocation(loc.id)"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Main Attachments Viewer -->
-            <div class="col-md-6">
-                <div *ngIf="mode === 'view' && attachmentUrls.length > 0" class="attachments-container">
-                    <h4 class="mb-0 font-14 regular subTextColor">Attachments</h4>
-                    <!-- <div > -->
-                    <!-- <h4>📎 Attachments</h4> -->
-                    <div class="attachment-list">
-                        <!-- Display only image attachments -->
-                        <div *ngFor="let url of attachmentUrls; let i = index" class="attachment-item">
-                            <ng-container *ngIf="isImage(url)">
-                                <img [src]="url" alt="Attachment Image" class="attachment-image"
-                                    (click)="openImageViewer(i)" />
-                            </ng-container>
-
-                            <!-- Display PDF or other file types as links -->
-                            <ng-container *ngIf="isPdf(url)">
-                                <a [href]="url" target="_blank" rel="noopener noreferrer" class="attachment-file-link">
-                                    📄 {{ getFileName(url) }}
-                                </a>
-                            </ng-container>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- Image Viewer Modal -->
-            <div *ngIf="isViewerOpen" class="image-viewer-overlay">
-                <span class="close-btn" (click)="closeImageViewer()">×</span>
-                <img [src]="attachmentUrls[currentImageIndex]" class="full-image" />
-
-                <button class="nav-btn prev" (click)="prevImage()" [disabled]="currentImageIndex === 0">❮</button>
-                <button class="nav-btn next" (click)="nextImage()"
-                    [disabled]="currentImageIndex === attachmentUrls.length - 1">❯</button>
-            </div>
-
-            <!-- Assigned Sarpanch Details (only in view mode) -->
-            <div class="col-md-6" *ngIf="mode === 'view'">
-                <div class="form-group">
-                    <label class="font-weight-bold text-dark">Assigned Sarpanches</label>
-
-                    <div class="assigned-sarpanch-box mt-2" *ngFor="let assignedSarpanch of assignedSarpanchesDetails">
-                        <div class="assigned-sarpanch-item p-3 mb-3 shadow-sm rounded border">
-
-                            <div class="mb-1">
-                                <label class="form-label mb-0 text-secondary">Sarpanch Name</label>
-                                <div class="form-value">{{ assignedSarpanch.sarpanchName }}</div>
-                            </div>
-
-                            <div class="mb-1">
-                                <label class="form-label mb-0 text-secondary">Gram Panchayat</label>
-                                <div class="form-value">{{ assignedSarpanch.gramPanchaytName }}</div>
-                            </div>
-
-                            <div>
-                                <label class="form-label mb-0 text-secondary">Assigned Villages</label>
-                                <div class="form-value d-flex flex-column">
-                                    <div *ngFor="let village of assignedSarpanch.assignedVillages.split('|')">
-                                        • {{ village.trim() }}
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-            <!-- Expenditure Details Section -->
-            <div class="col-12"
-                *ngIf="mode === 'view' && projectDetails.progressStatus === 'COMPLETED' && (budget || eexpenditureAmount || expenditureDocument)">
-                <div class="card p-3 shadow-sm rounded bg-light">
-                    <h3 class="mb-3 text-dark">Expenditure Details</h3>
-                    <div class="row">
-
-                        <!-- Total Budget -->
-                        <div class="col-md-4" *ngIf="budget">
-                            <div class="d-flex flex-column gap-1 w-100">
-                                <h4 class="mb-0 font-14 regular subTextColor">Total Budget</h4>
-                                <div class="input-field">{{ budget }}</div>
-                            </div>
-                        </div>
-
-                        <!-- Expenditure Amount -->
-                        <div class="col-md-4" *ngIf="eexpenditureAmount">
-                            <div class="d-flex flex-column gap-1 w-100">
-                                <h4 class="mb-0 font-14 regular subTextColor">Expenditure Amount</h4>
-                                <div class="input-field">{{ eexpenditureAmount }}</div>
-                            </div>
-                        </div>
-
-                        <!-- Expenditure Document -->
-                        <div class="col-md-4" *ngIf="expenditureDocument">
-                            <div class="attachments-container">
-                                <h4 class="mb-0 font-14 regular subTextColor">Expenditure Document</h4>
-                                <div class="attachment-list">
-                                    <div class="attachment-item">
-                                        <!-- Image attachments -->
-                                        <ng-container *ngIf="isImage(expenditureDocument)">
-                                            <img [src]="expenditureDocument" alt="Expenditure Image"
-                                                title="Click to view full image" class="attachment-image"
-                                                (click)="openImageViewer(expenditureDocument)" />
-                                        </ng-container>
-
-                                        <!-- PDF attachments -->
-                                        <ng-container *ngIf="isPdf(expenditureDocument)">
-                                            <a [href]="expenditureDocument" target="_blank" rel="noopener noreferrer"
-                                                class="attachment-file-link" title="Open PDF">
-                                                📄 {{ getFileName(expenditureDocument) }}
-                                            </a>
-                                        </ng-container>
-
-                                        <!-- Fallback for unknown file types -->
-                                        <ng-container
-                                            *ngIf="!isImage(expenditureDocument) && !isPdf(expenditureDocument)">
-                                            <a [href]="expenditureDocument" target="_blank" rel="noopener noreferrer"
-                                                class="attachment-file-link" title="Open file">
-                                                📁 {{ getFileName(expenditureDocument) }} (Unknown type)
-                                            </a>
-                                        </ng-container>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-
-
-
-            <!-- Buttons -->
-            <div class="d-flex justify-content-end gap-4 mt-3" *ngIf="mode !== 'view'">
-                <button type="button" class="secondary-button py-2 scalable-p-48-24" (click)="goBack()">Cancel</button>
-                <button type="submit" class="primary-button py-2 scalable-p-48-24" (click)="onSubmit()"
-                    [disabled]="projectForm.invalid">
-                    {{isSubmitting ? 'Submitting...' : 'Submit'}}
-                </button>
-            </div>
-
+      <!-- Locations (Multi-select) -->
+      <div class="col-md-6" *ngIf="mode !== 'view'">
+        <h4 class="mb-0 font-14 regular subTextColor">Project Locations
+          <span class="text-danger" *ngIf="isFieldRequired('locationIds')">*</span>
+        </h4>
+        <select class="village-select" (change)="addLocation($event)"
+          [ngClass]="{ 'is-invalid': isFieldInvalid('locationIds') }" multiple>
+          <option *ngFor="let loc of locations" [value]="loc.id">{{ loc.formattedAddress }}</option>
+        </select>
+        <div *ngIf="isFieldInvalid('locationIds')" class="invalid-feedback">
+          At least one Location must be selected.
         </div>
-    </form>
+
+        <!-- Selected Village Chips -->
+        <div class="d-flex flex-wrap gap-2 mt-2" *ngIf="selectedLocations.length > 0">
+          <div class="selected-chip" *ngFor="let loc of selectedLocations">
+            {{ getFormattedLocations(loc.id) }}
+            <i class="bi bi-x-circle-fill ms-2 text-danger cursor-pointer" (click)="removeLocation(loc.id)"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Attachments Viewer -->
+      <div class="col-md-6">
+        <div *ngIf="mode === 'view' && attachmentUrls.length > 0" class="attachments-container">
+          <h4 class="mb-0 font-14 regular subTextColor">Attachments</h4>
+          <!-- <div > -->
+          <!-- <h4>📎 Attachments</h4> -->
+          <div class="attachment-list">
+            <!-- Display only image attachments -->
+            <div *ngFor="let url of attachmentUrls; let i = index" class="attachment-item">
+              <ng-container *ngIf="isImage(url)">
+                <img [src]="url" alt="Attachment Image" class="attachment-image" (click)="openImageViewer(i)" />
+              </ng-container>
+
+              <!-- Display PDF or other file types as links -->
+              <ng-container *ngIf="isPdf(url)">
+                <a [href]="url" target="_blank" rel="noopener noreferrer" class="attachment-file-link">
+                  📄 {{ getFileName(url) }}
+                </a>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Image Viewer Modal -->
+      <div *ngIf="isViewerOpen" class="image-viewer-overlay">
+        <span class="close-btn" (click)="closeImageViewer()">×</span>
+        <img [src]="attachmentUrls[currentImageIndex]" class="full-image" />
+
+        <button class="nav-btn prev" (click)="prevImage()" [disabled]="currentImageIndex === 0">❮</button>
+        <button class="nav-btn next" (click)="nextImage()"
+          [disabled]="currentImageIndex === attachmentUrls.length - 1">❯</button>
+      </div>
+
+      <!-- Assigned Sarpanch Details (only in view mode) -->
+      <div class="col-md-6" *ngIf="mode === 'view'">
+        <div class="form-group">
+          <label class="font-weight-bold text-dark">Assigned Sarpanches</label>
+
+          <div class="assigned-sarpanch-box mt-2" *ngFor="let assignedSarpanch of assignedSarpanchesDetails">
+            <div class="assigned-sarpanch-item p-3 mb-3 shadow-sm rounded border">
+
+              <div class="mb-1">
+                <label class="form-label mb-0 text-secondary">Sarpanch Name</label>
+                <div class="form-value">{{ assignedSarpanch.sarpanchName }}</div>
+              </div>
+
+              <div class="mb-1">
+                <label class="form-label mb-0 text-secondary">Gram Panchayat</label>
+                <div class="form-value">{{ assignedSarpanch.gramPanchaytName }}</div>
+              </div>
+
+              <div>
+                <label class="form-label mb-0 text-secondary">Assigned Villages</label>
+                <div class="form-value d-flex flex-column">
+                  <div *ngFor="let village of assignedSarpanch.assignedVillages.split('|')">
+                    • {{ village.trim() }}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- Expenditure Details Section -->
+      <div class="col-12"
+        *ngIf="mode === 'view' && projectDetails.progressStatus === 'COMPLETED' && (budget || eexpenditureAmount || expenditureDocument)">
+        <div class="card p-3 shadow-sm rounded bg-light">
+          <h3 class="mb-3 text-dark">Expenditure Details</h3>
+          <div class="row">
+
+            <!-- Total Budget -->
+            <div class="col-md-4" *ngIf="budget">
+              <div class="d-flex flex-column gap-1 w-100">
+                <h4 class="mb-0 font-14 regular subTextColor">Total Budget</h4>
+                <div class="input-field">{{ budget }}</div>
+              </div>
+            </div>
+
+            <!-- Expenditure Amount -->
+            <div class="col-md-4" *ngIf="eexpenditureAmount">
+              <div class="d-flex flex-column gap-1 w-100">
+                <h4 class="mb-0 font-14 regular subTextColor">Expenditure Amount</h4>
+                <div class="input-field">{{ eexpenditureAmount }}</div>
+              </div>
+            </div>
+
+            <!-- Expenditure Document -->
+            <div class="col-md-4" *ngIf="expenditureDocument">
+              <div class="attachments-container">
+                <h4 class="mb-0 font-14 regular subTextColor">Expenditure Document</h4>
+                <div class="attachment-list">
+                  <div class="attachment-item">
+                    <!-- Image attachments -->
+                    <ng-container *ngIf="isImage(expenditureDocument)">
+                      <img [src]="expenditureDocument" alt="Expenditure Image" title="Click to view full image"
+                        class="attachment-image" (click)="openImageViewer(expenditureDocument)" />
+                    </ng-container>
+
+                    <!-- PDF attachments -->
+                    <ng-container *ngIf="isPdf(expenditureDocument)">
+                      <a [href]="expenditureDocument" target="_blank" rel="noopener noreferrer"
+                        class="attachment-file-link" title="Open PDF">
+                        📄 {{ getFileName(expenditureDocument) }}
+                      </a>
+                    </ng-container>
+
+                    <!-- Fallback for unknown file types -->
+                    <ng-container *ngIf="!isImage(expenditureDocument) && !isPdf(expenditureDocument)">
+                      <a [href]="expenditureDocument" target="_blank" rel="noopener noreferrer"
+                        class="attachment-file-link" title="Open file">
+                        📁 {{ getFileName(expenditureDocument) }} (Unknown type)
+                      </a>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <!-- Buttons -->
+      <div class="d-flex justify-content-end gap-4 mt-3" *ngIf="mode !== 'view'">
+        <button type="button" class="secondary-button py-2 scalable-p-48-24" (click)="goBack()">Cancel</button>
+        <button type="submit" class="primary-button py-2 scalable-p-48-24" (click)="onSubmit()"
+          [disabled]="projectForm.invalid">
+          {{isSubmitting ? 'Submitting...' : 'Submit'}}
+        </button>
+      </div>
+
+    </div>
+  </form>
 </div>

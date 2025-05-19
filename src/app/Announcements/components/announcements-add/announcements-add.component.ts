@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
+import { Location } from '@angular/common';
 import { AnnouncementService } from '../../../shared/services/announcement.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
@@ -33,7 +33,8 @@ export class AnnouncementsAddComponent {
     private announcementService: AnnouncementService,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private location: Location
   ) {
     const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
     this.role = roleString as Role; // ✅ safely assign enum
@@ -241,5 +242,9 @@ export class AnnouncementsAddComponent {
   }
   removeAttachment(index: number): void {
     this.selectedFiles.splice(index, 1);
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

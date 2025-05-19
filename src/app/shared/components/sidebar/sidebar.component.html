@@ -130,16 +130,14 @@
 
     <!-- Schemes Dropdown -->
     <!-- Parent item -->
-    <li class="cursor-pointer dropdown-toggle"
-      (click)="toggleSchemesMenu()" [class.active]="isSchemeMenuOpen">
+    <li class="cursor-pointer dropdown-toggle" (click)="toggleSchemesMenu()" [class.active]="isSchemeMenuOpen">
       <img src="assets/images/svg/scheme-icon.svg" class="white-icon" style="width: 20px; height: 20px;">
       <span class="menu-text singleLine">Schemes</span>
     </li>
 
     <!-- Submenu -->
     <ul *ngIf="isSchemeMenuOpen" class="sub-menu">
-      <li [routerLink]="'/schemes/list'"
-        routerLinkActive="active">
+      <li [routerLink]="'/schemes/list'" routerLinkActive="active">
         <img src="assets/images/svg/project-list-icon.svg" alt="project-list-icon" class="white-icon" />
         <!-- <i class="bi bi-card-list white-icon"></i> -->
         Schemes List
@@ -198,7 +196,8 @@
       <li [routerLink]="'local-Events/Local-Events-list'" routerLinkActive="active"><img
           src="assets/images/svg/user-list-icon.svg" alt="user-list-icon" class="white-icon" />Local Events List
       </li>
-      <li [routerLink]="'local-Events/grievance-delete'" routerLinkActive="active" *ngIf="role === Role.SARPANCH">
+      <li [routerLink]="'local-Events/grievance-delete'" routerLinkActive="active"
+        *ngIf="role === Role.SARPANCH || role === Role.ADMIN">
         <img src="assets/images/svg/delete-user-icon.svg" alt="delete-user-icon" class="white-icon" />Deleted
         Local Events
       </li>

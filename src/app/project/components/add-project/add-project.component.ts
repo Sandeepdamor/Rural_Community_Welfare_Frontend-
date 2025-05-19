@@ -1,5 +1,12 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormArray,
+  ReactiveFormsModule,
+  FormsModule,
+} from '@angular/forms';
 import { CommonModule, Location } from '@angular/common';
 import { AddressService } from '../../../shared/services/address.service';
 import { Village } from '../../../shared/interfaces/address/village';
@@ -39,10 +46,11 @@ export class AddProjectComponent implements OnInit {
   expenditureDocument!: string;
   eexpenditureAmount!: number;
   budget!: number;
+  currentImageIndex: number = 0; // initialize as needed
+  //attachmentUrls: string[] = []; // assuming this is an array of URLs
 
   isViewerOpen = false;
- viewerImagePath: string = '';
-
+  viewerImagePath: string = '';
 
   projectDetails: Partial<ProjectResponse> = {
     progressStatus: '' as ProjectProgress, // or better, set a default like ProjectProgress.NOT_STARTED
@@ -51,14 +59,12 @@ export class AddProjectComponent implements OnInit {
     approvedBy: '',
     approvedDate: '',
     createdAt: '',
-    updatedAt: ''
+    updatedAt: '',
   };
-
-
 
   mode: 'add' | 'edit' | 'view' = 'add';
   projectId!: string;
-  gramPanchayatName !: string;
+  gramPanchayatName!: string;
   tomorrow: string = '';
   today: string = '';
 
@@ -82,7 +88,6 @@ export class AddProjectComponent implements OnInit {
     private userService: UserService,
     private authService: AuthService,
     private tokenService: TokenService
-
   ) {
     const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
     this.role = roleString as Role; // ✅ safely assign enum
@@ -96,12 +101,12 @@ export class AddProjectComponent implements OnInit {
     this.authService.getLoggedInUser().subscribe({
       next: (user) => {
         this.currentUser = user;
-        this.fetchLocations();  // Now call fetchLocations after the user is fetched
+        this.fetchLocations(); // Now call fetchLocations after the user is fetched
       },
       error: (err) => {
         console.error('Error fetching logged-in user:', err);
         alert('Failed to load logged-in user.');
-      }
+      },
     });
 
     if (this.mode !== 'add') {
@@ -139,10 +144,8 @@ export class AddProjectComponent implements OnInit {
       this.gramPanchayatName = state?.gramPanchayatName;
 
       console.log('Gram Panchayat IN VIEW PAGE ==>>', this.gramPanchayatName);
-
     }
   }
-
 
   initializeForm(): void {
     this.projectForm = this.fb.group({
@@ -163,7 +166,6 @@ export class AddProjectComponent implements OnInit {
     });
   }
 
-
   fetchLocations(): void {
     if (this.currentUser.role === 'ADMIN') {
       // Show all addresses
@@ -175,30 +177,31 @@ export class AddProjectComponent implements OnInit {
         error: (error) => {
           console.error('Error fetching addresses:', error);
           alert(error.message);
-        }
+        },
       });
-
     } else if (this.currentUser.role === 'SARPANCH') {
       // Show Sarpancch addresses
-      this.addressService.getAddressesBySarpanchId(this.currentUser.id).subscribe({
-        next: (data) => {
-          this.locations = data;
-          console.log('All addresses:', this.locations);
-        },
-        error: (error) => {
-          console.error('Error fetching addresses:', error);
-          alert(error.message);
-        }
-      });
+      this.addressService
+        .getAddressesBySarpanchId(this.currentUser.id)
+        .subscribe({
+          next: (data) => {
+            this.locations = data;
+            console.log('All addresses:', this.locations);
+          },
+          error: (error) => {
+            console.error('Error fetching addresses:', error);
+            alert(error.message);
+          },
+        });
     }
   }
 
-
   getFormattedLocations(locationId: string): string {
-    const address = this.locations.find(location => location.id === locationId); // Find address by id (both strings)
+    const address = this.locations.find(
+      (location) => location.id === locationId
+    ); // Find address by id (both strings)
     return address ? address.formattedAddress : 'Address not found'; // Return formatted address
   }
-
 
   get locationIds(): FormArray {
     return this.projectForm.get('locationIds') as FormArray;
@@ -207,14 +210,14 @@ export class AddProjectComponent implements OnInit {
   addLocation(event: any): void {
     const selectElement = event.target as HTMLSelectElement;
     if (!selectElement || !selectElement.options) {
-      console.error("Invalid select element or options.");
+      console.error('Invalid select element or options.');
       return;
     }
     const selectedOption = selectElement.options[selectElement.selectedIndex]; // Get the selected option
 
     // Check if selectedOption is null or undefined
     if (!selectedOption) {
-      console.error("No option selected.");
+      console.error('No option selected.');
       return;
     }
 
@@ -223,23 +226,29 @@ export class AddProjectComponent implements OnInit {
 
     // Check if villageId and villageName are valid
     if (!villageId || !villageName) {
-      console.error("Invalid village data.");
+      console.error('Invalid village data.');
       return;
     }
 
     // Check if village is already selected by comparing the villageId
-    if (!this.selectedLocations.some(v => v.id === villageId)) {
-      this.selectedLocations.push({ id: villageId, formattedAddress: villageName });
+    if (!this.selectedLocations.some((v) => v.id === villageId)) {
+      this.selectedLocations.push({
+        id: villageId,
+        formattedAddress: villageName,
+      });
     }
 
     // After adding a village, validate the field (this is just a precautionary step)
-    this.projectForm.get('locationIds')?.setValue(this.selectedLocations.map(v => v.id));
-
+    this.projectForm
+      .get('locationIds')
+      ?.setValue(this.selectedLocations.map((v) => v.id));
   }
 
   removeLocation(villageId: string): void {
     // Remove the selected village by filtering out the id
-    this.selectedLocations = this.selectedLocations.filter(v => v.id !== villageId);
+    this.selectedLocations = this.selectedLocations.filter(
+      (v) => v.id !== villageId
+    );
 
     const locationControl = this.projectForm.get('locationIds');
     if (this.selectedLocations.length === 0) {
@@ -247,9 +256,8 @@ export class AddProjectComponent implements OnInit {
       locationControl?.markAsTouched(); // ✅ validation trigger karega
       return;
     }
-    locationControl?.setValue(this.selectedLocations.map(v => v.id));
+    locationControl?.setValue(this.selectedLocations.map((v) => v.id));
     locationControl?.setErrors(null);
-
   }
 
   isFieldInvalid(fieldName: string): boolean {
@@ -260,17 +268,20 @@ export class AddProjectComponent implements OnInit {
 
   isFieldRequired(fieldName: string): boolean {
     // Replace with your form control logic to check if the field is required
-    return this.projectForm.get(fieldName)?.hasValidator(Validators.required) ?? false;
+    return (
+      this.projectForm.get(fieldName)?.hasValidator(Validators.required) ??
+      false
+    );
   }
-
-
 
   onFileSelected(event: any): void {
     const files: FileList = event.target.files;
     if (files && files.length > 0) {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        const alreadyAdded = this.selectedFiles.some(f => f.name === file.name && f.size === file.size);
+        const alreadyAdded = this.selectedFiles.some(
+          (f) => f.name === file.name && f.size === file.size
+        );
         if (!alreadyAdded) {
           this.selectedFiles.push(file);
         }
@@ -282,9 +293,9 @@ export class AddProjectComponent implements OnInit {
     this.selectedFiles.splice(index, 1);
   }
 
-
   onSubmit(): void {
-    if (this.isSubmitting || this.projectForm.invalid || this.mode === 'view') return;
+    if (this.isSubmitting || this.projectForm.invalid || this.mode === 'view')
+      return;
 
     this.isSubmitting = true;
     const formValue = this.projectForm.value;
@@ -304,14 +315,18 @@ export class AddProjectComponent implements OnInit {
       formData.append('attachments', file);
     });
 
-    const request$ = this.mode === 'edit'
-      ? this.projectService.updateProject(this.projectId, formData)
-      : this.projectService.addProject(formData);
+    const request$ =
+      this.mode === 'edit'
+        ? this.projectService.updateProject(this.projectId, formData)
+        : this.projectService.addProject(formData);
 
     request$.subscribe({
       next: (res: ApiResponse) => {
         this.toastService.showSuccess(res.message);
-        this.router.navigate([ComponentRoutes.PROJECT, ComponentRoutes.PROJECTLIST]);
+        this.router.navigate([
+          ComponentRoutes.PROJECT,
+          ComponentRoutes.PROJECTLIST,
+        ]);
       },
       error: (err) => {
         console.error('Project save failed', err);
@@ -321,101 +336,114 @@ export class AddProjectComponent implements OnInit {
       complete: () => {
         this.isSubmitting = false;
         this.projectForm.reset();
-      }
+      },
     });
   }
-
 
   formatDateTime(date: string): string {
     // Converts "2025-05-01" -> "2025-05-01 00:00:00"
     return date + ' 00:00:00';
   }
 
-
   loadProjectById(): void {
-    console.log('BEFORE COLL GETPROJECT BY GPN ===>> ', this.gramPanchayatName, ' : id ==> ', this.projectId);
-    this.projectService.getProjectByIdAndGramPanchayar(this.projectId, this.gramPanchayatName).subscribe({
-      next: (res) => {
-        console.log('GET PROJECT BY ID ===> ', res);
-        const project = res.response;
-        this.budget = project.budget;
-        this.expenditureDocument = project.document;
-        this.eexpenditureAmount = project.expenditureAmount;
-        // Patch basic project fields
-        this.projectForm.patchValue({
-          name: project.projectName,
-          description: project.description,
-          budget: project.budget,
-          startDate: this.formatDateForInput(project.startDate),
-          endDate: this.formatDateForInput(project.endDate),
-        });
-        this.attachmentUrls = project.attachmenets || [];
-        console.log(' PROJECT ATTACHEMENTS ===> ', project.attachmenets);
-        console.log('ATTACHEMENTS ===> ', this.attachmentUrls);
-
-
-        // Extract locations from assigned sarpanches
-        this.selectedLocations = (project.assignedSarpanches || []).flatMap((s: any) =>
-          (s.locations || []).map((formattedAddress: string) => {
-            const matched = this.locations.find(loc => loc.formattedAddress === formattedAddress);
-            return matched ? { id: matched.id, formattedAddress } : null;
-          }).filter((loc: Village | null): loc is Village => loc !== null)
-        );
-
-
-
-        // Handle view/edit mode
-        if (this.mode === 'view') {
-          // Fetch Sarpanch details for createdBy field
-
-          this.userService.getUserById(project.createdBy).subscribe(res => {
-            const role = res.response.role;
-            console.log('GET USER BY ID => ', res.response);
-            console.log('GET USER BY ID ROLE => ', res.response.role);
-            if (role === 'ADMIN') {
-              this.projectDetails.createdBy = role;
-
-            }
-            else if (role === 'SARPANCH') {
-              this.sarpanchService.getSarpanchById(project.createdBy).subscribe(res => {
-                const user = res.response;
-                const name = user?.name || 'N/A';
-                const fatherOrHusbandName = user?.fatherOrHusbandName || 'N/A';
-                const gramPanchayatName = user?.gramPanchayatName || 'N/A';
-                const role = 'Sarpanch';
-
-                const createdByDetailsString = `${name} (${fatherOrHusbandName}), ${gramPanchayatName},${role}`;
-                this.projectDetails.createdBy = createdByDetailsString;
-                console.log('CREATED BY => ', this.projectDetails.createdBy);
-                console.log('USer => ', user);
-              });
-            }
-          });
-
-          // Set other fields immediately
-          this.projectDetails.approvalStatus = project.approvalStatus;
-          this.projectDetails.progressStatus = project.progressStatus;
-          this.projectDetails.approvedBy = project.approvedBy ? 'ADMIN' : 'Not Approved';
-          this.projectDetails.approvedDate = project.approvedDate;
-          this.projectDetails.createdAt = project.createdAt;
-          this.projectDetails.updatedAt = project.updatedAt;
-
-          this.projectForm.get('locationIds')?.disable();
-          this.projectForm.disable();
-          this.displayAssignedSarpanches(project.assignedSarpanches);
-        } else {
-          this.projectForm.get('locationIds')?.enable();
-          const selectedIds = this.selectedLocations.map(loc => loc.id);
+    console.log(
+      'BEFORE COLL GETPROJECT BY GPN ===>> ',
+      this.gramPanchayatName,
+      ' : id ==> ',
+      this.projectId
+    );
+    this.projectService
+      .getProjectByIdAndGramPanchayar(this.projectId, this.gramPanchayatName)
+      .subscribe({
+        next: (res) => {
+          console.log('GET PROJECT BY ID ===> ', res);
+          const project = res.response;
+          this.budget = project.budget;
+          this.expenditureDocument = project.document;
+          this.eexpenditureAmount = project.expenditureAmount;
+          // Patch basic project fields
           this.projectForm.patchValue({
-            locationIds: selectedIds,
+            name: project.projectName,
+            description: project.description,
+            budget: project.budget,
+            startDate: this.formatDateForInput(project.startDate),
+            endDate: this.formatDateForInput(project.endDate),
           });
-        }
-      },
-      error: (err) => {
-        console.error('Error loading project:', err);
-        this.toastService.showError('Project load failed.');
-      }
-    });
+          this.attachmentUrls = project.attachmenets || [];
+          console.log(' PROJECT ATTACHEMENTS ===> ', project.attachmenets);
+          console.log('ATTACHEMENTS ===> ', this.attachmentUrls);
+
+          // Extract locations from assigned sarpanches
+          this.selectedLocations = (project.assignedSarpanches || []).flatMap(
+            (s: any) =>
+              (s.locations || [])
+                .map((formattedAddress: string) => {
+                  const matched = this.locations.find(
+                    (loc) => loc.formattedAddress === formattedAddress
+                  );
+                  return matched ? { id: matched.id, formattedAddress } : null;
+                })
+                .filter((loc: Village | null): loc is Village => loc !== null)
+          );
+
+          // Handle view/edit mode
+          if (this.mode === 'view') {
+            // Fetch Sarpanch details for createdBy field
+
+            this.userService.getUserById(project.createdBy).subscribe((res) => {
+              const role = res.response.role;
+              console.log('GET USER BY ID => ', res.response);
+              console.log('GET USER BY ID ROLE => ', res.response.role);
+              if (role === 'ADMIN') {
+                this.projectDetails.createdBy = role;
+              } else if (role === 'SARPANCH') {
+                this.sarpanchService
+                  .getSarpanchById(project.createdBy)
+                  .subscribe((res) => {
+                    const user = res.response;
+                    const name = user?.name || 'N/A';
+                    const fatherOrHusbandName =
+                      user?.fatherOrHusbandName || 'N/A';
+                    const gramPanchayatName = user?.gramPanchayatName || 'N/A';
+                    const role = 'Sarpanch';
+
+                    const createdByDetailsString = `${name} (${fatherOrHusbandName}), ${gramPanchayatName},${role}`;
+                    this.projectDetails.createdBy = createdByDetailsString;
+                    console.log(
+                      'CREATED BY => ',
+                      this.projectDetails.createdBy
+                    );
+                    console.log('USer => ', user);
+                  });
+              }
+            });
+
+            // Set other fields immediately
+            this.projectDetails.approvalStatus = project.approvalStatus;
+            this.projectDetails.progressStatus = project.progressStatus;
+            this.projectDetails.approvedBy = project.approvedBy
+              ? 'ADMIN'
+              : 'Not Approved';
+            this.projectDetails.approvedDate = project.approvedDate;
+            this.projectDetails.createdAt = project.createdAt;
+            this.projectDetails.updatedAt = project.updatedAt;
+
+            this.projectForm.get('locationIds')?.disable();
+            this.projectForm.disable();
+            this.displayAssignedSarpanches(project.assignedSarpanches);
+          } else {
+            this.projectForm.get('locationIds')?.enable();
+            const selectedIds = this.selectedLocations.map((loc) => loc.id);
+            this.projectForm.patchValue({
+              locationIds: selectedIds,
+            });
+          }
+        },
+        error: (err) => {
+          console.error('Error loading project:', err);
+          this.toastService.showError('Project load failed.');
+        },
+      });
   }
 
   // ✅ Updated method to format assigned village addresses as a single string using '|'
@@ -431,25 +459,26 @@ export class AddProjectComponent implements OnInit {
         console.log('1---------------------------1 ', s.assignedVillage);
         formattedVillages = s.assignedVillage
           .map((v: Village) => v) // Access the 'formattedAddress' field here
-          .join(' | ');  // Join with ' | '
+          .join(' | '); // Join with ' | '
       }
 
       return {
         sarpanchName: s.sarpanchName,
         gramPanchaytName: s.gramPanchayatName ?? 'N/A',
         assignedVillages: formattedVillages,
-
       };
     });
 
-    console.log('Assigned Sarpanches for view:', this.assignedSarpanchesDetails);
+    console.log(
+      'Assigned Sarpanches for view:',
+      this.assignedSarpanchesDetails
+    );
   }
 
-openImageViewer(imagePath: string): void {
-  this.viewerImagePath = imagePath;
-  this.isViewerOpen = true;
-}
-
+  openImageViewer(imagePath: string): void {
+    this.viewerImagePath = imagePath;
+    this.isViewerOpen = true;
+  }
 
   closeImageViewer(): void {
     this.isViewerOpen = false;
@@ -469,8 +498,6 @@ openImageViewer(imagePath: string): void {
   getFileName(url: string): string {
     return url.split('/').pop() || 'Unknown File';
   }
-
-
 
   formatDateForInput(dateStr: string): string {
     const date = new Date(dateStr);

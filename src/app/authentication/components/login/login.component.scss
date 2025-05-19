@@ -3,6 +3,8 @@
     height: 100vh;
 }
 
+
+
 /* Background image container */
 .login-background-image {
     width: 100%;
@@ -85,4 +87,21 @@
 
 .is-invalid {
     border-color: #d9534f;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 2rem; /* space for the eye icon */
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #666;
 }
