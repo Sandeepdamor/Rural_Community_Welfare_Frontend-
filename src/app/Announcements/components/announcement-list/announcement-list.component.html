@@ -13,7 +13,7 @@
       </div>
 
       <!-- Filter Button -->
-      <div class="dropdown" [class.show]="showFilters">
+      <div *ngIf="role !== 'RESIDENT'" class="dropdown"  [class.show]="showFilters">
         <button class="btn btn-outline-dark d-flex align-items-center gap-1 dropdown-toggle" (click)="toggleFilter()"
           type="button">
           <strong>Filter</strong>

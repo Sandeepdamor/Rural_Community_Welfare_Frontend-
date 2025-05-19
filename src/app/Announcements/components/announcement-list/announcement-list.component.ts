@@ -30,17 +30,6 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
   isLoading: boolean = false;
   role: Role;
 
-  constructor(
-    private changeDetection: ChangeDetectorRef,
-    private announcementService: AnnouncementService,
-    private snackBar: MatSnackBar,
-    private router: Router,
-    private tokenService: TokenService
-  ) {
-    const roleStr = tokenService.getRoleFromToken();
-    this.role = roleStr as Role;
-  }
-
   currentPaginationRequest: PaginationRequest = {
     pageNumber: 1,
     pageSize: 5,
@@ -59,64 +48,28 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
     search: '',
     pageNumber: 1,
     pageSize: 5,
-    sortBy: 'createdAt', // or 'createdAt', depending on your backend's field
+    sortBy: 'createdAt',
   };
-
-  loadAllAnnouncements(paginationRequest: PaginationRequest) {
-    this.isLoading = true;
-    this.announcementService
-      .getAllAnnouncement('PUBLISHED', true, paginationRequest)
-      .subscribe({
-        next: (response) => {
-          console.log('API Response:', response);
-          console.log('Content length:', response.content.length);
-          console.log('Total elements:', response.totalElements);
-
-          // this.agencyTableConfig = {
-          //   ...this.agencyTableConfig,
-          //   data: response.content,
-          //   totalRecords: response.totalElements,
-          // };
-          this.agencyTableConfig = {
-            ...this.agencyTableConfig,
-            data: response.content.map((item: any) => ({
-              ...item,
-              authorName: item.authorName.name || 'N/A',
-            })),
-            totalRecords: response.totalElements,
-          };
-          this.changeDetection.detectChanges();
-          this.isLoading = false;
-        },
-        error: (err) => {
-          console.error('Error fetching residents:', err.error);
-          // alert(err.error.message);
-          this.isLoading = false;
-        },
-      });
-  }
 
   agencyTableConfig: TableConfig = {
-    columns: [
-      // { name: 'id', displayName: 'ID', type: 'text' },
-      { name: 'title', displayName: 'Title', type: 'text' },
-      { name: 'content', displayName: 'Content', type: 'text' },
-      { name: 'date', displayName: 'Date', type: 'text' },
-      { name: 'status', displayName: 'Status', type: 'announcementStatus' },
-      { name: 'authorName', displayName: 'Author Name', type: 'text' },
-      // { name: 'isDeleted', displayName: 'Deleted', type: 'boolean' },
-      //{ name: 'isActive', displayName: 'Active', type: 'status' },
-      //  { name: 'createdAt', displayName: 'Created At', type: 'datetime' },
-      // { name: 'updatedAt', displayName: 'Updated At', type: 'datetime' },
-      //  { name: 'attachments', displayName: 'Attachments', type: 'list' },
-      { name: 'action', displayName: 'Action', type: 'action' },
-    ],
+    columns: [],
     data: [],
-    actions: ['edit', 'delete', 'view profile'],
+    actions: [],
   };
 
+  constructor(
+    private changeDetection: ChangeDetectorRef,
+    private announcementService: AnnouncementService,
+    private snackBar: MatSnackBar,
+    private router: Router,
+    private tokenService: TokenService
+  ) {
+    const roleStr = tokenService.getRoleFromToken();
+    this.role = roleStr as Role;
+  }
+
   ngOnInit(): void {
-    console.log('LOAD ANNOUNCEMENT');
+    this.configureTableBasedOnRole();
     this.loadAllAnnouncements(this.currentPaginationRequest);
   }
 
@@ -124,6 +77,53 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.changeDetection.detectChanges();
     }, 200);
+  }
+
+  configureTableBasedOnRole() {
+    if (this.role === Role.RESIDENT) {
+      this.agencyTableConfig.columns = [
+        { name: 'title', displayName: 'Title', type: 'text' },
+        { name: 'content', displayName: 'Content', type: 'text' },
+        { name: 'date', displayName: 'Date', type: 'text' },
+        { name: 'action', displayName: 'Action', type: 'action' },
+      ];
+      this.agencyTableConfig.actions = ['view profile'];
+    } else {
+      this.agencyTableConfig.columns = [
+        { name: 'title', displayName: 'Title', type: 'text' },
+        { name: 'content', displayName: 'Content', type: 'text' },
+        { name: 'date', displayName: 'Date', type: 'text' },
+        { name: 'status', displayName: 'Status', type: 'announcementStatus' },
+        { name: 'authorName', displayName: 'Author Name', type: 'text' },
+        { name: 'isActive', displayName: 'Active', type: 'status' },
+        { name: 'action', displayName: 'Action', type: 'action' },
+      ];
+      this.agencyTableConfig.actions = ['edit', 'delete', 'view profile'];
+    }
+  }
+
+  loadAllAnnouncements(paginationRequest: PaginationRequest) {
+    this.isLoading = true;
+    this.announcementService
+      .getAllAnnouncement('PUBLISHED', true, paginationRequest)
+      .subscribe({
+        next: (response) => {
+          this.agencyTableConfig = {
+            ...this.agencyTableConfig,
+            data: response.content.map((item: any) => ({
+              ...item,
+              authorName: item.authorName?.name || 'N/A',
+            })),
+            totalRecords: response.totalElements,
+          };
+          this.changeDetection.detectChanges();
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Error fetching announcements:', err.error);
+          this.isLoading = false;
+        },
+      });
   }
 
   closeFilterIfClickedOutside(event: MouseEvent) {
@@ -148,17 +148,11 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
     };
     this.announcementService.filterAnnouncements(params).subscribe({
       next: (response) => {
-        console.log('Search RESULT => ', response);
-        // this.agencyTableConfig = {
-        //   ...this.agencyTableConfig,
-        //   data: response.content,
-        //   totalRecords: response.totalElements,
-        // };
         this.agencyTableConfig = {
           ...this.agencyTableConfig,
           data: response.content.map((item: any) => ({
             ...item,
-            authorName: item.authorName.name || 'N/A',
+            authorName: item.authorName?.name || 'N/A',
           })),
           totalRecords: response.totalElements,
         };
@@ -172,20 +166,12 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onSearch() {}
-
   onChangeAnnouncementStatus(event: {
     id: number;
     AnnouncementStatus: string;
   }) {
-    console.log(
-      'Changing status for:',
-      event.id,
-      'to',
-      event.AnnouncementStatus
-    );
     const payload = {
-      id: event.id.toString(), //  Correct
+      id: event.id.toString(),
       status: event.AnnouncementStatus,
     };
 
@@ -208,7 +194,6 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
         queryParams: { mode: 'update' },
       });
     } else if (action === 'view profile') {
-      console.log('Navigating to profile of announcement with ID:', element.id);
       this.router.navigate(['announcements/add', element.id], {
         queryParams: { mode: 'view-announcements' },
       });
@@ -216,49 +201,40 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
   }
 
   onDeleteAnnouncement(element: any) {
-    console.log('Attempting to delete announcement with ID:', element.id);
-
     this.announcementService
       .deleteAnnouncement(element.id.toString())
       .subscribe({
         next: (response: any) => {
-          console.log('Announcement deleted successfully:', response);
           this.snackBar.open('Announcement deleted successfully!', 'Close', {
-            duration: 3000, // The snack bar will stay open for 3 seconds
-            horizontalPosition: 'center', // Center the snack bar horizontally
-            verticalPosition: 'top', // Show the snack bar at the top of the screen
-            panelClass: ['snack-success'], // Customize the style of the snack bar if needed
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['snack-success'],
           });
+          this.loadAllAnnouncements(this.currentPaginationRequest);
         },
         error: (error) => {
-          console.error('Failed to delete announcement', error);
           this.snackBar.open('Failed to delete announcement!', 'Close', {
-            duration: 3000, // The snack bar will stay open for 3 seconds
-            horizontalPosition: 'center', // Center the snack bar horizontally
-            verticalPosition: 'top', // Show the snack bar at the top of the screen
-            panelClass: ['snack-success'], // Customize the style of the snack bar if needed
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['snack-error'],
           });
         },
       });
   }
 
   onUpdateAnnouncement(element: any) {
-    console.log('Attempting to update announcement with ID:', element.id);
-
-    // Prepare the data to be updated
     const updatedData = {
-      title: element.title, // Example data, add fields you want to update
+      title: element.title,
       description: element.description,
-      status: element.status, // You can update multiple fields as per your requirement
+      status: element.status,
     };
 
-    // Call the service to update the announcement
     this.announcementService
       .updateAnnouncement(element.id.toString(), updatedData)
       .subscribe({
         next: (response: any) => {
-          console.log('Announcement updated successfully:', response);
-          // Show success message
           this.snackBar.open('Announcement updated successfully!', 'Close', {
             duration: 3000,
             horizontalPosition: 'center',
@@ -267,8 +243,6 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
           });
         },
         error: (error: HttpErrorResponse) => {
-          console.error('Failed to update announcement', error);
-          // Show error message
           this.snackBar.open('Failed to update announcement', 'Close', {
             duration: 3000,
             horizontalPosition: 'center',
@@ -280,26 +254,22 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
   }
 
   onSearchAnnouncements() {
-    console.log('Search button clicked'); // Debug
     this.isLoading = true;
-
     const searchRequest: any = {
       search: this.searchTerm,
       pageNumber: this.currentPaginationRequest.pageNumber,
       pageSize: this.currentPaginationRequest.pageSize,
       sortBy: this.currentPaginationRequest.sortBy,
     };
-    console.log('SEARCH TERM => ', this.searchTerm);
-
-    console.log('SEARCH REQUEST => ', searchRequest);
-    console.log('SEARCH REQUEST FILTER => ', this.filters);
 
     this.announcementService.searchAnnouncements(searchRequest).subscribe({
       next: (response) => {
-        console.log('Search RESULT => ', response);
         this.agencyTableConfig = {
           ...this.agencyTableConfig,
-          data: response.content,
+          data: response.content.map((item: any) => ({
+            ...item,
+            authorName: item.authorName?.name || 'N/A',
+          })),
           totalRecords: response.totalElements,
         };
         this.changeDetection.detectChanges();

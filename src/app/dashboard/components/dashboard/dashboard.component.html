@@ -119,8 +119,6 @@
     </div>
   </div>
 
-
-
   <!-- Resident Dashboard -->
 
   <div class="dashboard-cards d-flex justify-content-between" style="gap: 0.5rem;" *ngIf="userRole === 'RESIDENT'">
@@ -149,44 +147,38 @@
 
 
 
-  <section class="announcements" *ngIf="userRole === 'RESIDENT'">
+  <!-- Announcements Section -->
+  <section class="announcements" *ngIf="announcements && userRole === 'RESIDENT'">
     <div class="container">
       <div class="announcements-inner">
         <div class="explore_head text-center">
-          <span class="rounded-pill">Latest Announcement</span><br>
+          <span class="rounded-pill">Latest Updates</span><br />
           <h3>Important Announcements</h3>
         </div>
 
         <div class="announcement-container">
-          <div class="announcement-slider">
-            <div class="announcement-item">
-              <h4>New Ration Card Rules</h4>
-              <p><strong>Name:</strong> Government of India</p>
-              <p><strong>Date:</strong> March 25, 2025</p>
-              <p><strong>Description:</strong> The government has updated the eligibility criteria for ration cards.</p>
-              <a href="#">Read More</a>
-            </div>
+          <!-- Show message if no announcements -->
+          <div *ngIf="announcements.length === 0" class="text-center">
+            <p>No announcements available at the moment.</p>
+          </div>
 
-            <div class="announcement-item">
-              <h4>Farmer Subsidy</h4>
-              <p><strong>Name:</strong> Agricultural Department</p>
-              <p><strong>Date:</strong> March 20, 2025</p>
-              <p><strong>Description:</strong> New financial aid announced for small-scale farmers.</p>
-              <a href="#">Read More</a>
-            </div>
-
-            <div class="announcement-item">
-              <h4>Election Dates</h4>
-              <p><strong>Name:</strong> Election Commission</p>
-              <p><strong>Date:</strong> March 15, 2025</p>
-              <p><strong>Description:</strong> Panchayat elections are scheduled for next month.</p>
-              <a href="#">Read More</a>
+          <!-- Show slider if announcements exist -->
+          <div *ngIf="announcements.length > 0" class="announcement-slider"
+            [ngClass]="{ 'single-item': announcements.length === 1 }">
+            <div class="announcement-item" *ngFor="let item of dashboardData.announcements">
+              <h4>{{ item.title }}</h4>
+              <p><strong>Date:</strong> {{ item.date | date: 'MMM dd, yyyy' }}</p>
+              <p><strong>Description:</strong> {{ item.content }}</p>
+              <a (click)="navigatToAnnouncementView(item.id)" style="cursor: pointer;">Read More</a>
             </div>
           </div>
         </div>
       </div>
     </div>
   </section>
+
+
+
   <hr>
 
 

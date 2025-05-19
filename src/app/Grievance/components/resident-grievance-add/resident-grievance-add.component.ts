@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ResidentGrievanceService } from './../../../shared/services/resident-grievance-service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Component } from '@angular/core';
 import {
   FormBuilder,
@@ -9,9 +9,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-resident-grievance-add',
@@ -31,7 +30,8 @@ export class ResidentGrievanceAddComponent {
     private residentgrievanceservice: ResidentGrievanceService,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private location: Location
+    private location: Location,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -92,6 +92,7 @@ export class ResidentGrievanceAddComponent {
             horizontalPosition: 'center',
             panelClass: ['snackbar-success'], // Optional custom class
           });
+          this.router.navigate(['/grievance/grievance-list']);
         },
         error: (err: HttpErrorResponse) => {
           console.error('Error submitting grievance:', err.message);

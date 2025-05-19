@@ -1,3 +1,4 @@
+
 import { announcementId } from './../interfaces/Announcement/announcement-id';
 import { Injectable } from '@angular/core';
 import { PageResponse } from '../interfaces/page-response';
@@ -69,6 +70,11 @@ export class AnnouncementService {
     }
 
     return this.http.get<PageResponse<AnnouncementResponse>>(url, { params });
+  }
+
+
+  getAllAnnouncementForPublic(): Observable<AnnouncementResponse[]> {
+    return this.http.get<AnnouncementResponse[]>(`${this.apiUrl}/get-announcements`);
   }
 
   filterAnnouncements(filters: AnnouncementFilter): Observable<any> {
