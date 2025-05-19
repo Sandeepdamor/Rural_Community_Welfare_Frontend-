@@ -9,6 +9,9 @@ import { Category } from '../../shared/interfaces/category/category';
 import { CategoryService } from '../../shared/services/category.service';
 import { ProjectResponse } from '../../shared/interfaces/project/project-response';
 import { ProjectService } from '../../shared/services/project.service';
+import { AnnouncementResponse } from '../../shared/interfaces/Announcement/announcement-response';
+import { AnnouncementService } from '../../shared/services/announcement.service';
+import { TokenService } from '../../shared/services/token.service';
 
 @Component({
   selector: 'app-landingpage',
@@ -24,15 +27,39 @@ export class LandingpageComponent implements OnInit {
   currentImageIndex: { [schemeId: string]: number } = {};
   intervalMap: { [schemeId: string]: any } = {};
   currentIndexes: number[] = [];
+  announcements: AnnouncementResponse[] = [];
 
 
   constructor(private schemeService: SchemeService, private router: Router,
-    private categoryService: CategoryService, private projectService: ProjectService
+    private categoryService: CategoryService, private projectService: ProjectService,
+    private announcementService: AnnouncementService,
+    private tokenService: TokenService
   ) { }
 
+  isLoggin: boolean = false;
+
   ngOnInit(): void {
-    this.loadProjects();
+
+    const token = this.tokenService.getAccessToken();
+    if (token) {
+      if (this.tokenService.isTokenExpired()) {
+        this.tokenService.clearTokens();
+        this.isLoggin = false
+      }
+      else {
+        this.isLoggin = true;
+      }
+    }
+    else {
+      this.isLoggin = false;
+    }
+
+
+    this.loadAnnouncements();
     this.loadSchemes();
+    this.loadProjects();
+
+
 
     setInterval(() => this.autoSlideImages(), 4000); // Auto-slide every 4 sec
     this.loadCategories();
@@ -50,6 +77,20 @@ export class LandingpageComponent implements OnInit {
       error: (err) => {
         console.error('Error fetching schemes:', err);
         alert(err?.error?.message || 'Something went wrong while fetching schemes.');
+      }
+    });
+  }
+
+  loadAnnouncements(): void {
+    this.announcementService.getAllAnnouncementForPublic().subscribe({
+      next: (response) => {
+        this.announcements = response;
+        console.log('IN LANDING PAGE AANOUNCEMENTS ===> ', this.announcements);
+        this.announcements.forEach(s => this.currentImageIndex[s.id] = 0);
+      },
+      error: (err) => {
+        console.error('Error fetching schemes:', err);
+        alert(err?.error?.message || 'Something went wrong while fetching announcements.');
       }
     });
   }
@@ -79,7 +120,7 @@ export class LandingpageComponent implements OnInit {
       });
     }, 3000); // change image every 3 seconds
   }
-  
+
   getImage(projectIndex: number): string {
     const attachments = this.projects[projectIndex]?.attachmenets || [];
     const imageAttachments = attachments.filter(file => this.isImage(file));

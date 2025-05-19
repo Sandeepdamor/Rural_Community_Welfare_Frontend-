@@ -8,7 +8,7 @@ import { TokenService } from '../../../shared/services/token.service';
 import { DashboardData } from '../../../shared/interfaces/dashboard-data';
 import { DashboardService } from '../../../shared/services/dashboard.service';
 import { SchemeResponse } from '../../../shared/interfaces/scheme/scheme-response';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Project } from '../../../shared/interfaces/project/project';
 
 @Component({
@@ -27,7 +27,8 @@ export class DashboardComponent implements OnInit {
   currentIndexes: number[] = [];
   constructor(
     private tokenService: TokenService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private router: Router
   ) {
     const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
     this.userRole = roleString as Role; //  safely assign enum
@@ -167,16 +168,23 @@ export class DashboardComponent implements OnInit {
   }
 
   startImageRotation(): void {
-  setInterval(() => {
-    this.projects.forEach((project, i) => {
-      if (project.attachmenets.length > 1) {
-        this.currentIndexes[i] = (this.currentIndexes[i] + 1) % project.attachmenets.length;
-      }
-    });
-  }, 3000); // change image every 3 seconds
-}
+    setInterval(() => {
+      this.projects.forEach((project, i) => {
+        if (project.attachmenets.length > 1) {
+          this.currentIndexes[i] = (this.currentIndexes[i] + 1) % project.attachmenets.length;
+        }
+      });
+    }, 3000); // change image every 3 seconds
+  }
 
-getImage(projectIndex: number): string {
-  return this.projects[projectIndex].attachmenets[this.currentIndexes[projectIndex]];
-}
+  getImage(projectIndex: number): string {
+    return this.projects[projectIndex].attachmenets[this.currentIndexes[projectIndex]];
+  }
+
+  navigatToAnnouncementView(id: string): void {
+    this.router.navigate(['announcements/add', id], {
+      queryParams: { mode: 'view-announcements' },
+    });
+  }
+
 }

@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ResidentGrievanceService } from './../../../shared/services/resident-grievance-service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Component } from '@angular/core';
 import {
   FormBuilder,
@@ -9,7 +9,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -25,12 +25,15 @@ export class ResidentGrievanceAddComponent {
   grievanceId: string | null = null; // To store the ID if in update/view mode
   selectedFiles: File[] = [];
 
+
   constructor(
     private fb: FormBuilder,
     private residentgrievanceservice: ResidentGrievanceService,
     private route: ActivatedRoute,
-    private snackBar: MatSnackBar
-  ) {}
+    private snackBar: MatSnackBar,
+    private location: Location,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     // Initialize form with validators
@@ -90,6 +93,7 @@ export class ResidentGrievanceAddComponent {
             horizontalPosition: 'center',
             panelClass: ['snackbar-success'], // Optional custom class
           });
+          this.router.navigate(['/grievance/grievance-list']);
         },
         error: (err: HttpErrorResponse) => {
           console.error('Error submitting grievance:', err.message);
@@ -132,5 +136,9 @@ export class ResidentGrievanceAddComponent {
     console.log('Removing file at index:------', index); // Debug the index being removed
     this.selectedFiles.splice(index, 1);
     console.log('Updated Files List:-----', this.selectedFiles); // Check the updated list
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

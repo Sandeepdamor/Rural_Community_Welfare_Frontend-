@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule,Location } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import {
   FormBuilder,
@@ -6,14 +6,13 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
 import { AnnouncementService } from '../../../shared/services/announcement.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Role } from '../../../enums/role.enum';
-import { ToastService } from '../../../shared/services/toast.service';
 import { TokenService } from '../../../shared/services/token.service';
+import { ComponentRoutes } from '../../../shared/utils/component-routes';
 
 @Component({
   selector: 'app-announcements-add',
@@ -28,12 +27,15 @@ export class AnnouncementsAddComponent {
   announcementId: string | null = null; // 📌 To store the ID if in update/view mode
   role: Role;
 
+
   constructor(
     private fb: FormBuilder,
     private announcementService: AnnouncementService,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private router: Router,
+    private location: Location,
   ) {
     const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
     this.role = roleString as Role; // ✅ safely assign enum
@@ -92,6 +94,10 @@ export class AnnouncementsAddComponent {
     });
   }
 
+   isFieldRequired(fieldName: string): boolean {
+      // Replace with your form control logic to check if the field is required
+      return this.announcementForm.get(fieldName)?.hasValidator(Validators.required) ?? false;
+    }
   loadAnnouncement(id: string) {
     this.announcementService
       .getDeletedAnnouncementById(id)
@@ -205,6 +211,9 @@ export class AnnouncementsAddComponent {
             verticalPosition: 'top',
             panelClass: ['snackbar-success'],
           });
+
+         this.router.navigate(['/announcements/list']);
+
         },
         error: handleError,
       });
@@ -241,5 +250,9 @@ export class AnnouncementsAddComponent {
   }
   removeAttachment(index: number): void {
     this.selectedFiles.splice(index, 1);
+  }
+
+   goBack(): void {
+    this.location.back();
   }
 }

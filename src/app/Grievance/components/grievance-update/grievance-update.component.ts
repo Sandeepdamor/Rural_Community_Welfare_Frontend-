@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule,Location } from '@angular/common';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -24,7 +24,8 @@ export class GrievanceUpdateComponent {
     private snackBar: MatSnackBar,
     private router: Router, // Keep this for navigation
     private route: ActivatedRoute, // Add ActivatedRoute for route params
-    private tokenService: TokenService
+    private tokenService: TokenService,
+     private location: Location,
   ) {
     const roleStr = tokenService.getRoleFromToken();
     this.role = roleStr as Role;
@@ -95,5 +96,9 @@ export class GrievanceUpdateComponent {
         console.error('Update failed:', err);
       },
     });
+  }
+
+   goBack(): void {
+    this.location.back();
   }
 }

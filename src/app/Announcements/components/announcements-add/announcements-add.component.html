@@ -2,7 +2,7 @@
   class="scalable-gap-24-16 scalable-p-16-8 cardBackground d-flex flex-column">
   <!-- Back Arrow -->
   <div class="d-flex gap-2 align-items-center">
-    <img src="assets/images/svg/Back-Icon.svg" class="cursor-pointer" height="30" width="30" />
+    <img src="assets/images/svg/Back-Icon.svg" (click)="goBack()" class="cursor-pointer" height="30" width="30" />
     <h2 class="font-18 medium black mb-0">Add Announcement</h2>
   </div>
 
@@ -13,10 +13,10 @@
     <div class="col-md-6">
       <div class="d-flex flex-column gap-1 w-100">
         <h4 class="mb-0 font-14 regular subTextColor">
-          Title <span class="text-danger">*</span>
+          Title <span class="text-danger" *ngIf="isFieldRequired('title') && mode !== 'view-announcements'">*</span>
         </h4>
         <input type="text" formControlName="title" class="input-field" placeholder="Enter Title"
-          [readonly]="isReadOnly" />
+          [readonly]="mode === 'view-announcements'" />
 
         <!-- Frontend validation messages -->
         <div *ngIf="announcementForm.get('title')?.touched && announcementForm.get('title')?.invalid"
@@ -48,8 +48,10 @@
     <!-- Content -->
     <div class="col-md-6">
       <div class="d-flex flex-column gap-1 w-100">
-        <h4 class="mb-0 font-14 regular subTextColor">Content <span class="text-danger">*</span></h4>
-        <input type="text" formControlName="content" class="input-field" placeholder="Enter Content" />
+        <h4 class="mb-0 font-14 regular subTextColor">Content <span class="text-danger"
+            *ngIf="isFieldRequired('content') && mode !== 'view-announcements'">*</span></h4>
+        <input type="text" formControlName="content" class="input-field" placeholder="Enter Content"
+          [readonly]="mode === 'view-announcements'" />
 
         <!-- Error messages -->
         <div *ngIf="announcementForm.get('content')?.touched && announcementForm.get('content')?.invalid"
@@ -68,9 +70,10 @@
     <!-- Date -->
     <div class="col-md-6">
       <div class="d-flex flex-column gap-1 w-100">
-        <label for="announcementDate" class="mb-0 font-14 regular subTextColor">Date <span
-            class="text-danger">*</span></label>
-        <input type="datetime-local" formControlName="date" id="announcementDate" class="input-field" />
+        <label for="announcementDate" class="mb-0 font-14 regular subTextColor">Date <span class="text-danger"
+            *ngIf="isFieldRequired('date') && mode !== 'view-announcements'">*</span></label>
+        <input type="datetime-local" formControlName="date" id="announcementDate" class="input-field"
+          [readonly]="mode === 'view-announcements'" />
 
         <!-- Error messages -->
         <div *ngIf="announcementForm.get('date')?.touched && announcementForm.get('date')?.invalid"
@@ -83,10 +86,14 @@
     </div>
 
 
-    <!-- Status -->
     <div class="col-md-6">
-      <div class="d-flex flex-column gap-1 w-100">
-        <label for="status" class="mb-0 font-14 regular subTextColor">Status <span class="text-danger">*</span></label>
+      <!-- Editable Mode -->
+      <div class="d-flex flex-column gap-1 w-100" *ngIf="mode !== 'view-announcements'">
+        <label for="status" class="mb-0 font-14 regular subTextColor">
+          Status
+          <span class="text-danger" *ngIf="isFieldRequired('status')">*</span>
+        </label>
+
         <select id="status" formControlName="status" class="input-field">
           <option value="">Select Status</option>
           <option value="DRAFT">DRAFT</option>
@@ -101,10 +108,19 @@
           </div>
         </div>
       </div>
+
+      <!-- View Mode -->
+      <div class="d-flex flex-column gap-1 w-100" *ngIf="mode === 'view-announcements'">
+        <label for="status" class="mb-0 font-14 regular subTextColor">Status</label>
+        <input type="text" id="status" class="input-field bg-light" [value]="announcementForm.get('status')?.value"
+          readonly />
+      </div>
     </div>
 
+
+
     <!-- Attachments -->
-    <div class="col-md-6">
+    <div class="col-md-6" *ngIf=" mode !== 'view-announcements'">
       <div class="d-flex flex-column gap-1 w-100">
         <h4 class="mb-0 font-14 regular subTextColor">Attachments</h4>
         <input type="file" class="input-field" (change)="onFileSelected($event)" multiple />
