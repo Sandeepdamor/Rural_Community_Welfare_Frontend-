@@ -125,7 +125,7 @@ export class ResidentGrievanceAddComponent {
     const files: FileList = event.target.files;
     console.log('Selected Files:------', files); // Debugging the selected file
     if (files.length > 0) {
-      console.log('Adding file:------', files); // Log each file being added
+      console.log('Adding file:------', files); // Log each file being added.
       this.selectedFiles = Array.from(files); // Store selected files in an array
     }
   }

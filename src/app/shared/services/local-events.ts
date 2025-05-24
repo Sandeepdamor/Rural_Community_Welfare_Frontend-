@@ -38,7 +38,7 @@ export class LocalEventsService {
     if (role === 'ADMIN') {
       url = `${this.apiUrl}/local-events/get-all`;
     } else if (role === 'RESIDENT') {
-      url = `${this.apiUrl}/get-all-events`;
+      url = `${this.apiUrl}/get-all-events-by-address`;
     } else if (role === 'SARPANCH') {
       url = `${this.apiUrl}/get-all-events`;
     } else {
@@ -82,5 +82,39 @@ export class LocalEventsService {
     };
     console.log('filterEvent calling with', payload);
     return this.http.post(`${this.apiUrl}/event-filter-request`, payload);
+  }
+
+  getAllDeletedEvents(
+    isActive: boolean,
+    pagination: PaginationRequest
+  ): Observable<PageResponse<LocalEventResponse>> {
+    const role = this.tokenService.getRoleFromToken();
+    console.log('Role:', role);
+
+    const params = new HttpParams()
+      .set('isActive', isActive.toString())
+      .set('pageNumber', pagination.pageNumber.toString())
+      .set('pageSize', pagination.pageSize.toString())
+      .set('sortBy', pagination.sortBy);
+
+    let url = '';
+
+    if (role === 'ADMIN') {
+      url = `${this.apiUrl}/local-events/get-all`;
+    } else if (role === 'RESIDENT') {
+      url = `${this.apiUrl}/get-all-events-by-address`;
+    } else if (role === 'SARPANCH') {
+      url = `${this.apiUrl}/delete-expired`;
+    } else {
+      return throwError(() => new Error('Unauthorized role'));
+    }
+    return this.http.get<PageResponse<LocalEventResponse>>(url, { params });
+  }
+
+  deleteByEventId(eventId: number) {
+    const options = {
+      body: { id: eventId.toString() },
+    };
+    return this.http.delete(`${this.apiUrl}/delete-event`, options);
   }
 }

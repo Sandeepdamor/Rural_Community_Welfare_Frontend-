@@ -34,40 +34,48 @@
     </div>
 
 
+    <!-- Subject -->
     <div class="col-md-6" *ngIf="role==='RESIDENT'">
       <div class="d-flex flex-column gap-1 w-100">
         <h4 class="mb-0 font-14 regular subTextColor">Subject</h4>
-        <input type="text" class="input-field" placeholder="Enter Subject" [(ngModel)]="grievance.response"
+        <input type="text" class="input-field" placeholder="Enter Subject" [(ngModel)]="grievance.subject"
           name="subject" required />
       </div>
     </div>
 
+    <!-- Description -->
     <div class="col-md-6" *ngIf="role==='RESIDENT'">
       <div class="d-flex flex-column gap-1 w-100">
         <h4 class="mb-0 font-14 regular subTextColor">Description</h4>
-        <input type="text" class="input-field" placeholder="Enter Description" [(ngModel)]="grievance.response"
+        <input type="text" class="input-field" placeholder="Enter Description" [(ngModel)]="grievance.description"
           name="description" required />
       </div>
     </div>
 
+
     <!-- Status -->
-    <div class="col-md-6" *ngIf="role !== 'RESIDENT'">
+    <div class="col-md-6" *ngIf="role === 'ADMIN' || role === 'SARPANCH'">
       <div class="d-flex flex-column gap-1 w-100">
         <h4 class="mb-0 font-14 regular subTextColor">
           Status <span class="text-danger">*</span>
         </h4>
+
         <select class="input-field form-select" [(ngModel)]="grievance.status" name="status" required
-          #statusRef="ngModel">
+          #statusRef="ngModel" [disabled]="grievance.status === 'Resolved'">
           <option value="" disabled selected>Select status</option>
           <option *ngFor="let status of statusList" [value]="status">{{ status }}</option>
         </select>
 
+        <small class="text-muted" *ngIf="grievance.status === 'Resolved'">
+          Status is resolved and cannot be changed.
+        </small>
         <!-- Validation Errors -->
         <div *ngIf="statusRef.touched && statusRef.invalid" class="text-danger mt-1">
           <div *ngIf="statusRef.errors?.['required']">Status is required.</div>
         </div>
       </div>
     </div>
+
 
 
   </div>

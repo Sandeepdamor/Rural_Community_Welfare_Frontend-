@@ -1,14 +1,16 @@
 import { Component } from '@angular/core';
 import {
+  AbstractControl,
   FormBuilder,
   FormControl,
+  ValidationErrors,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule, Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LocalEventsService } from '../../../shared/services/local-events';
@@ -18,7 +20,6 @@ import { Role } from '../../../enums/role.enum';
 import { UserService } from '../../../shared/services/user.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { TokenService } from '../../../shared/services/token.service';
-import { EventFilter } from '../../../shared/interfaces/Local-Events/Event-filter';
 
 @Component({
   selector: 'app-local-events-add',
@@ -60,13 +61,15 @@ export class LocalEventsAddComponent {
     private addressService: AddressService,
     private userService: UserService,
     private authService: AuthService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private router: Router
   ) {
     const roleString = this.tokenService.getRoleFromToken(); // e.g., returns "ADMIN"
     this.role = roleString as Role; // ✅ safely assign enum
   }
 
   ngOnInit(): void {
+    this.dateInit();
     this.authService.getLoggedInUser().subscribe({
       next: (user) => {
         this.currentUser = user;
@@ -94,6 +97,23 @@ export class LocalEventsAddComponent {
       attachments: [[]],
     });
     this.fetchLocations();
+  }
+
+  today: string = '';
+
+  dateInit() {
+    const currentDate = new Date();
+    this.today = currentDate.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+  }
+
+  dateRangeValidator(group: AbstractControl): ValidationErrors | null {
+    const start = group.get('startDate')?.value;
+    const end = group.get('endDate')?.value;
+
+    if (start && end && new Date(start) > new Date(end)) {
+      return { dateRangeInvalid: true };
+    }
+    return null;
   }
 
   // Method to handle form submission
@@ -143,6 +163,9 @@ export class LocalEventsAddComponent {
           });
           this.localEventForm.reset(); // Optional: reset form
           this.selectedFiles = []; // Clear files
+          setTimeout(() => {
+            this.router.navigate(['/local-Events/Local-Events-list']);
+          }, 2000);
         },
         error: (err: HttpErrorResponse) => {
           console.error('Error submitting event:', err.message);
@@ -270,4 +293,7 @@ export class LocalEventsAddComponent {
   }
 
   removeLocation(villageId: string): void {}
+  goBack(): void {
+    this.location.back();
+  }
 }

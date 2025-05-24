@@ -187,7 +187,7 @@
     <!-- Local Events -->
     <!-- Parent item -->
     <li class="cursor-pointer dropdown-toggle" (click)="toggleLocalEventsMenu()" [class.active]="isLocalEventsMenuOpen">
-      <img src="assets/images/svg/calendar2-event.svg">
+      <img src="assets/images/svg/user-list-icon.svg" alt="user-list-icon" class="white-icon" />
       <span class="menu-text singleLine">Local Events</span>
     </li>
 
@@ -196,7 +196,7 @@
       <li [routerLink]="'local-Events/Local-Events-list'" routerLinkActive="active"><img
           src="assets/images/svg/user-list-icon.svg" alt="user-list-icon" class="white-icon" />Local Events List
       </li>
-      <li [routerLink]="'local-Events/grievance-delete'" routerLinkActive="active"
+      <li [routerLink]="'local-Events/local-Events-delete'" routerLinkActive="active"
         *ngIf="role === Role.SARPANCH || role === Role.ADMIN">
         <img src="assets/images/svg/delete-user-icon.svg" alt="delete-user-icon" class="white-icon" />Deleted
         Local Events

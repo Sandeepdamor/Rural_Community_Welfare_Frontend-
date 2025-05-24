@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -16,7 +17,7 @@ import { ComponentRoutes } from '../../../shared/utils/component-routes';
 
 @Component({
   selector: 'app-announcements-add',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule],
   templateUrl: './announcements-add.component.html',
   styleUrl: './announcements-add.component.scss',
 })
@@ -26,6 +27,10 @@ export class AnnouncementsAddComponent {
   mode: string | null = null; // 🔁 To track view/add/update mode
   announcementId: string | null = null; // 📌 To store the ID if in update/view mode
   role: Role;
+  attachmentUrls: string[] = [];
+  isViewerOpen = false;
+  currentImageIndex = 0;
+  minDateTime: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -41,6 +46,11 @@ export class AnnouncementsAddComponent {
   }
 
   ngOnInit(): void {
+    this.initForm();
+    this.setMinDateTime();
+  }
+
+  initForm(): void {
     this.announcementForm = this.fb.group({
       title: [
         '',
@@ -64,6 +74,7 @@ export class AnnouncementsAddComponent {
     console.log('Announcement ID:', this.announcementId);
 
     if (this.mode === 'view' && this.announcementId) {
+      console.log('-----------------------------view------------------------');
       this.isReadOnly = true;
       this.loadAnnouncement(this.announcementId);
     }
@@ -71,6 +82,7 @@ export class AnnouncementsAddComponent {
       this.loadAnnouncements(this.announcementId);
     }
     if (this.mode === 'view-announcements' && this.announcementId) {
+      console.log('-----------------------------view------2------------------');
       this.isReadOnly = true;
       this.loadAnnouncements(this.announcementId);
     }
@@ -91,6 +103,15 @@ export class AnnouncementsAddComponent {
         // Do not patch file inputs – leave them empty to allow new uploads
       });
     });
+  }
+
+  setMinDateTime(): void {
+    const now = new Date();
+    const offset = now.getTimezoneOffset();
+    const localISOTime = new Date(now.getTime() - offset * 60000)
+      .toISOString()
+      .slice(0, 16);
+    this.minDateTime = localISOTime;
   }
 
   isFieldRequired(fieldName: string): boolean {
@@ -201,6 +222,7 @@ export class AnnouncementsAddComponent {
               verticalPosition: 'top',
               panelClass: ['snackbar-success'],
             });
+            this.router.navigate(['/announcements/list']);
           },
           error: handleError,
         });
@@ -213,7 +235,6 @@ export class AnnouncementsAddComponent {
             verticalPosition: 'top',
             panelClass: ['snackbar-success'],
           });
-
           this.router.navigate(['/announcements/list']);
         },
         error: handleError,
@@ -255,5 +276,42 @@ export class AnnouncementsAddComponent {
 
   goBack(): void {
     this.location.back();
+  }
+
+  isImage(url: string): boolean {
+    return /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
+  }
+
+  openImageViewer(index: number): void {
+    this.currentImageIndex = index;
+    this.isViewerOpen = true;
+  }
+
+  isPdf(url: string): boolean {
+    return /\.pdf$/i.test(url);
+  }
+
+  getFileName(url: string): string {
+    return url.split('/').pop() || 'Unknown File';
+  }
+
+  closeImageViewer(): void {
+    this.isViewerOpen = false;
+  }
+
+  prevImage(): void {
+    if (this.currentImageIndex > 0) {
+      this.currentImageIndex--;
+    }
+  }
+
+  nextImage(): void {
+    if (this.currentImageIndex < this.attachmentUrls.length - 1) {
+      this.currentImageIndex++;
+    }
+  }
+
+  removeExistAttachment(index: number): void {
+    this.attachmentUrls.splice(index, 1);
   }
 }

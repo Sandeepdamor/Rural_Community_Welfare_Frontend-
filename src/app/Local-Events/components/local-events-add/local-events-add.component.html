@@ -2,7 +2,7 @@
   class="scalable-gap-24-16 scalable-p-16-8 cardBackground d-flex flex-column">
   <!-- Back Arrow -->
   <div class="d-flex gap-2 align-items-center">
-    <img src="assets/images/svg/Back-Icon.svg" class="cursor-pointer" height="30" width="30" />
+    <img src="assets/images/svg/Back-Icon.svg" class="cursor-pointer" height="30" width="30" (click)="goBack()" />
     <h2 class="font-18 medium black mb-0">Add Event</h2>
   </div>
 
@@ -51,7 +51,7 @@
     <div class="col-md-6">
       <div class="d-flex flex-column gap-1 w-100">
         <h4 class="mb-0 font-14 regular subTextColor">Start Date <span class="text-danger">*</span></h4>
-        <input type="date" formControlName="startDate" class="input-field" />
+        <input type="date" formControlName="startDate" class="input-field" [min]="today" />
 
         <div *ngIf="localEventForm.get('startDate')?.touched && localEventForm.get('startDate')?.invalid"
           class="text-danger mt-1">
@@ -63,15 +63,30 @@
     <!-- End Date -->
     <div class="col-md-6">
       <div class="d-flex flex-column gap-1 w-100">
-        <h4 class="mb-0 font-14 regular subTextColor">End Date <span class="text-danger">*</span></h4>
-        <input type="date" formControlName="endDate" class="input-field" />
+        <h4 class="mb-0 font-14 regular subTextColor">
+          End Date <span class="text-danger">*</span>
+        </h4>
 
+        <input type="date" formControlName="endDate" class="input-field"
+          [min]="localEventForm.get('startDate')?.value || today" />
+
+        <!-- Field-level validation -->
         <div *ngIf="localEventForm.get('endDate')?.touched && localEventForm.get('endDate')?.invalid"
           class="text-danger mt-1">
-          <div *ngIf="localEventForm.get('endDate')?.errors?.['required']">End Date is required.</div>
+          <div *ngIf="localEventForm.get('endDate')?.errors?.['required']">
+            End Date is required.
+          </div>
+        </div>
+
+        <!-- 👇 Add this after the field-level validation -->
+        <div *ngIf="localEventForm.errors?.['dateRangeInvalid'] && localEventForm.get('endDate')?.touched"
+          class="text-danger mt-1">
+          End Date must be after Start Date.
         </div>
       </div>
     </div>
+
+
 
 
 
@@ -107,8 +122,6 @@
         Please select a location.
       </div>
     </div>
-
-
   </div>
 
   <!-- Buttons -->

@@ -104,7 +104,22 @@ export class AnnouncementsDeleteComponent {
 
     this.announcementService.getDeletedAnnouncements().subscribe({
       next: (deletedData) => {
-        console.log(' fetching deleted announcements:', deletedData.content);
+        console.log(
+          ' fetching deleted announcements--------------------:',
+          deletedData.content
+        );
+        const processedData = deletedData.content.map((event: any) => ({
+          ...event,
+          authorName: event.createdBy?.name || 'N/A', // extract nested name safely
+        }));
+
+        console.log('Processed Data--------------------------:', processedData);
+
+        this.agencyTableConfig = {
+          ...this.agencyTableConfig,
+          data: processedData,
+          totalRecords: deletedData.totalElements,
+        };
         this.agencyTableConfig.data = deletedData.content;
         this.isLoading = false;
       },
@@ -144,11 +159,6 @@ export class AnnouncementsDeleteComponent {
     this.announcementService.searchAnnouncements(searchRequest).subscribe({
       next: (response) => {
         console.log('Search RESULT => ', response);
-        this.agencyTableConfig = {
-          ...this.agencyTableConfig,
-          data: response.content,
-          totalRecords: response.totalElements,
-        };
         this.changeDetection.detectChanges();
         this.isLoading = false;
       },

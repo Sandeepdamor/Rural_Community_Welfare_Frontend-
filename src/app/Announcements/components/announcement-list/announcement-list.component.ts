@@ -95,7 +95,7 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
         { name: 'date', displayName: 'Date', type: 'text' },
         { name: 'status', displayName: 'Status', type: 'announcementStatus' },
         { name: 'authorName', displayName: 'Author Name', type: 'text' },
-        { name: 'isActive', displayName: 'Active', type: 'status' },
+        //  { name: 'isActive', displayName: 'Active', type: 'status' },
         { name: 'action', displayName: 'Action', type: 'action' },
       ];
       this.agencyTableConfig.actions = ['edit', 'delete', 'view profile'];
@@ -189,6 +189,9 @@ export class AnnouncementListComponent implements OnInit, AfterViewInit {
     const { action, element } = event;
     if (action === 'delete') {
       this.onDeleteAnnouncement(element);
+      this.router.navigate(['announcements/list'], {
+        queryParams: { mode: 'delete', id: element.id },
+      });
     } else if (action === 'edit') {
       this.router.navigate(['announcements/add', element.id], {
         queryParams: { mode: 'update' },

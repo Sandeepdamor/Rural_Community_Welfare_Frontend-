@@ -1,4 +1,4 @@
-<div class="d-flex flex-column gap-3 h-100" (click)="($event)">
+<div class="d-flex flex-column gap-3 h-100" (click)="closeFilterIfClickedOutside($event)">
   <!-- Search & Filter -->
   <div class="d-flex justify-content-between align-items-start flex-wrap mb-3 gap-3 position-relative">
     <!-- Left: Search + Filter -->
@@ -7,7 +7,7 @@
       <div class="input-group" style="width: 280px;">
         <input type="text" class="form-control" placeholder="Search by name, phone, or address"
           [(ngModel)]="searchTerm">
-        <button class="btn btn-outline-secondary" type="button" (click)="onSearchAnnouncements()">
+        <button class="btn btn-outline-secondary" type="button" (click)="onSearchEvent()">
           <img src="assets/images/svg/search.svg" height="12" width="12">
         </button>
       </div>
@@ -22,15 +22,16 @@
         <!-- Dropdown-style Filter Panel -->
         <div class="dropdown-menu p-3 shadow" style="min-width: 300px;" [class.show]="showFilters">
           <!-- Status -->
-          <div class="mb-2">
-            <label>Status</label>
-            <select class="form-select" [(ngModel)]="filters.status" (change)="onFilter()">
-              <option value="">All Status</option>
-              <option value="PUBLISHED">PUBLISHED</option>
-              <option value="DRAFT">DRAFT</option>
-            </select>
+
+          <div class="mb-2" *ngIf="filters.date">
+            <label>From Date</label>
+            <input type="date" class="form-control" [(ngModel)]="filters.date.from" (change)="onFilter()" />
           </div>
 
+          <div class="mb-2" *ngIf="filters.date">
+            <label>To Date</label>
+            <input type="date" class="form-control" [(ngModel)]="filters.date.to" (change)="onFilter()" />
+          </div>
 
 
           <!-- isActive -->
@@ -45,12 +46,17 @@
       </div>
     </div>
 
-    <tr *ngFor="let row of agencyTableConfig.data">
-      <td *ngFor="let col of columns">
-        {{ row[col.name] }}
-      </td>
-    </tr>
+    <!-- Right: Add User -->
 
+    <!-- <div *ngIf="role==='SARPANCH'">
+      <button class="primary-button p-8-12 d-flex align-items-center gap-2"
+        [routerLink]="'/local-Events/local-Events-add'">
+        <div class="plus_icon">
+          <img src="assets/images/svg/plus-icon.svg" height="12" width="12">
+        </div>
+        Add Event
+      </button>
+    </div> -->
   </div>
 
 
@@ -61,10 +67,8 @@
 
 
   <app-dynamic-table *ngIf="!isLoading && agencyTableConfig.data.length > 0" [config]="agencyTableConfig"
-    (actionClicked)="onViewAction($event)">
+    (actionClicked)="onActionClicked($event)">
   </app-dynamic-table>
-
-
 
 
   <!-- (actionClicked)="onAction($event.action, $event.element)" -->

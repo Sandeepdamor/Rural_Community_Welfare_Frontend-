@@ -189,7 +189,7 @@
             <!-- Display only image attachments -->
             <div *ngFor="let url of attachmentUrls; let i = index" class="attachment-item">
               <ng-container *ngIf="isImage(url)">
-                <img [src]="url" alt="Attachment Image" class="attachment-image" (click)="openImageViewer(i)" />
+                <img [src]="url" alt="Attachment Image" class="attachment-image" (click)="openImageViewer(url)" />
               </ng-container>
 
               <!-- Display PDF or other file types as links -->

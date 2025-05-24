@@ -47,8 +47,6 @@ export class GrievanceService {
     pagination: PaginationRequest
   ): Observable<PageResponse<GrievanceResponse>> {
     const role = this.tokenService.getRoleFromToken();
-    // const phone = this.tokenService.getMobileNumberFromAccessToken;
-    // const phone2 = this.tokenService.getMobileNumberFromAuthToken;
     console.log('Role......' + role);
 
     let params = new HttpParams()
@@ -67,7 +65,6 @@ export class GrievanceService {
       url = `${this.apiUrl}/get-by-id`;
     } else if (role === 'SARPANCH') {
       console.log('load all grievance by sarpanch');
-      // url = `${this.apiUrl}/get-all-grievance`;
       url = `${this.apiUrl}/get-all-grievance-address`;
     } else {
       console.warn('Unauthorized role for fetching grievances:', role);
@@ -171,9 +168,26 @@ export class GrievanceService {
     return this.http.put(url, grievance); // PUT request with body
   }
 
+  updateGrievance1(grievance: {
+    id: string;
+    subject: string;
+    description: string;
+  }): Observable<any> {
+    const url = `${this.apiUrl}/update-grievance/${grievance.id}`;
+    return this.http.put(url, grievance); // PUT request with body
+  }
+
   deleteGrievance(announcementId: string): Observable<any> {
     const url = `${this.apiUrl}/delete-announcement`; // Keep URL as is, without the announcementId
     const payload = { id: announcementId }; // Send the announcementId in the body
     return this.http.delete<any>(url, { body: payload });
+  }
+
+  // grievance.service.ts
+  getGrievanceById(id: string): Observable<any> {
+    console.log('-------getGrievanceById ---------');
+    return this.http.get<any>(`${this.apiUrl}/get-grievance-id/${id}`, {
+      params: { id },
+    });
   }
 }

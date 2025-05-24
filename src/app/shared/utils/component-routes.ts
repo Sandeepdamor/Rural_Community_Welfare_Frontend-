@@ -50,6 +50,7 @@ export class ComponentRoutes {
   static readonly LOCAL_EVENTS_LIST = 'Local-Events-list';
   static readonly LOCAL_EVENTS = 'local-Events';
   static readonly LOCAL_EVENTS_ADD = 'local-Events-add';
+  static readonly LOCAL_EVENTS_DELETE = 'local-Events-delete';
 
   //Schemes
   static readonly SCHEMES = 'schemes';
