@@ -1,5 +1,8 @@
 export interface Address {
+<<<<<<< HEAD
     id:string;
+=======
+>>>>>>> frontend
     country: string;
     state: string;
     district: string;

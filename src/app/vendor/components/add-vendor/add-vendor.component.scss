@@ -1,0 +1,171 @@
+/* Vendor */
+.documents {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(278px, 1fr));
+  gap: 24px;
+}
+.choose_documents {
+  position: relative;
+  border-radius: 8px;
+  border: 2px dashed var(--strokeColor);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  height: clamp(12.25rem, 5.5875rem + 6.3125vw, 9.5625rem);
+}
+
+.choose_documents_file {
+  height: 40px;
+  width: 40px;
+  background-color: var(--themeLightColor);
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.choose_file {
+  opacity: 0;
+  position: absolute;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  z-index: 999;
+}
+
+/* Basic styling for the dropdown */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--whiteColor);
+  border-radius: 5px;
+  border: 1px solid #c8c8c8;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    font-size: clamp(0.6875rem, 0.65rem + 0.1875vw, 0.875rem);
+    font-weight: 400;
+    color: #000;
+  }
+  label:hover {
+    background-color: var(--themeLightColor);
+    cursor: pointer;
+  }
+}
+/* choose file */
+.file_select_box {
+  border-radius: 50%;
+  height: 25px;
+  width: 25px;
+  background-color: var(--whiteColor);
+  position: absolute;
+  left: 37%;
+  top: 37%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.chips {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Styling the selected options */
+.selected-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.option {
+  background-color: #e0e0e0;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #333;
+  display: inline-block;
+}
+
+/* Checkbox list styling */
+.checkbox-list label {
+  display: block;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.checkbox-list input {
+  margin-right: 8px;
+}
+.custom-checkbox {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--strokeColor);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+}
+
+.custom-checkbox:checked {
+  background-color: var(--themeColor);
+  border-color: var(--themeColor);
+}
+
+.custom-checkbox:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--whiteColor);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Adjustments for profile image and edit icon overlay */
+.hover-container {
+  position: relative; /* Ensure the container is positioned for absolute children */
+}
+
+.hover-overlay {
+  display: none; /* Keep hidden by default */
+  transition: background-color 0.3s ease;
+  width: 100%; /* Match the width of the profile image */
+  height: 100%; /* Match the height of the profile image */
+  border-radius: 50%; /* Ensure it matches the profile image shape */
+}
+
+.hover-container:hover .hover-overlay {
+  display: block;
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  background-color: rgba(53, 52, 52, 0.5);
+  z-index: 1;
+  transition: all 0.6s;
+  transform: scale(0.9);
+  width: 98px;
+  height:98px;
+}
+
+.profile-image {
+  transition: transform 0.3s ease; /* Smooth transition for transform property */
+}
+
+.hover-container:hover .profile-image {
+  transform: scale(1.1); /* Scale up the image on hover */
+  transition: all .1s;
+}

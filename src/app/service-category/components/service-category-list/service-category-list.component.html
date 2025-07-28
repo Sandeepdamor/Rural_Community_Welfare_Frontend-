@@ -1,0 +1,39 @@
+<div class="d-flex flex-column gap-3 h-100">
+  <!-- Button -->
+  <div class="d-flex justify-content-end">
+      <button  class="primary-button p-8-12  d-flex align-items-center gap-2" [routerLink]="'/customer/add'">
+          <div class="plus_icon">
+              <img src="assets/images/svg/plus-icon.svg" height="12" width="12">
+          </div>
+          Apply
+      </button>
+  </div>
+    <!-- Table -->
+    <app-dynamic-table [config]="agencyTableConfig"></app-dynamic-table>
+</div>
+      
+
+<div class="modal fade" id="addService" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-4 scalable-gap-24-16">
+      <div class="modal-header border-0 p-0">
+        <h1 class="modal-title font-16 semibold black" id="exampleModalToggleLabel">Add Service Category</h1>
+        <button type="button" data-bs-dismiss="modal" aria-label="Close"
+          style="background-color: transparent;border: 0;"><img src="assets/images/svg/modal-close.svg" height="40"
+            width="40" class="close-button"></button>
+      </div>
+      <div class="modal-body p-0">
+        <div class="d-flex flex-column gap-2 w-100">
+          <h4 class="mb-0 font-14 regular subTextColor">Service Name</h4><input type="text" placeholder="Enter service name"
+            class="input-field">
+        </div>
+      </div>
+      <div class="modal-footer border-0 p-0">
+        <div class="d-flex justify-content-end gap-4"><button type="button"
+            class="secondary-button py-2 scalable-p-48-24" data-bs-dismiss="modal"
+            aria-label="Close">Cancel</button><button type="button"
+            class="primary-button py-2 scalable-p-48-24">Save</button></div>
+      </div>
+    </div>
+  </div>
+</div>

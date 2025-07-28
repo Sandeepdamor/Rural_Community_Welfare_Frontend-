@@ -1,0 +1,190 @@
+<div class="scalable-gap-24-16 scalable-p-16-8 cardBackground d-flex flex-column">
+  <form [formGroup]="sarpanchForm" (ngSubmit)="submit()">
+    <!-- Back Arrow -->
+    <div class="d-flex gap-2 align-items-center">
+      <img src="assets/images/svg/Back-Icon.svg" class="cursor-pointer" height="30" width="30" />
+      <h2 class="font-18 medium black mb-0">Add Sarpanch</h2>
+    </div>
+
+    <!-- Select Image -->
+    <div class="position-relative d-flex align-items-end">
+      <img height="82" width="82" alt="Logo" src="assets/images/svg/profile.svg">
+      <div class="file_select_box">
+        <input type="file" name="fileupload" class="input_feilds bg_light file_select">
+        <img src="assets/images/svg/edit-img.svg" height="16" width="16" alt="Edit Icon" class="file_select_icon">
+      </div>
+    </div>
+
+    <!-- Form Inputs -->
+    <div class="row g-4">
+      <!-- Name -->
+      <div class="col-md-6">
+        <label>Name</label>
+        <input type="text" class="input-field" placeholder="Enter Name" formControlName="name" />
+        <small class="text-danger" *ngIf="isFieldInvalid('name')">
+          Name is required and must be between 3 and 50 letters.
+        </small>
+      </div>
+
+      <!-- Father/Husband Name -->
+      <div class="col-md-6">
+        <label>Father/Husband Name</label>
+        <input type="text" class="input-field" placeholder="Enter Father's or Husband's Name"
+          formControlName="fatherOrHusbandName" />
+        <small class="text-danger" *ngIf="isFieldInvalid('fatherOrHusbandName')">
+          Father/Husband Name is required.
+        </small>
+      </div>
+
+      <!-- Date of Birth -->
+      <div class="col-md-6">
+        <label>Date of Birth</label>
+        <input type="date" class="input-field" formControlName="dateOfBirth" />
+        <small class="text-danger" *ngIf="isFieldInvalid('dateOfBirth')">
+          Date of Birth is required.
+        </small>
+      </div>
+
+      <!-- Age -->
+      <div class="col-md-6">
+        <label>Age</label>
+        <input type="number" class="input-field" placeholder="Enter Age" formControlName="age" />
+        <small class="text-danger" *ngIf="isFieldInvalid('age')">
+          Age is required and must be between 22 and 100.
+        </small>
+      </div>
+
+      <!-- Gender -->
+      <div class="col-md-6">
+        <label>Gender</label>
+        <select class="input-field" formControlName="gender">
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+        <small class="text-danger" *ngIf="isFieldInvalid('gender')">
+          Gender is required.
+        </small>
+      </div>
+
+      <!-- Phone -->
+      <div class="col-md-6">
+        <label>Phone</label>
+        <input type="text" class="input-field" placeholder="Enter Phone Number" formControlName="phone" />
+        <small class="text-danger" *ngIf="isFieldInvalid('phone')">
+          Phone is required and must be a valid 10-digit number.
+        </small>
+      </div>
+
+      <!-- Aadhar Number -->
+      <div class="col-md-6">
+        <label>Aadhaar Number</label>
+        <input type="text" class="input-field" placeholder="Enter Aadhaar Number" formControlName="aadharNumber" />
+        <small class="text-danger" *ngIf="isFieldInvalid('aadharNumber')">
+          Aadhaar number is required and must be 12 digits.
+        </small>
+      </div>
+
+
+
+      <!-- Address -->
+      <div class="col-md-6">
+        <label>Address</label>
+        <select class="input-field" formControlName="addressId" [ngClass]="{'is-invalid': isFieldInvalid('addressId')}">
+          <option value="" disabled selected>Select Address</option>
+          <option *ngFor="let address of addresses" [value]="address.id">
+            {{ address.formattedAddress }}
+          </option>
+        </select>
+        <div *ngIf="isFieldInvalid('addressId')" class="invalid-feedback">
+          <small>Address selection is required.</small>
+        </div>
+      </div>
+
+      <!-- House Number -->
+      <div class="col-md-6">
+        <label>House Number</label>
+        <input type="text" class="input-field" placeholder="Enter House Number" formControlName="houseNumber" />
+        <small class="text-danger" *ngIf="isFieldInvalid('houseNumber')">
+          House number is required and should be numeric.
+        </small>
+      </div>
+
+      <!-- Gram Panchayat Name -->
+      <div class="col-md-6">
+        <label>Gram Panchayat Name</label>
+        <input type="text" class="input-field" placeholder="Enter Gram Panchayat Name"
+          formControlName="gramPanchayatName" />
+        <small class="text-danger" *ngIf="isFieldInvalid('gramPanchayatName')">
+          Gram Panchayat Name is required.
+        </small>
+      </div>
+
+      <!-- Ward Number -->
+      <div class="col-md-6">
+        <label>Ward Number</label>
+        <input type="text" class="input-field" placeholder="Enter Ward Number" formControlName="wardNumber" />
+        <small class="text-danger" *ngIf="isFieldInvalid('wardNumber')">
+          Ward Number should be numeric.
+        </small>
+      </div>
+
+      <!-- Election Year -->
+      <div class="col-md-6">
+        <label>Election Year</label>
+        <input type="number" class="input-field" placeholder="Enter Election Year" formControlName="electionYear" />
+        <small class="text-danger" *ngIf="isFieldInvalid('electionYear')">
+          Election Year is required and must be between 2000 and 2100.
+        </small>
+        <!-- <small *ngIf="errorMessage">{{errorMessage}}</small> -->
+      </div>
+
+      <!-- Term Start Date -->
+      <div class="col-md-6">
+        <label>Term Start Date</label>
+        <input type="date" class="input-field" formControlName="termStartDate" />
+        <small class="text-danger" *ngIf="isFieldInvalid('termStartDate')">
+          Term Start Date is required.
+        </small>
+      </div>
+
+      <!-- Term End Date -->
+      <div class="col-md-6">
+        <label>Term End Date</label>
+        <input type="date" class="input-field" formControlName="termEndDate" />
+        <small class="text-danger" *ngIf="isFieldInvalid('termEndDate')">
+          Term End Date is required.
+        </small>
+      </div>
+
+      <!-- Assigned Villages Dropdown -->
+      <div class="col-md-6">
+        <label>Assigned Villages</label>
+        <select class="village-select" (change)="addVillage($event)"
+          [ngClass]="{ 'is-invalid': isFieldInvalid('villageIds') }" multiple>
+          <option *ngFor="let address of addresses" [value]="address.id">
+            {{ address.formattedAddress }}
+          </option>
+        </select>
+        <div *ngIf="isFieldInvalid('villageIds')" class="invalid-feedback">
+          <small>At least one village must be selected.</small>
+        </div>
+      </div>
+
+      <!-- Display Selected Villages -->
+      <div class="assigned-address-container" *ngIf="selectedVillages.length > 0">
+        <div *ngFor="let village of selectedVillages" class="assigned-address-item">
+          <span>{{ getFormattedAddress(village.id) }}</span>
+          <button class="remove-village-btn" (click)="removeVillage(village.id)">Remove</button>
+        </div>
+      </div>
+      
+      <!-- Buttons -->
+      <div class="d-flex justify-content-end gap-4 mt-4">
+        <button type="button" class="secondary-button py-2 scalable-p-48-24">Cancel</button>
+        <button type="submit" class="primary-button py-2 scalable-p-48-24">Save</button>
+      </div>
+    </div>
+  </form>
+</div>

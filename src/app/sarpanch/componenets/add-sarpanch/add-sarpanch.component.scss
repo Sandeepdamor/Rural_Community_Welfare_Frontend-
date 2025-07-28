@@ -1,0 +1,75 @@
+/* Style for the village select dropdown */
+.village-select {
+    width: 100%;                    /* Full width */
+    padding: 10px;                  /* Padding inside the select box */
+    border: 1px solid #ccc;        /* Light gray border */
+    border-radius: 4px;            /* Rounded corners */
+    background-color: #fff;        /* White background */
+    font-size: 16px;                /* Font size for options */
+    box-sizing: border-box;        /* Box model adjustment */
+    transition: border 0.3s ease;   /* Smooth transition for focus */
+  }
+  
+  /* Add focus styles to the select dropdown */
+  .village-select:focus {
+    border-color: #007bff;         /* Blue border on focus */
+    outline: none;                 /* Remove default focus outline */
+  }
+  
+  /* Style for the selected village items */
+  .assigned-address-container {
+    margin-top: 20px;               /* Space between dropdown and selected items */
+  }
+  
+  /* Each selected village item */
+  .assigned-address-item {
+    display: flex;                  /* Flexbox to align text and button */
+    justify-content: space-between; /* Align text to the left and button to the right */
+    padding: 8px 10px;              /* Padding for each item */
+    background-color: #f4f7fa;      /* Light gray background */
+    margin-bottom: 8px;             /* Space between selected villages */
+    border: 1px solid #e0e0e0;      /* Border for each selected item */
+    border-radius: 5px;             /* Rounded corners for each item */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  }
+  
+  /* Remove button for selected villages */
+  .remove-village-btn {
+    background-color: #ff6b6b;      /* Red background */
+    color: white;                   /* White text */
+    border: none;                   /* No border */
+    padding: 5px 10px;              /* Padding for the button */
+    font-size: 14px;                /* Font size */
+    border-radius: 4px;             /* Rounded corners */
+    cursor: pointer;               /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+  }
+  
+  /* Hover effect for remove button */
+  .remove-village-btn:hover {
+    background-color: #ff4c4c;      /* Darker red on hover */
+  }
+  
+  /* Remove outline on focus for the button */
+  .remove-village-btn:focus {
+    outline: none;
+  }
+  
+  /* Invalid field styling */
+  .is-invalid {
+    border-color: #dc3545 !important;  /* Red border for invalid select */
+  }
+  
+  /* Invalid feedback message */
+  .invalid-feedback {
+    color: #dc3545;                 /* Red text color */
+    font-size: 14px;                 /* Slightly smaller text */
+    margin-top: 5px;                 /* Space above the message */
+  }
+  
+  /* Styling for the option elements (optional) */
+  .village-select option {
+    padding: 10px;                  /* Padding for options */
+    font-size: 16px;                /* Font size for options */
+  }
+  

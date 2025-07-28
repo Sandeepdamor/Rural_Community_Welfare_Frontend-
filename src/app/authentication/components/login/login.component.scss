@@ -1,0 +1,88 @@
+/* Ensure the whole container takes full screen height */
+.row {
+    height: 100vh;
+}
+
+/* Background image container */
+.login-background-image {
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+}
+
+/* Form container to keep it centered */
+.form-container {
+    max-width: 420px;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Logo Styling */
+.logo {
+    width: 120px;
+    /* Adjust as needed */
+    height: auto;
+}
+
+/* Input fields */
+.input-field {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Primary Button */
+.primary-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.primary-button:hover {
+    background-color: #0056b3;
+}
+
+.error-box {
+    color: #721c24;
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.invalid-feedback {
+    color: #d9534f;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.is-invalid {
+    border-color: #d9534f;
+}

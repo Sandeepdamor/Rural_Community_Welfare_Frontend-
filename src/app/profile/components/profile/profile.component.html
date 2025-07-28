@@ -1,0 +1,16 @@
+<div *ngIf="isDataLoaded">
+    <div class="scalable-gap-24-16 scalable-p-16-8 cardBackground d-flex flex-column">
+      <div class="d-flex gap-2 align-items-center">
+        <img src="assets/images/svg/Back-Icon.svg" class="cursor-pointer" height="30" width="30" (click)="goBack()" />
+        <h2 class="font-18 medium black mb-0">Profile</h2>
+      </div>
+      <!-- Profile Section Rendered Based on User Type -->
+      <ng-container *ngIf="userType === 'resident'; else sarpanchBlock">
+        <app-resident-profile [data]="resident" [isViewOnly]="isViewOnly"></app-resident-profile>
+      </ng-container>
+      <ng-template #sarpanchBlock>
+        <app-sarpanch-profile [data]="sarpanch" [isViewOnly]="isViewOnly"></app-sarpanch-profile>
+      </ng-template>
+    </div>
+  </div>
+  

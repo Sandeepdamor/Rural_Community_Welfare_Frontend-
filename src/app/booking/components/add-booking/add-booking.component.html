@@ -1,0 +1,54 @@
+<div class="container">
+    <h2>Submit Your Grievance</h2>
+    
+    <form [formGroup]="grievanceForm" (ngSubmit)="submitForm()">
+      
+      <div>
+        <label for="name">Full Name</label>
+        <input id="name" type="text" formControlName="name" />
+        <span *ngIf="submitted && grievanceForm.controls['name'].invalid">
+          Name is required (min. 3 characters).
+        </span>
+      </div>
+  
+      <div>
+        <label for="email">Email</label>
+        <input id="email" type="email" formControlName="email" />
+        <span *ngIf="submitted && grievanceForm.controls['email'].invalid">
+          Enter a valid email.
+        </span>
+      </div>
+  
+      <div>
+        <label for="phone">Phone</label>
+        <input id="phone" type="text" formControlName="phone" />
+        <span *ngIf="submitted && grievanceForm.controls['phone'].invalid">
+          Enter a valid 10-digit phone number.
+        </span>
+      </div>
+  
+      <div>
+        <label for="grievanceType">Grievance Type</label>
+        <select id="grievanceType" formControlName="grievanceType">
+          <option value="">Select</option>
+          <option value="service">Service Issue</option>
+          <option value="billing">Billing Issue</option>
+          <option value="other">Other</option>
+        </select>
+        <span *ngIf="submitted && grievanceForm.controls['grievanceType'].invalid">
+          Please select a grievance type.
+        </span>
+      </div>
+  
+      <div>
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description"></textarea>
+        <span *ngIf="submitted && grievanceForm.controls['description'].invalid">
+          Description must be at least 10 characters.
+        </span>
+      </div>
+  
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+  

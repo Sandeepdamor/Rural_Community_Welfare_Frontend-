@@ -1,0 +1,24 @@
+.not-found-container {
+  background: linear-gradient(
+    180deg,
+    rgba(79, 70, 187, 0.8) 0.31%,
+    rgba(101, 101, 101, 0.8) 99.7%
+  );
+  height: 100vh;
+  overflow: hidden;
+}
+.back-img {
+  background: url("/assets/images/png/background.png")
+    no-repeat center center fixed;
+  height: 100%;
+}
+.scalable-gap-32-16 {
+  gap: clamp(1rem, 0.8rem + 1vw, 2rem);
+}
+.scalable-gap-100-40 {
+  gap: clamp(2.5rem, 1.75rem + 3.75vw, 6.25rem);
+}
+.scalable-p-20-12 {
+  padding-top: clamp(0.5rem, 0.4rem + 0.5vw, 1rem);
+  padding-bottom: clamp(0.5rem, 0.4rem + 0.5vw, 1rem);
+}
