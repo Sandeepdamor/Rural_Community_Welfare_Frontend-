@@ -163,5 +163,5 @@ Backend Dev  Sanjna Chouhan ,Sandeep Damor
 Tester	Sanjna Chouhan
 Guide/Mentor	-
 
-For issues or feature requests, raise a GitHub issue or contact the team lead.
+
 
