@@ -1,63 +1,167 @@
-<<<<<<< HEAD
-# Rural_Community_Welfare_Frontend-
-=======
-# RuralCommunityWelfare
+📍 Project: Rural Community Welfare Website
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.6.
+🧾 1. Introduction
+The Angular frontend is designed as a modern, responsive web interface to enable rural communities to interact digitally with their elected Sarpanch. It provides features like grievance submission, announcement display, and access to welfare information in both Hindi and English.
 
-## Development server
+🎯 2. Objectives
+Provide an easy-to-use interface for rural residents and Sarpanch.
 
-To start a local development server, run:
+Deliver multilingual access to schemes, documents, and announcements.
 
-```bash
-ng serve
-```
+Enable online grievance submission and response.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Ensure responsive, accessible UI for all screen sizes and users.
 
-## Code scaffolding
+🧱 3. Tech Stack
+Layer	Technology
+Framework	Angular 17+
+Styling	SCSS, Bootstrap
+State Mgmt	RxJS / Services
+Auth	JWT (via backend)
+Routing	Angular Router
+Multilingual	ngx-translate (or custom i18n)
+Forms	Reactive Forms
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+📁 4. Folder Structure
+bash
+Copy
+Edit
+src/app/
+├── authentication/         # Login/Register/Token logic
+├── home/                   # Landing/Homepage
+├── announcement/           # Community announcements
+├── grievance/              # Submit & view grievances
+├── dashboard/              # Sarpanch dashboard
+├── service-category/       # Welfare schemes & categories
+├── users/                  # Resident profile and directory
+├── shared/                 # Shared services, components, pipes
+├── core/                   # Core app services (auth, API)
+└── app-routing.module.ts   # Routing config
 
-```bash
-ng generate component component-name
-```
+🧩 5. Major Modules
+5.1 Home Module
+Displays landing banners, events, mission/vision.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Shows latest announcements, downloadable forms.
 
-```bash
-ng generate --help
-```
+5.2 Grievance Module
+Residents can submit complaints using a form.
 
-## Building
+Sarpanch can view, update status, and respond.
 
-To build the project run:
+Tracks complaint status (Submitted, In-Progress, Resolved).
 
-```bash
-ng build
-```
+5.3 Announcement Module
+Public announcements listed in card view.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Add/Edit/Delete available for Sarpanch users.
 
-## Running unit tests
+5.4 Sarpanch Dashboard
+Admin login to manage content.
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+View grievance analytics, user statistics, and site visits.
 
-```bash
-ng test
-```
+5.5 Service Category Module
+Shows government schemes and skill development programs.
 
-## Running end-to-end tests
+Includes links to forms and registration.
 
-For end-to-end (e2e) testing, run:
+5.6 Multilingual Support
+Toggle between Hindi and English.
 
-```bash
-ng e2e
-```
+All text labels and messages translated.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+🔐 6. Authentication (JWT-Based)
+Login via backend using /api/auth/login.
 
-## Additional Resources
+JWT token stored in localStorage or sessionStorage.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
->>>>>>> frontend
+Interceptor attaches token to all protected API requests.
+
+Roles: ROLE_USER, ROLE_SARPANCH
+
+🌐 7. Environment Config
+Configure environment file:
+
+ts
+Copy
+Edit
+// src/environments/environment.ts
+export const environment = {
+  production: false,
+  apiBaseUrl: 'http://localhost:8080/api'
+};
+📲 8. UI/UX Requirements
+Mobile-responsive design using Bootstrap Grid/Flex.
+
+Clean, minimal layout with clear CTA buttons.
+
+Local imagery and cultural design elements.
+
+Keyboard navigable, screen-reader friendly.
+
+Uses consistent color schemes and icon sets.
+
+🧪 9. Testing Strategy
+Unit Testing: Component logic with Jasmine/Karma.
+
+Integration Testing: Service-to-Component flow.
+
+UAT: With Sarpanch and residents.
+
+Cross-device Testing: Desktop, tablet, mobile.
+
+Cross-browser Testing: Chrome, Firefox, Edge.
+
+🚀 10. Deployment Instructions
+Build:
+bash
+Copy
+Edit
+ng build --configuration production
+Output:
+Files generated in dist/ folder.
+
+Deploy to:
+GitHub Pages, Firebase, Vercel, or custom server.
+
+🛠️ 11. Maintenance Notes
+Use version control (Git) with proper commit messages.
+
+Ensure multilingual JSON files are updated when adding text.
+
+All services and routes must follow RESTful patterns.
+
+Error handling must be consistent across modules.
+
+📈 12. Future Enhancements (Frontend)
+SMS/WhatsApp integration via Twilio API.
+
+Push notifications (PWA support).
+
+Social media sharing links for announcements.
+
+Interactive map view for projects and issues.
+
+Integration with UPI or payment gateway (Razorpay).
+
+✅ 13. Acceptance Criteria
+All modules functional and integrated with backend APIs.
+
+UI is responsive and multilingual.
+
+All listed grievances can be tracked and updated.
+
+Admin dashboard functional.
+
+Passes UAT with community representatives.
+
+📬 14. Contributors & Support
+Role	Name
+UI Developer	Sandeep Damor, Sanjna Chouhan
+Backend Dev  Sanjna Chouhan ,Sandeep Damor
+Tester	Sanjna Chouhan
+Guide/Mentor	-
+
+For issues or feature requests, raise a GitHub issue or contact the team lead.
+
