@@ -157,11 +157,11 @@ Admin dashboard functional.
 Passes UAT with community representatives.
 
 📬 14. Contributors & Support
-Role	Name
-UI Developer	Sandeep Damor, Sanjna Chouhan
-Backend Dev  Sanjna Chouhan ,Sandeep Damor
-Tester	Sanjna Chouhan
-Guide/Mentor	-
+Role	              Name	                                                GitHub Profile
+UI Developer	      Sandeep Damor	& Sanjna Chouhan                        @sandeeppdamor
+Backend Developer	  Sanjna Chouhan, Sandeep Damor & Vipin Tekam          
+Tester	Bhupendra    Sanjna Chouhan, Sandeep Damor                       
+Guide / Mentor	 -                                           
 
 
 
