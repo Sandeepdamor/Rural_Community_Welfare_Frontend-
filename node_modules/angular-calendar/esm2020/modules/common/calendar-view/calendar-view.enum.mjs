@@ -1,0 +1,7 @@
+export var CalendarView;
+(function (CalendarView) {
+    CalendarView["Month"] = "month";
+    CalendarView["Week"] = "week";
+    CalendarView["Day"] = "day";
+})(CalendarView || (CalendarView = {}));
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY2FsZW5kYXItdmlldy5lbnVtLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vLi4vLi4vcHJvamVjdHMvYW5ndWxhci1jYWxlbmRhci9zcmMvbW9kdWxlcy9jb21tb24vY2FsZW5kYXItdmlldy9jYWxlbmRhci12aWV3LmVudW0udHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsTUFBTSxDQUFOLElBQVksWUFJWDtBQUpELFdBQVksWUFBWTtJQUN0QiwrQkFBZSxDQUFBO0lBQ2YsNkJBQWEsQ0FBQTtJQUNiLDJCQUFXLENBQUE7QUFDYixDQUFDLEVBSlcsWUFBWSxLQUFaLFlBQVksUUFJdkIiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgZW51bSBDYWxlbmRhclZpZXcge1xuICBNb250aCA9ICdtb250aCcsXG4gIFdlZWsgPSAnd2VlaycsXG4gIERheSA9ICdkYXknLFxufVxuIl19

@@ -1,0 +1,226 @@
+{
+  "name": "angular-calendar",
+  "version": "0.31.1",
+  "description": "A calendar component for angular 15.0+ that can display events on a month, week or day view",
+  "funding": {
+    "url": "https://github.com/sponsors/mattlewis92"
+  },
+  "packageManager": "pnpm@8.10.0",
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "webpack",
+        "@angular-devkit/*"
+      ]
+    }
+  },
+  "scripts": {
+    "start": "pnpm ng serve --open",
+    "build:copy-package-json": "copyfiles package.json projects/angular-calendar & copyfiles package.json projects/angular-calendar/schematics/ng-add",
+    "build:lib": "ng build angular-calendar --configuration production",
+    "build:date-adapters": "tsc -p tsconfig-date-adapters.json && tsc -p tsconfig-date-adapters.json --module es2015 --outDir ./dist/angular-calendar/date-adapters/esm",
+    "build:styles": "sass projects/angular-calendar/src/angular-calendar.scss | postcss --output dist/angular-calendar/css/angular-calendar.css",
+    "build:clean": "del-cli dist",
+    "build:schematics": "tsc projects/angular-calendar/schematics/ng-add/index.ts",
+    "build:copyfiles": "copyfiles CHANGELOG.md README.md LICENSE dist/angular-calendar & cp-cli projects/angular-calendar/util/date-adapter-package-date-fns.json dist/angular-calendar/date-adapters/date-fns/package.json & cp-cli projects/angular-calendar/util/date-adapter-package-moment.json dist/angular-calendar/date-adapters/moment/package.json & copyfiles -u 3 projects/angular-calendar/src/**/*.scss dist/angular-calendar/scss & npx copyfiles -u 2 \"projects/angular-calendar/schematics/**/*.{json,js}\" dist/angular-calendar",
+    "build": "run-s build:copy-package-json build:lib build:date-adapters build:styles build:schematics build:copyfiles",
+    "test:single": "cross-env TZ=UTC ng test angular-calendar --watch=false --code-coverage",
+    "test:watch": "cross-env TZ=UTC ng test angular-calendar",
+    "test:schematics": "cross-env TS_NODE_COMPILER_OPTIONS={\\\"module\\\":\\\"commonjs\\\"} TS_NODE_PREFER_TS_EXTS=true mocha --require ts-node/register projects/angular-calendar/schematics/**/*.spec.ts",
+    "test": "run-s lint test:single test:schematics build build:clean",
+    "lint:styles": "stylelint \"projects/**/*.scss\"",
+    "lint:ts": "ng lint",
+    "lint": "run-s lint:ts lint:styles",
+    "commit": "git-cz",
+    "prerelease": "pnpm test",
+    "pretest:schematics": "pnpm build:copy-package-json",
+    "release:git-add": "git add package.json",
+    "release:git-commit": "git commit -m 'chore: bump version number'",
+    "release:git-changelog": "standard-version --first-release",
+    "release:git-push": "git push --follow-tags origin main",
+    "release:git": "run-s release:git-add release:git-commit release:git-changelog release:git-push",
+    "release:npm-publish": "pnpm publish dist/angular-calendar",
+    "release:npm": "run-s build release:npm-publish",
+    "release": "run-s release:git release:npm",
+    "postrelease": "pnpm gh-pages",
+    "gh-pages:demos": "ng build --configuration production",
+    "gh-pages:compodoc": "compodoc -p tsconfig-compodoc.json -d dist/demos/docs --disableGraph --disableCoverage --disablePrivate --disableInternal --disableLifeCycleHooks --disableProtected --gaID UA-63367573-2",
+    "gh-pages:deploy": "ng deploy",
+    "gh-pages": "run-s build:clean gh-pages:demos gh-pages:compodoc gh-pages:deploy build:clean",
+    "prepare": "husky install"
+  },
+  "schematics": "./schematics/collection.json",
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "footer-max-line-length": [
+        0
+      ]
+    }
+  },
+  "lint-staged": {
+    "*.scss": [
+      "stylelint --fix"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattlewis92/angular-calendar.git"
+  },
+  "keywords": [
+    "angular",
+    "angular2",
+    "calendar",
+    "schematics"
+  ],
+  "author": "Matt Lewis",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mattlewis92/angular-calendar/issues"
+  },
+  "homepage": "https://github.com/mattlewis92/angular-calendar#readme",
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^15.0.3",
+    "@angular-eslint/builder": "15.1.0",
+    "@angular-eslint/eslint-plugin": "15.1.0",
+    "@angular-eslint/eslint-plugin-template": "15.1.0",
+    "@angular-eslint/schematics": "15.1.0",
+    "@angular-eslint/template-parser": "15.1.0",
+    "@angular/animations": "^15.0.3",
+    "@angular/cdk": "^15.0.2",
+    "@angular/cli": "^15.0.3",
+    "@angular/common": "^15.0.3",
+    "@angular/compiler": "^15.0.3",
+    "@angular/compiler-cli": "^15.0.3",
+    "@angular/core": "^15.0.3",
+    "@angular/forms": "^15.0.3",
+    "@angular/language-service": "^15.0.3",
+    "@angular/localize": "^15.0.3",
+    "@angular/platform-browser": "^15.0.3",
+    "@angular/platform-browser-dynamic": "^15.0.3",
+    "@angular/router": "^15.0.3",
+    "@commitlint/cli": "^17.3.0",
+    "@commitlint/config-conventional": "^17.3.0",
+    "@commitlint/prompt": "^17.3.0",
+    "@compodoc/compodoc": "^1.1.19",
+    "@fortawesome/fontawesome-free": "^6.2.1",
+    "@ng-bootstrap/ng-bootstrap": "^14.0.0",
+    "@perfectmemory/ngx-contextmenu": "^14.1.1",
+    "@popperjs/core": "^2.11.6",
+    "@schematics/angular": "^15.0.3",
+    "@sinonjs/fake-timers": "^9.1.2",
+    "@stackblitz/sdk": "^1.8.1",
+    "@types/chai": "^4.3.4",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "^18.11.13",
+    "@types/sinon": "^10.0.13",
+    "@types/sinon-chai": "^3.2.9",
+    "@typescript-eslint/eslint-plugin": "^5.46.0",
+    "@typescript-eslint/parser": "^5.46.0",
+    "angular-cli-ghpages": "^1.0.5",
+    "angulartics2": "^12.2.0",
+    "angularx-flatpickr": "7.0.0",
+    "autoprefixer": "^10.4.13",
+    "bootstrap": "^5.2.3",
+    "chai": "^4.3.7",
+    "commitizen": "^4.2.6",
+    "copyfiles": "^2.4.1",
+    "core-js": "^3.26.1",
+    "cp-cli": "^2.0.0",
+    "cross-env": "^7.0.3",
+    "date-fns": "^2.29.3",
+    "dayjs": "^1.11.7",
+    "del-cli": "^5.0.0",
+    "eslint": "^8.29.0",
+    "flatpickr": "^4.6.13",
+    "highlightjs-loader": "^0.2.3",
+    "husky": "^8.0.2",
+    "karma": "^6.4.1",
+    "karma-chrome-launcher": "^3.1.1",
+    "karma-coverage": "^2.2.0",
+    "karma-mocha": "^2.0.1",
+    "karma-mocha-reporter": "^2.2.5",
+    "lint-staged": "^13.1.0",
+    "mocha": "^10.2.0",
+    "moment": "^2.29.4",
+    "moment-timezone": "^0.5.40",
+    "ng-packagr": "^15.0.3",
+    "ngx-clipboard": "^15.1.0",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.19",
+    "postcss-cli": "^10.1.0",
+    "prettier": "^2.8.1",
+    "pretty-quick": "^3.1.3",
+    "process": "^0.11.10",
+    "raw-loader": "^4.0.2",
+    "rrule": "^2.7.1",
+    "rxjs": "^7.6.0",
+    "sass": "^1.56.2",
+    "sinon": "^14.0.2",
+    "sinon-chai": "^3.7.0",
+    "standard-version": "^9.5.0",
+    "stylelint": "^14.16.0",
+    "stylelint-config-prettier": "^9.0.4",
+    "stylelint-config-standard": "^27.0.0",
+    "stylelint-config-standard-scss": "^5.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "~4.8.4",
+    "util": "^0.12.5",
+    "zone.js": "^0.11.8"
+  },
+  "dependencies": {
+    "@scarf/scarf": "^1.1.1",
+    "angular-draggable-droppable": "^8.0.0",
+    "angular-resizable-element": "^7.0.0",
+    "calendar-utils": "^0.10.4",
+    "positioning": "^2.0.1",
+    "tslib": "^2.4.1"
+  },
+  "sideEffects": [
+    "*.css",
+    "*.scss"
+  ],
+  "exports": {
+    "./date-adapters/date-adapter": {
+      "main": "./date-adapters/index.js",
+      "types": "./date-adapters/index.d.ts",
+      "require": "./date-adapters/index.js",
+      "import": "./date-adapters/esm/date-adapter.js",
+      "es2020": "./date-adapters/esm/date-adapter.js",
+      "esm2020": "./date-adapters/esm/date-adapter.js",
+      "fesm2020": "./date-adapters/esm/date-adapter.js",
+      "fesm2015": "./date-adapters/esm/date-adapter.js",
+      "default": "./date-adapters/esm/date-adapter.js"
+    },
+    "./date-adapters/date-fns": {
+      "main": "./date-adapters/date-fns/index.js",
+      "types": "./date-adapters/date-fns/index.d.ts",
+      "require": "./date-adapters/date-fns/index.js",
+      "import": "./date-adapters/esm/date-fns/index.js",
+      "es2020": "./date-adapters/esm/date-fns/index.js",
+      "esm2020": "./date-adapters/esm/date-fns/index.js",
+      "fesm2020": "./date-adapters/esm/date-fns/index.js",
+      "fesm2015": "./date-adapters/esm/date-fns/index.js",
+      "default": "./date-adapters/esm/date-fns/index.js"
+    },
+    "./date-adapters/moment": {
+      "main": "./date-adapters/moment/index.js",
+      "types": "./date-adapters/moment/index.d.ts",
+      "require": "./date-adapters/moment/index.js",
+      "import": "./date-adapters/esm/moment/index.js",
+      "es2020": "./date-adapters/esm/moment/index.js",
+      "esm2020": "./date-adapters/esm/moment/index.js",
+      "fesm2020": "./date-adapters/esm/moment/index.js",
+      "fesm2015": "./date-adapters/esm/moment/index.js",
+      "default": "./date-adapters/esm/moment/index.js"
+    },
+    "./scss/*": {
+      "sass": "./scss/*"
+    }
+  },
+  "peerDependencies": {
+    "@angular/core": ">=15.0.0"
+  }
+}
